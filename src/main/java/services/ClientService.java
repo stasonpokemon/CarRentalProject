@@ -2,6 +2,7 @@ package services;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import pojo.Car;
 import pojo.Client;
 import utils.HibernateSessionFactoryUtil;
 
@@ -12,23 +13,23 @@ public class ClientService {
     private static ClientService clientService = null;
 
     public static ClientService getClientService() {
-        if (clientService == null){
+        if (clientService == null) {
             clientService = new ClientService();
         }
         return clientService;
     }
 
 
-    public List<Client> findAllClients(){
+    public List<Client> findAllClients() {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        List<Client> clients = session.createQuery("FROM" +Client.class.getSimpleName()).getResultList();
+        List<Client> clients = session.createQuery("FROM" + Client.class.getSimpleName()).getResultList();
         transaction.commit();
         session.close();
         return clients;
     }
 
-    public Client findClientById(int clientId){
+    public Client findClientById(int clientId) {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
         Client client = session.get(Client.class, clientId);
@@ -37,7 +38,17 @@ public class ClientService {
         return client;
     }
 
-    public void clientRegistration(Client client){
+    public List<Car> findAllCars() {
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        List<Car> cars = session.createQuery("FROM" + Car.class.getSimpleName()).getResultList();
+        transaction.commit();
+        session.close();
+        return cars;
+
+    }
+
+    public void clientRegistration(Client client) {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
         session.save(client);

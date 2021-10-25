@@ -13,14 +13,14 @@ public class ClientMenu {
     private Scanner scanner = new Scanner(System.in);
     private InfoClientMenu infoClientMenu = InfoClientMenu.getInfoClientMenu();
     private ClientService clientService = ClientService.getClientService();
-    private static ClientMenu clientMenu;
+    private static ClientMenu menu;
     private int operationNumber;
 
-    public static ClientMenu getClientMenu() {
-        if (clientMenu == null) {
-            clientMenu = new ClientMenu();
+    public static ClientMenu getMenu() {
+        if (menu == null) {
+            menu = new ClientMenu();
         }
-        return clientMenu;
+        return menu;
     }
 
     public void clientInitializationMenu() {
@@ -29,7 +29,7 @@ public class ClientMenu {
             boolean operationNumberValid = false;
             do {
                 try {
-                    infoClientMenu.initializationInfo();
+                    infoClientMenu.clientInitializationMenuInfo();
                     operationNumber = scanner.nextInt();
                     scanner.nextLine();
                     operationNumberValid = true;
@@ -106,9 +106,8 @@ public class ClientMenu {
                 newClient.setLogin(clientLogin);
                 newClient.setPassword(clientPassword);
                 clientService.clientRegistration(newClient);
-                /*
-                 * Тут должен быть метод, который выполняется, если регистрация прошла успешно
-                 * */
+
+                clientMenu(newClient);
             }
         } while (!exitClientRegistration);
     }
@@ -129,9 +128,7 @@ public class ClientMenu {
                 if (client.getLogin().equals(clientLogin)) {
                     if (client.getPassword().equals(clientPassword)) {
                         exitClientLogin = true;
-                        /*
-                         * Создать метод, в который мы передаём клиента
-                         * */
+                        clientMenu(client);
                     } else {
                         boolean operationNumberValid = false;
                         do {
@@ -188,6 +185,42 @@ public class ClientMenu {
                 }
             }
         } while (!exitClientLogin);
+    }
+
+    private void clientMenu(Client client) {
+        boolean exitClientMenu = false;
+
+        do {
+            boolean operationNumberValid = false;
+            do {
+                try {
+                    infoClientMenu.clientMenuInfo();
+                    operationNumber = scanner.nextInt();
+                    operationNumberValid = true;
+                } catch (InputMismatchException e) {
+                    System.out.println("Enter integer value...");
+                    scanner.nextLine();
+                    System.out.println("Exception: " + e);
+                }
+            } while (!operationNumberValid);
+
+            switch (operationNumber){
+                case 1:
+                    clientService.findAllCars().forEach(System.out::println);
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    exitClientMenu = true;
+                    System.out.println("Exit to the home menu...");
+                    break;
+                default:
+                    System.out.println("There is no such operation. Try again");
+                    break;
+            }
+
+
+        }while (!exitClientMenu);
     }
 
 

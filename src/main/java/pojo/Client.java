@@ -1,13 +1,45 @@
 package pojo;
 
+import javax.persistence.*;
 import java.util.Objects;
-
+@Entity
+@Table(name = "clients")
 public class Client {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(name = "client_login")
     private String login;
+    @Column(name = "client_password")
     private String password;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "passport_id", referencedColumnName = "id")
     private ClientPassport clientPassport;
+
+    @OneToOne(orphanRemoval = true)
+    @JoinColumn(name = "passports_id")
+    private ClientPassport passports;
+
+    @OneToOne(orphanRemoval = true)
+    @JoinColumn(name = "pazssports_id")
+    private ClientPassport pazssports;
+
+    public ClientPassport getPazssports() {
+        return pazssports;
+    }
+
+    public void setPazssports(ClientPassport pazssports) {
+        this.pazssports = pazssports;
+    }
+
+    public ClientPassport getPassports() {
+        return passports;
+    }
+
+    public void setPassports(ClientPassport passports) {
+        this.passports = passports;
+    }
 
     public int getId() {
         return id;

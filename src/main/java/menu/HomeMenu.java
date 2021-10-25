@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class HomeMenu {
     private InfoHomeMenu infoHomeMenu = InfoHomeMenu.getInfoHomeMenu();
-    private ClientMenu clientMenu = ClientMenu.getClientMenu();
+    private ClientMenu clientMenu = ClientMenu.getMenu();
     private AdminMenu adminMenu = AdminMenu.getAdminMenu();
     private static HomeMenu homeMenu = null;
     private static Scanner scanner = new Scanner(System.in);
