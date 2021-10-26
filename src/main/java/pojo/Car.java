@@ -1,6 +1,7 @@
 package pojo;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -16,6 +17,8 @@ public class Car {
     private String employmentStatus;
     @Column(name = "damage_status")
     private String damageStatus;
+//    @OneToMany(mappedBy="car")
+//    private List<Order> orders;
 
     public int getId() {
         return id;

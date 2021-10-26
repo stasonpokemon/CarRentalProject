@@ -23,7 +23,7 @@ public class ClientPassport {
     private int yearBirthday;
     @Column(name = "address")
     private String address;
-    @OneToOne(mappedBy = "passports")
+    @OneToOne(mappedBy = "passport")
     private Client client;
 
     public int getId() {

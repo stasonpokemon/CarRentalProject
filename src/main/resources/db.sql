@@ -1,3 +1,5 @@
+CREATE DATABASE car_rental;
+use car_rental;
 CREATE TABLE passports
 (
     id             INT PRIMARY KEY AUTO_INCREMENT,
@@ -38,3 +40,12 @@ CREATE TABLE orders
     FOREIGN KEY (client_id) REFERENCES clients (id),
     FOREIGN KEY (car_id) REFERENCES cars (id)
 );
+
+INSERT INTO cars
+VALUES (NULL, 'MERCEDES s63 AMG', 210, 'FREE', 'WITHOUT DAMAGE');
+
+INSERT INTO cars
+VALUES (NULL, 'Tesla model x', 140, 'FREE', 'WITHOUT DAMAGE');
+
+INSERT INTO cars
+VALUES (NULL, 'MERCEDES g63 AMG', 200, 'OCCUPIED', 'WITHOUT DAMAGE');

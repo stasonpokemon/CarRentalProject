@@ -1,6 +1,7 @@
 package pojo;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 @Entity
 @Table(name = "clients")
@@ -15,31 +16,9 @@ public class Client {
     private String password;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "passport_id", referencedColumnName = "id")
-    private ClientPassport clientPassport;
-
-    @OneToOne(orphanRemoval = true)
-    @JoinColumn(name = "passports_id")
-    private ClientPassport passports;
-
-    @OneToOne(orphanRemoval = true)
-    @JoinColumn(name = "pazssports_id")
-    private ClientPassport pazssports;
-
-    public ClientPassport getPazssports() {
-        return pazssports;
-    }
-
-    public void setPazssports(ClientPassport pazssports) {
-        this.pazssports = pazssports;
-    }
-
-    public ClientPassport getPassports() {
-        return passports;
-    }
-
-    public void setPassports(ClientPassport passports) {
-        this.passports = passports;
-    }
+    private ClientPassport passport;
+    @OneToMany(mappedBy="client")
+    private List<Order> orders;
 
     public int getId() {
         return id;
@@ -65,12 +44,20 @@ public class Client {
         this.password = password;
     }
 
-    public ClientPassport getClientPassport() {
-        return clientPassport;
+    public ClientPassport getPassport() {
+        return passport;
     }
 
-    public void setClientPassport(ClientPassport clientPassport) {
-        this.clientPassport = clientPassport;
+    public void setPassport(ClientPassport passport) {
+        this.passport = passport;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 
     @Override
@@ -78,12 +65,12 @@ public class Client {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Client client = (Client) o;
-        return id == client.id && Objects.equals(login, client.login) && Objects.equals(password, client.password) && Objects.equals(clientPassport, client.clientPassport);
+        return id == client.id && Objects.equals(login, client.login) && Objects.equals(password, client.password) && Objects.equals(passport, client.passport);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, login, password, clientPassport);
+        return Objects.hash(id, login, password, passport);
     }
 
     @Override
@@ -92,7 +79,7 @@ public class Client {
                 "id=" + id +
                 ", login='" + login + '\'' +
                 ", password='" + password + '\'' +
-                ", clientPassport=" + clientPassport +
+                ", clientPassport=" + passport +
                 '}';
     }
 }

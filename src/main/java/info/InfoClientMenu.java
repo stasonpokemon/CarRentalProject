@@ -12,7 +12,7 @@ public class InfoClientMenu {
     }
 
 
-    public void clientInitializationMenuInfo() {
+    public void clientInitMenuInfo() {
         System.out.println("Client initialization...\n" +
                 "1. Login\n" +
                 "2. Registration\n" +
@@ -24,6 +24,11 @@ public class InfoClientMenu {
                 "1. Сделать заказ\n" +
                 "2. Мои заказы\n" +
                 "3. Выйти");
+    }
+
+    public void clientCarInitMenuInfo(){
+        System.out.println("1. Выбрать авто\n" +
+                "2. Назад");
     }
 
     /*public static void registrationInfo(){
