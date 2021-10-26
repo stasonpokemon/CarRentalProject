@@ -87,8 +87,8 @@ public class Order {
     public String toString() {
         return "Order{" +
                 "id=" + id +
-                ", car=" + car +
-                ", client=" + client +
+                ", car=" + car.getModel() +
+                ", clientId=" + client.getId() +
                 ", price=" + price +
                 ", status='" + status + '\'' +
                 ", orderDate=" + orderDate +

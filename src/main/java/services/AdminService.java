@@ -1,5 +1,6 @@
 package services;
 
+import dao.AdminDao;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import pojo.Admin;
@@ -10,6 +11,7 @@ import java.util.List;
 
 public class AdminService {
 
+    private AdminDao adminDao = AdminDao.getAdminDao();
     private static AdminService adminService = null;
 
     public static AdminService getAdminService() {
@@ -19,12 +21,12 @@ public class AdminService {
         return adminService;
     }
 
+
+    /*
+    * Список всех администраторов
+    * */
     public List<Admin> findAllAdmins(){
-        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
-        List<Admin> admins = session.createQuery("FROM" +Admin.class.getSimpleName()).getResultList();
-        transaction.commit();
-        session.close();
+        List<Admin> admins = adminDao.findAll();
         return admins;
     }
 

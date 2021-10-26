@@ -1,17 +1,14 @@
 package services;
 
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import pojo.Car;
+import dao.ClientDao;
 import pojo.Client;
 import pojo.ClientPassport;
-import pojo.Order;
-import utils.HibernateSessionFactoryUtil;
 
 import java.util.List;
 
 public class ClientService {
 
+    private ClientDao clientDao = ClientDao.getClientDao();
     private static ClientService clientService = null;
 
     public static ClientService getClientService() {
@@ -21,67 +18,42 @@ public class ClientService {
         return clientService;
     }
 
-
+    /*
+     * Список всех клиентов
+     * */
     public List<Client> findAllClients() {
-        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
-        List<Client> clients = session.createQuery("FROM " + Client.class.getSimpleName()).getResultList();
-        transaction.commit();
-        session.close();
+        List<Client> clients = clientDao.findAll();
         return clients;
     }
 
+    /*
+     * Поиск клиента по id
+     * */
     public Client findClientById(int clientId) {
-        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
-        Client client = session.get(Client.class, clientId);
-        transaction.commit();
-        session.close();
-        return client;
+        Client searchClient = null;
+        List<Client> allClients = findAllClients();
+        for (Client client : allClients) {
+            if (clientId == client.getId()) {
+                searchClient = client;
+            }
+        }
+        return searchClient;
     }
 
-    public List<Car> findAllCars() {
-        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
-        List<Car> cars = session.createQuery("FROM " + Car.class.getSimpleName()).getResultList();
-        transaction.commit();
-        session.close();
-        return cars;
-    }
-
-    public Car findCarById(int carId){
-        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
-        Car car = session.get(Car.class, carId);
-        transaction.commit();
-        session.close();
-        return car;
-    }
-
+    /*
+     * Регистрация нового клиента
+     * */
     public void clientRegistration(Client client) {
-        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
-        session.save(client);
-        transaction.commit();
-        session.close();
+        clientDao.save(client);
     }
 
-
-    public void addPassportToTheClient(int clientId, ClientPassport passport){
-        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
-        Client client = session.get(Client.class, clientId);
+    /*
+     * Добавление паспорта клиенту
+     * */
+    public void addPassportToTheClient(Client client, ClientPassport passport) {
         client.setPassport(passport);
-        session.update(client);
-        transaction.commit();
-        session.close();
+        clientDao.update(client);
+//        clientDao.addPassportToTheClient(client, passport);
     }
 
-    public void addOrder(Order order){
-        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
-        session.save(order);
-        transaction.commit();
-        session.close();
-    }
 }
