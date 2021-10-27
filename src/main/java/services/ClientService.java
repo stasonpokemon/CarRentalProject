@@ -53,7 +53,6 @@ public class ClientService {
     public void addPassportToTheClient(Client client, ClientPassport passport) {
         client.setPassport(passport);
         clientDao.update(client);
-//        clientDao.addPassportToTheClient(client, passport);
     }
 
 }

@@ -1,5 +1,16 @@
 CREATE DATABASE car_rental;
 use car_rental;
+
+CREATE TABLE admins
+(
+    id             INT PRIMARY KEY AUTO_INCREMENT,
+    admin_login    VARCHAR(50),
+    admin_password VARCHAR(50)
+);
+
+INSERT INTO admins
+VALUE (NULL, 'admin','root');
+
 CREATE TABLE passports
 (
     id             INT PRIMARY KEY AUTO_INCREMENT,

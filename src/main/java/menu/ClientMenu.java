@@ -167,10 +167,10 @@ public class ClientMenu {
         boolean clientLoginValid = false;
         do {
             System.out.println("Enter login...");
-            clientLogin = scanner.nextLine();
+            clientLogin = scanner.next();
 
             System.out.println("Enter password...");
-            clientPassword = scanner.nextLine();
+            clientPassword = scanner.next();
 
             List<Client> allClients = clientService.findAllClients();
             for (Client client : allClients) {
@@ -221,7 +221,7 @@ public class ClientMenu {
             boolean operationNumberValid = false;
             do {
                 try {
-                    infoClientMenu.clientMenuInfo();
+                    infoClientMenu.clientMenuInfo(client);
                     operationNumber = scanner.nextInt();
                     operationNumberValid = true;
                 } catch (InputMismatchException e) {

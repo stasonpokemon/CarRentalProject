@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class HomeMenu {
     private InfoHomeMenu infoHomeMenu = InfoHomeMenu.getInfoHomeMenu();
     private ClientMenu clientMenu = ClientMenu.getMenu();
-    private AdminMenu adminMenu = AdminMenu.getAdminMenu();
+    private AdminMenu adminMenu = AdminMenu.getMenu();
     private static HomeMenu homeMenu = null;
     private static Scanner scanner = new Scanner(System.in);
     private static int operationNumber;
