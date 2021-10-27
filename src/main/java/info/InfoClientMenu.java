@@ -1,5 +1,6 @@
 package info;
 
+import pojo.Car;
 import pojo.Client;
 
 public class InfoClientMenu {
@@ -14,23 +15,31 @@ public class InfoClientMenu {
     }
 
 
-    public void clientInitMenuInfo() {
-        System.out.println("Client initialization...\n" +
+    public String clientInitMenuInfo() {
+        return "Client initialization...\n" +
                 "1. Login\n" +
                 "2. Registration\n" +
-                "3. Exit to the home menu");
+                "3. Exit to the home menu";
     }
 
-    public void clientMenuInfo(Client client) {
-        System.out.println("Client menu(" + client.getLogin() + "):\n" +
+    public String clientMenuInfo(Client client) {
+        return "Client menu(" + client.getLogin() + "):\n" +
                 "1. Сделать заказ\n" +
                 "2. Мои заказы\n" +
-                "3. Выйти");
+                "3. Выйти";
     }
 
-    public void clientCarInitMenuInfo() {
-        System.out.println("1. Выбрать авто\n" +
-                "2. Назад");
+    public String clientCarInitMenuInfo() {
+        return "1. Выбрать авто\n" +
+                "2. Назад";
+    }
+
+    public String clientOrderPaymentMenuInfo(Car selectedCar, double orderPrice){
+        return "Оплата заказа:\n" +
+                "Car - " + selectedCar.getModel() + "\n" +
+                "price - " + orderPrice + "\n" +
+                "1. Оплатить\n" +
+                "2. Отмена заказа";
     }
 
     /*public static void registrationInfo(){

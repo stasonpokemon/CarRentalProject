@@ -52,6 +52,16 @@ CREATE TABLE orders
     FOREIGN KEY (car_id) REFERENCES cars (id)
 );
 
+CREATE TABLE refunds
+(
+    id                INT PRIMARY KEY AUTO_INCREMENT,
+    order_id          INT NOT NULL,
+    damage_status     VARCHAR(50),
+    price             DOUBLE
+);
+
+
+
 INSERT INTO cars
 VALUES (NULL, 'MERCEDES s63 AMG', 210, 'FREE', 'WITHOUT DAMAGE');
 

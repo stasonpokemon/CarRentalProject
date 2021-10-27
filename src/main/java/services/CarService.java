@@ -19,6 +19,20 @@ public class CarService {
     }
 
     /*
+    * Добавление нового автомобиля
+    * */
+    public void addNewCar(Car car){
+        carDao.save(car);
+    }
+
+    /*
+     * Удаление автомобиля
+     * */
+    public void deleteCar(Car car){
+        carDao.delete(car);
+    }
+
+    /*
      * Поиск автомобиля по id
      * */
     public Car findCarById(int carId) {
@@ -57,7 +71,7 @@ public class CarService {
     * Смена статуса на (занято)
     * */
 
-    public void changingTheStatusToOccupied(Car car){
+    public void setCarStatusToOccupied(Car car){
         car.setEmploymentStatus("OCCUPIED");
         carDao.update(car);
     }
@@ -65,8 +79,10 @@ public class CarService {
     /*
      * Смена статуса на (свободно)
      * */
-    public void changingTheStatusToFree(Car car){
+    public void setCarStatusToFree(Car car){
         car.setEmploymentStatus("FREE");
         carDao.update(car);
     }
+
+
 }

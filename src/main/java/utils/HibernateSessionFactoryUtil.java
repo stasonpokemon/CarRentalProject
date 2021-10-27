@@ -17,6 +17,7 @@ public class HibernateSessionFactoryUtil {
             configuration.addAnnotatedClass(Admin.class);
             configuration.addAnnotatedClass(ClientPassport.class);
             configuration.addAnnotatedClass(Order.class);
+            configuration.addAnnotatedClass(Refund.class);
             StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder().
                     applySettings(configuration.getProperties());
             sessionFactory = configuration.buildSessionFactory(builder.build());

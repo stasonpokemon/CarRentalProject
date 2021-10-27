@@ -8,6 +8,7 @@ import services.ClientService;
 import info.InfoClientMenu;
 import pojo.Client;
 import services.OrderService;
+import utils.OperationNumberUtil;
 
 import java.util.InputMismatchException;
 import java.util.List;
@@ -16,12 +17,14 @@ import java.util.Scanner;
 public class ClientMenu {
 
     private Scanner scanner = new Scanner(System.in);
+    private OperationNumberUtil operationNumberUtil = OperationNumberUtil.getOperationNumberUtil();
     private InfoClientMenu infoClientMenu = InfoClientMenu.getInfoClientMenu();
     private ClientService clientService = ClientService.getClientService();
     private CarService carService = CarService.getCarService();
     private OrderService orderService = OrderService.getOrderService();
     private static ClientMenu menu;
     private int operationNumber;
+
 
     public static ClientMenu getMenu() {
         if (menu == null) {
@@ -36,19 +39,7 @@ public class ClientMenu {
     public void clientInitializationMenu() {
         boolean exitClientInitializationMenu = false;
         do {
-            boolean operationNumberValid = false;
-            do {
-                try {
-                    infoClientMenu.clientInitMenuInfo();
-                    operationNumber = scanner.nextInt();
-                    scanner.nextLine();
-                    operationNumberValid = true;
-                } catch (InputMismatchException e) {
-                    System.out.println("Enter integer value...");
-                    scanner.nextLine();
-                    System.out.println("Exception: " + e);
-                }
-            } while (!operationNumberValid);
+            operationNumber = operationNumberUtil.operationNumberValid(operationNumber, infoClientMenu.clientInitMenuInfo());
             switch (operationNumber) {
                 case 1:
                     clientLoginMenu();
@@ -65,8 +56,6 @@ public class ClientMenu {
                     break;
             }
         } while (!exitClientInitializationMenu);
-
-
     }
 
     /*
@@ -135,7 +124,6 @@ public class ClientMenu {
                         /*
                          * Если пароль прошёл проверку, то создаём нового клиента
                          * */
-
                         clientPasswordValid = true;
                         exitClientRegistration = true;
                         newClient = new Client();
@@ -218,19 +206,7 @@ public class ClientMenu {
     private void clientMenu(Client client) {
         boolean exitClientMenu = false;
         do {
-            boolean operationNumberValid = false;
-            do {
-                try {
-                    infoClientMenu.clientMenuInfo(client);
-                    operationNumber = scanner.nextInt();
-                    operationNumberValid = true;
-                } catch (InputMismatchException e) {
-                    System.out.println("Enter integer value...");
-                    scanner.nextLine();
-                    System.out.println("Exception: " + e);
-                }
-            } while (!operationNumberValid);
-
+            operationNumber = operationNumberUtil.operationNumberValid(operationNumber, infoClientMenu.clientMenuInfo(client));
             switch (operationNumber) {
                 case 1:
                     /*
@@ -263,18 +239,7 @@ public class ClientMenu {
     private void clientAutoInitMenu(Client client) {
         boolean autoInitMenuExit = false;
         do {
-            boolean operationNumberValid = false;
-            do {
-                try {
-                    infoClientMenu.clientCarInitMenuInfo();
-                    operationNumber = scanner.nextInt();
-                    operationNumberValid = true;
-                } catch (InputMismatchException e) {
-                    System.out.println("Enter integer value...");
-                    scanner.nextLine();
-                    System.out.println("Exception: " + e);
-                }
-            } while (!operationNumberValid);
+            operationNumber = operationNumberUtil.operationNumberValid(operationNumber, infoClientMenu.clientCarInitMenuInfo());
             switch (operationNumber) {
                 case 1:
                     boolean carInitExit = false;
@@ -434,73 +399,43 @@ public class ClientMenu {
         newOrder.setCar(selectedCar);
         newOrder.setPrice(orderPrice);
         do {
-            boolean operationNumberValid = false;
-            do {
-                try {
-                    System.out.println("Оплата заказа:\n" +
-                            "Car - " + selectedCar.getModel() + "\n" +
-                            "price - " + orderPrice + "\n" +
-                            "1. Оплатить\n" +
-                            "2. Отмена заказа");
-                    operationNumber = scanner.nextInt();
-                    operationNumberValid = true;
-                } catch (InputMismatchException e) {
-                    System.out.println("Enter integer value...");
-                    scanner.nextLine();
-                    System.out.println("Exception: " + e);
-                }
-            } while (!operationNumberValid);
+            operationNumber = operationNumberUtil.operationNumberValid(operationNumber, infoClientMenu.clientOrderPaymentMenuInfo(selectedCar, orderPrice));
             switch (operationNumber) {
-                    case 1:
-                        orderPaymentMenuExit = true;
-                        newOrder.setStatus("НА РАССМОТРЕНИИ");
-                        carService.changingTheStatusToOccupied(selectedCar);
-                        orderService.addOrder(newOrder);
-                        System.out.println("Опдата произошла успешно...");
-                        break;
-                    case 2:
-                        orderPaymentMenuExit = true;
-                        System.out.println("Отмена заказа...\n" +
-                                "Exit to the client menu...");
-                        break;
-                    default:
-                        System.out.println("There is no such operation. Try again");
-                        break;
+                case 1:
+                    orderPaymentMenuExit = true;
+                    newOrder.setStatus("НА РАССМОТРЕНИИ");
+                    carService.setCarStatusToOccupied(selectedCar);
+                    orderService.addOrder(newOrder);
+                    System.out.println("Опдата произошла успешно...");
+                    break;
+                case 2:
+                    orderPaymentMenuExit = true;
+                    System.out.println("Отмена заказа...\n" +
+                            "Exit to the client menu...");
+                    break;
+                default:
+                    System.out.println("There is no such operation. Try again");
+                    break;
 
-                }
+            }
         } while (!orderPaymentMenuExit);
     }
 
 
     /*
-    * Меню заказов клиента
-    * */
+     * Меню заказов клиента
+     * */
     private void clientOrdersMenu(Client client) {
         boolean exitClientOrdersMenu = false;
         do {
-            if (orderService.findAllOrdersByClient(client).size() != 0){
+            if (orderService.findAllOrdersByClient(client).size() != 0) {
                 System.out.println("Ваши заказы:");
-//                for (Order order: orderService.findAllOrdersByClient(client)){
-//                    System.out.println(order);
-//                }
                 orderService.findAllOrdersByClient(client).forEach(System.out::println);
-            }else {
+            } else {
                 System.out.println("У вас нет заказов");
             }
-            boolean operationNumberValid = false;
-            do {
-                try {
-                    System.out.println(
-                            "1. Назад");
-                    operationNumber = scanner.nextInt();
-                    operationNumberValid = true;
-                } catch (InputMismatchException e) {
-                    System.out.println("Enter integer value...");
-                    scanner.nextLine();
-                    System.out.println("Exception: " + e);
-                }
-            } while (!operationNumberValid);
-            switch (operationNumber){
+            operationNumber = operationNumberUtil.operationNumberValid(operationNumber, "1. Назад");
+            switch (operationNumber) {
                 case 1:
                     System.out.println("Back to the client menu...");
                     exitClientOrdersMenu = true;

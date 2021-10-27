@@ -21,6 +21,8 @@ public class Order {
     @Column(name = "order_date", columnDefinition = "datetime")
     @Temporal(TemporalType.TIMESTAMP)
     private Date orderDate;
+    @OneToOne(mappedBy = "order")
+    private Refund refund;
 
     public int getId() {
         return id;
@@ -70,28 +72,37 @@ public class Order {
         this.orderDate = orderDate;
     }
 
+    public Refund getRefund() {
+        return refund;
+    }
+
+    public void setRefund(Refund refund) {
+        this.refund = refund;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
-        return id == order.id && Double.compare(order.price, price) == 0 && Objects.equals(car, order.car) && Objects.equals(client, order.client) && Objects.equals(status, order.status) && Objects.equals(orderDate, order.orderDate);
+        return id == order.id && Double.compare(order.price, price) == 0 && Objects.equals(car, order.car) && Objects.equals(client, order.client) && Objects.equals(status, order.status) && Objects.equals(orderDate, order.orderDate) && Objects.equals(refund, order.refund);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, car, client, price, status, orderDate);
+        return Objects.hash(id, car, client, price, status, orderDate, refund);
     }
 
     @Override
     public String toString() {
         return "Order{" +
                 "id=" + id +
-                ", car=" + car.getModel() +
-                ", clientId=" + client.getId() +
+                ", car=" + car.getId() +
+                ", client=" + client.getId() +
                 ", price=" + price +
                 ", status='" + status + '\'' +
                 ", orderDate=" + orderDate +
+//                ", refund=" + refund.getId() +
                 '}';
     }
 }
