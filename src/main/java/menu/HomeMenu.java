@@ -21,7 +21,7 @@ public class HomeMenu {
     public void menu() {
         boolean exitMenu = false;
         do {
-            operationNumber = numberValidUtil.numberValid(operationNumber, infoHomeMenu.input());
+            operationNumber = numberValidUtil.intNumberValid(operationNumber, infoHomeMenu.input());
             switch (operationNumber) {
                 case 1:
                     clientMenu.clientInitializationMenu();

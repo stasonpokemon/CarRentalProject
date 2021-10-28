@@ -15,7 +15,7 @@ public class NumberValidUtil {
         return numberValidUtil;
     }
 
-    public int numberValid(int number, String textInfo){
+    public int intNumberValid(int number, String textInfo){
         boolean numberValid = false;
         do {
             try {
@@ -25,6 +25,23 @@ public class NumberValidUtil {
                 numberValid = true;
             } catch (InputMismatchException e) {
                 System.out.println("Enter integer value...");
+                scanner.nextLine();
+                System.out.println("Exception: " + e);
+            }
+        } while (!numberValid);
+        return number;
+    }
+
+    public double doubleNumberValid(double number, String textInfo){
+        boolean numberValid = false;
+        do {
+            try {
+                System.out.println(textInfo);
+                number = scanner.nextDouble();
+                scanner.nextLine();
+                numberValid = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Enter Double value...");
                 scanner.nextLine();
                 System.out.println("Exception: " + e);
             }
