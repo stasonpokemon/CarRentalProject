@@ -38,7 +38,7 @@ public class ClientMenu {
     public void clientInitializationMenu() {
         boolean exitClientInitializationMenu = false;
         do {
-            operationNumber = numberValidUtil.numberValid(operationNumber, infoClientMenu.clientInitMenuInfo());
+            operationNumber = numberValidUtil.intNumberValid(operationNumber, infoClientMenu.clientInitMenuInfo());
             switch (operationNumber) {
                 case 1:
                     clientLoginMenu();
@@ -94,7 +94,7 @@ public class ClientMenu {
                      * Проверка на идентичность паролей
                      * */
                     if (!repeatClientPassword.equals(clientPassword)) {
-                        operationNumber = numberValidUtil.numberValid(operationNumber, infoClientMenu.clientPasswordsDontMatchInfo());
+                        operationNumber = numberValidUtil.intNumberValid(operationNumber, infoClientMenu.clientPasswordsDontMatchInfo());
                         switch (operationNumber) {
                             case 1:
                                 break;
@@ -157,7 +157,7 @@ public class ClientMenu {
                 }
             }
             if (!clientLoginValid) {
-                operationNumber = numberValidUtil.numberValid(operationNumber, infoClientMenu.clientLoginOrPasswordIsIncorrect());
+                operationNumber = numberValidUtil.intNumberValid(operationNumber, infoClientMenu.clientLoginOrPasswordIsIncorrect());
                 switch (operationNumber) {
                     case 1:
                         break;
@@ -178,7 +178,7 @@ public class ClientMenu {
     private void clientMenu(Client client) {
         boolean exitClientMenu = false;
         do {
-            operationNumber = numberValidUtil.numberValid(operationNumber, infoClientMenu.clientMenuInfo(client));
+            operationNumber = numberValidUtil.intNumberValid(operationNumber, infoClientMenu.clientMenuInfo(client));
             switch (operationNumber) {
                 case 1:
                     /*
@@ -213,7 +213,7 @@ public class ClientMenu {
          * */
         carService.findAllFreeCars().forEach(System.out::println);
         do {
-            operationNumber = numberValidUtil.numberValid(operationNumber, infoClientMenu.clientCarInitMenuInfo());
+            operationNumber = numberValidUtil.intNumberValid(operationNumber, infoClientMenu.clientCarInitMenuInfo());
             switch (operationNumber) {
                 case 1:
                     boolean carInitExit = false;
@@ -223,7 +223,7 @@ public class ClientMenu {
                     double orderPrice;
                     boolean selectedCarValid = false;
                     do {
-                        carId = numberValidUtil.numberValid(carId, "Ввыедите номер(id) автомобиля...");
+                        carId = numberValidUtil.intNumberValid(carId, "Ввыедите номер(id) автомобиля...");
                         for (Car car : carService.findAllFreeCars()) {
                             if (car.getId() == carId) {
                                 selectedCar = car;
@@ -236,7 +236,7 @@ public class ClientMenu {
                         if (selectedCarValid) {
                             boolean rentalPeriodValid = false;
                             do {
-                                rentalPeriod = numberValidUtil.numberValid(rentalPeriod, "Введите срок аренды автомобиля...");
+                                rentalPeriod = numberValidUtil.intNumberValid(rentalPeriod, "Введите срок аренды автомобиля...");
                                 if (rentalPeriod >= 1) {
                                     rentalPeriodValid = true;
                                 } else {
@@ -297,7 +297,7 @@ public class ClientMenu {
 
         boolean dayOfBirthdayValid = false;
         do {
-            dayOfBirthday = numberValidUtil.numberValid(dayOfBirthday, "Введите день рождения...");
+            dayOfBirthday = numberValidUtil.intNumberValid(dayOfBirthday, "Введите день рождения...");
             if (dayOfBirthday >= 1 && dayOfBirthday <= 31) {
                 newPassport.setDayBirthday(dayOfBirthday);
                 dayOfBirthdayValid = true;
@@ -308,7 +308,7 @@ public class ClientMenu {
 
         boolean monthOfBirthdayValid = false;
         do {
-            monthOfBirthday = numberValidUtil.numberValid(monthOfBirthday, "Введите месяц рождения...");
+            monthOfBirthday = numberValidUtil.intNumberValid(monthOfBirthday, "Введите месяц рождения...");
             if (monthOfBirthday >= 1 && monthOfBirthday <= 12) {
                 newPassport.setMonthBirthday(monthOfBirthday);
                 monthOfBirthdayValid = true;
@@ -320,7 +320,7 @@ public class ClientMenu {
 
         boolean yearOfBirthdayValid = false;
         do {
-            yearOfBirthday = numberValidUtil.numberValid(yearOfBirthday, "Введите год рождения...");
+            yearOfBirthday = numberValidUtil.intNumberValid(yearOfBirthday, "Введите год рождения...");
             if (yearOfBirthday >= 1000 && yearOfBirthday <= 3000) {
                 newPassport.setYearBirthday(yearOfBirthday);
                 yearOfBirthdayValid = true;
@@ -346,7 +346,7 @@ public class ClientMenu {
         newOrder.setCar(selectedCar);
         newOrder.setPrice(orderPrice);
         do {
-            operationNumber = numberValidUtil.numberValid(operationNumber, infoClientMenu.clientOrderPaymentMenuInfo(selectedCar, orderPrice));
+            operationNumber = numberValidUtil.intNumberValid(operationNumber, infoClientMenu.clientOrderPaymentMenuInfo(selectedCar, orderPrice));
             switch (operationNumber) {
                 case 1:
                     orderPaymentMenuExit = true;
@@ -379,7 +379,7 @@ public class ClientMenu {
             } else {
                 System.out.println("У вас нет заказов");
             }
-            operationNumber = numberValidUtil.numberValid(operationNumber, "1. Назад");
+            operationNumber = numberValidUtil.intNumberValid(operationNumber, "1. Назад");
 //            Раньше использовался switch
             if (operationNumber == 1) {
                 System.out.println("Back to the client menu...");

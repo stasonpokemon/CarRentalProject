@@ -38,7 +38,7 @@ public class AdminMenu {
     public void adminInitializationMenu() {
         boolean exitAdminInitializationMenu = false;
         do {
-            operationNumber = numberValidUtil.numberValid(operationNumber, infoAdminMenu.initializationMenuInfo());
+            operationNumber = numberValidUtil.intNumberValid(operationNumber, infoAdminMenu.initializationMenuInfo());
             switch (operationNumber) {
                 case 1:
                     adminLoginMenu();
@@ -80,7 +80,7 @@ public class AdminMenu {
                 }
             }
             if (!adminLoginValid) {
-                operationNumber = numberValidUtil.numberValid(operationNumber, infoAdminMenu.incorrectLoginOrPasswordEntry());
+                operationNumber = numberValidUtil.intNumberValid(operationNumber, infoAdminMenu.incorrectLoginOrPasswordEntry());
                 switch (operationNumber) {
                     case 1:
                         break;
@@ -103,7 +103,7 @@ public class AdminMenu {
     private void adminMenu(Admin admin) {
         boolean exitAdminMenu = false;
         do {
-            operationNumber = numberValidUtil.numberValid(operationNumber, infoAdminMenu.adminMenuInfo(admin));
+            operationNumber = numberValidUtil.intNumberValid(operationNumber, infoAdminMenu.adminMenuInfo(admin));
             switch (operationNumber) {
                 case 1:
                     adminCarsMenu();
@@ -131,14 +131,14 @@ public class AdminMenu {
     private void adminCarsMenu() {
         boolean exitAdminCarsMenu = false;
         do {
-            operationNumber = numberValidUtil.numberValid(operationNumber, infoAdminMenu.adminCarsMenuInfo());
+            operationNumber = numberValidUtil.intNumberValid(operationNumber, infoAdminMenu.adminCarsMenuInfo());
             switch (operationNumber) {
                 case 1:
                     boolean exitAllCarMenu = false;
                     System.out.println("Список всех автомобилей:");
                     carService.findAllCars().forEach(System.out::println);
                     do {
-                        operationNumber = numberValidUtil.numberValid(operationNumber, "1. Назад");
+                        operationNumber = numberValidUtil.intNumberValid(operationNumber, "1. Назад");
 //                        Вместо if был switch
                         if (operationNumber == 1) {
                             System.out.println("Exit to the admin cars menu...");
@@ -149,31 +149,39 @@ public class AdminMenu {
                     } while (!exitAllCarMenu);
                     break;
                 case 2:
+                    boolean exitAllFreeCars = false;
                     System.out.println("Список свободных автомобилей:");
                     carService.findAllFreeCars().forEach(System.out::println);
+                    do {
+                        operationNumber = numberValidUtil.intNumberValid(operationNumber, "1. Назад");
+//                        Вместо if был switch
+                        if (operationNumber == 1) {
+                            System.out.println("Exit to the admin cars menu...");
+                            exitAllFreeCars = true;
+                        } else {
+                            System.out.println("There is no such operation. Try again");
+                        }
+                    } while (!exitAllFreeCars);
                     break;
                 case 3:
                     String model;
-                    double price = 0;
-                    boolean priceValid = false;
-                    System.out.println("Добавлени енового автомобиля...\n" +
+                    double pricePerDay = 0;
+                    System.out.println("Добавление нового автомобиля...\n" +
                             "Введите модель автомобиля:");
-                    model = scanner.nextLine();
+                    model = scanner.next();
+                    boolean priceValid = false;
                     do {
-                        try {
-                            System.out.println("Введите цену за сутки:");
-                            price = scanner.nextDouble();
+                        pricePerDay = numberValidUtil.doubleNumberValid(pricePerDay, "Введите цену за сутки:");
+                        if (pricePerDay >= 0){
                             priceValid = true;
-                        } catch (InputMismatchException e) {
-                            System.out.println("Enter integer value...");
-                            scanner.nextLine();
-                            System.out.println("Exception: " + e);
+                        }else {
+                            System.out.println("Цена не может быть меньше 0...");
                         }
                     } while (!priceValid);
 
                     Car newCar = new Car();
                     newCar.setModel(model);
-                    newCar.setPricePerDay(price);
+                    newCar.setPricePerDay(pricePerDay);
                     newCar.setEmploymentStatus("FREE");
                     newCar.setDamageStatus("WITHOUT DAMAGE");
                     carService.addNewCar(newCar);
@@ -183,28 +191,17 @@ public class AdminMenu {
                 case 4:
                     int carId = 0;
                     boolean carIdValid = false;
-                    boolean carIdTrue = false;
                     System.out.println("Список всех автомобилей:");
                     carService.findAllCars().forEach(System.out::println);
-                    do {
-                        try {
-                            System.out.println("Введите номер(id) автомобиля, которвый хотите удалить:");
-                            carId = scanner.nextInt();
-                            carIdValid = true;
-                        } catch (InputMismatchException e) {
-                            System.out.println("Enter integer value...");
-                            scanner.nextLine();
-                            System.out.println("Exception: " + e);
-                        }
-                    } while (!carIdValid);
+                    carId = numberValidUtil.intNumberValid(carId, "Введите номер(id) автомобиля, которвый хотите удалить:");
                     for (Car car : carService.findAllCars()) {
                         if (carId == car.getId()) {
-                            carIdTrue = true;
+                            carIdValid = true;
                             carService.deleteCar(car);
                             System.out.println("Удаление автомобиля " + car);
                         }
                     }
-                    if (!carIdTrue) {
+                    if (!carIdValid) {
                         System.out.println("Нет автомобиля с данным номером(id)...");
                     }
                     break;
@@ -219,7 +216,6 @@ public class AdminMenu {
 
 
         } while (!exitAdminCarsMenu);
-
     }
 
     /*
@@ -228,14 +224,14 @@ public class AdminMenu {
     private void adminOrdersMenu() {
         boolean exitAdminOrdersMenu = false;
         do {
-            operationNumber = numberValidUtil.numberValid(operationNumber, infoAdminMenu.adminOrdersMenuInfo());
+            operationNumber = numberValidUtil.intNumberValid(operationNumber, infoAdminMenu.adminOrdersMenuInfo());
             switch (operationNumber) {
                 case 1:
                     boolean exitAllOrdersMenu = false;
                     System.out.println("Список всех заказов:");
                     orderService.findAllOrders().forEach(System.out::println);
                     do {
-                        operationNumber = numberValidUtil.numberValid(operationNumber, "1. Назад");
+                        operationNumber = numberValidUtil.intNumberValid(operationNumber, "1. Назад");
 //                        Вместо if был switch
                         if (operationNumber == 1) {
                             System.out.println("Exit to the admin orders menu...");
@@ -250,14 +246,14 @@ public class AdminMenu {
                     System.out.println("Список заявок на заказ:");
                     orderService.findOrdersUnderConsideration().forEach(System.out::println);
                     do {
-                        operationNumber = numberValidUtil.numberValid(operationNumber, infoAdminMenu.adminOrdersUnderConsiderationMenuInfo());
+                        operationNumber = numberValidUtil.intNumberValid(operationNumber, infoAdminMenu.adminOrdersUnderConsiderationMenuInfo());
                         switch (operationNumber) {
                             case 1:
                                 String message = "Введите номер(id) заявки:";
                                 Order selectedOrder = null;
                                 int orderId = 0;
                                 boolean orderIdTrue = false;
-                                orderId = numberValidUtil.numberValid(orderId, message);
+                                orderId = numberValidUtil.intNumberValid(orderId, message);
                                 for (Order order : orderService.findOrdersUnderConsideration()) {
                                     if (order.getId() == orderId) {
                                         selectedOrder = order;
@@ -292,7 +288,6 @@ public class AdminMenu {
                     break;
             }
         } while (!exitAdminOrdersMenu);
-
     }
 
     /*
@@ -301,7 +296,7 @@ public class AdminMenu {
     private void adminClientsMenu() {
         boolean exitAdminClientsMenu = false;
         do {
-            operationNumber = numberValidUtil.numberValid(operationNumber, infoAdminMenu.adminClientsMenuInfo());
+            operationNumber = numberValidUtil.intNumberValid(operationNumber, infoAdminMenu.adminClientsMenuInfo());
 
         } while (!exitAdminClientsMenu);
     }
@@ -312,7 +307,7 @@ public class AdminMenu {
     private void adminOrderStatusMenu(Order selectedOrder) {
         boolean exitAdminOrderStatusMenu = false;
         do {
-            operationNumber = numberValidUtil.numberValid(operationNumber, infoAdminMenu.adminOrderStatusMenuInfo(selectedOrder));
+            operationNumber = numberValidUtil.intNumberValid(operationNumber, infoAdminMenu.adminOrderStatusMenuInfo(selectedOrder));
             switch (operationNumber) {
                 case 1:
                     orderService.setOrderApprovedStatus(selectedOrder);

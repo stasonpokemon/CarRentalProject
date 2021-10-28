@@ -3,7 +3,6 @@ package dao;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import pojo.Client;
-import pojo.ClientPassport;
 import utils.HibernateSessionFactoryUtil;
 
 import java.util.List;
@@ -17,10 +16,6 @@ public class ClientDao implements DaoInterface<Client> {
             clientDao = new ClientDao();
         }
         return clientDao;
-    }
-
-    public void setClientDao(ClientDao clientDao) {
-        this.clientDao = clientDao;
     }
 
     public void save(Client client) {
@@ -56,12 +51,4 @@ public class ClientDao implements DaoInterface<Client> {
         return clients;
     }
 
-//    public void addPassportToTheClient(Client client, ClientPassport passport){
-//        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
-//        Transaction transaction = session.beginTransaction();
-//        client.setPassport(passport);
-//        session.update(client);
-//        transaction.commit();
-//        session.close();
-//    }
 }
