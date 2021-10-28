@@ -22,6 +22,24 @@ public class InfoClientMenu {
                 "3. Exit to the home menu";
     }
 
+    /*
+     * Пароли при регистрации не идентичны
+     * */
+    public String clientPasswordsDontMatchInfo() {
+        return "Passwords don't match...\n" +
+                "1. Try again enter password \n" +
+                "2. Exit to the initialization menu";
+    }
+
+    /*
+     * При входе логи или пароль неверны
+     * */
+    public String clientLoginOrPasswordIsIncorrect() {
+        return "Login or password entered incorrectly...\n" +
+                "1. Try again \n" +
+                "2. Exit to the initialization menu";
+    }
+
     public String clientMenuInfo(Client client) {
         return "Client menu(" + client.getLogin() + "):\n" +
                 "1. Сделать заказ\n" +
@@ -34,7 +52,7 @@ public class InfoClientMenu {
                 "2. Назад";
     }
 
-    public String clientOrderPaymentMenuInfo(Car selectedCar, double orderPrice){
+    public String clientOrderPaymentMenuInfo(Car selectedCar, double orderPrice) {
         return "Оплата заказа:\n" +
                 "Car - " + selectedCar.getModel() + "\n" +
                 "price - " + orderPrice + "\n" +
@@ -42,12 +60,6 @@ public class InfoClientMenu {
                 "2. Отмена заказа";
     }
 
-    /*public static void registrationInfo(){
 
-    }
-
-    public static void loginInfo(){
-
-    }*/
 
 }

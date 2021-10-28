@@ -4,14 +4,13 @@ import dao.AdminDao;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import pojo.Admin;
-import pojo.Client;
 import utils.HibernateSessionFactoryUtil;
 
 import java.util.List;
 
 public class AdminService {
 
-    private AdminDao adminDao = AdminDao.getAdminDao();
+    private final AdminDao adminDao = AdminDao.getAdminDao();
     private static AdminService adminService = null;
 
     public static AdminService getAdminService() {

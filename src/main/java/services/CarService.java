@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CarService {
-    private CarDao carDao = CarDao.getCarDao();
+    private final CarDao carDao = CarDao.getCarDao();
 
     private static CarService carService;
 

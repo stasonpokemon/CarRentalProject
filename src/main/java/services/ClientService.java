@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ClientService {
 
-    private ClientDao clientDao = ClientDao.getClientDao();
+    private final ClientDao clientDao = ClientDao.getClientDao();
     private static ClientService clientService = null;
 
     public static ClientService getClientService() {

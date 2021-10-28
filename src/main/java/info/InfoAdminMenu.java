@@ -14,18 +14,24 @@ public class InfoAdminMenu {
         return infoAdminMenu;
     }
 
-    public void initializationMenuInfo(){
-        System.out.println("Admin initialization...\n" +
+    public String initializationMenuInfo(){
+        return "Admin initialization...\n" +
                 "1. Login\n" +
-                "2. Exit to the home menu");
+                "2. Exit to the home menu";
     }
 
-    public void adminMenuInfo(Admin admin){
-        System.out.println("Admin menu("+admin.getLogin()+"):\n" +
+    public String incorrectLoginOrPasswordEntry(){
+        return "Login or password entered incorrectly...\n" +
+                "1. Try again \n" +
+                "2. Exit to the initialization menu";
+    }
+
+    public String adminMenuInfo(Admin admin){
+        return "Admin menu("+admin.getLogin()+"):\n" +
                 "1. Автомобили\n" +
                 "2. Заказы\n" +
                 "3. Клиенты\n" +
-                "4. Выйти");
+                "4. Выйти";
     }
 
     public String adminCarsMenuInfo(){

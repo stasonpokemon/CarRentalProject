@@ -8,20 +8,19 @@ import services.ClientService;
 import info.InfoClientMenu;
 import pojo.Client;
 import services.OrderService;
-import utils.OperationNumberUtil;
+import utils.NumberValidUtil;
 
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
 public class ClientMenu {
 
-    private Scanner scanner = new Scanner(System.in);
-    private OperationNumberUtil operationNumberUtil = OperationNumberUtil.getOperationNumberUtil();
-    private InfoClientMenu infoClientMenu = InfoClientMenu.getInfoClientMenu();
-    private ClientService clientService = ClientService.getClientService();
-    private CarService carService = CarService.getCarService();
-    private OrderService orderService = OrderService.getOrderService();
+    private final Scanner scanner = new Scanner(System.in);
+    private final NumberValidUtil numberValidUtil = NumberValidUtil.getOperationNumberUtil();
+    private final InfoClientMenu infoClientMenu = InfoClientMenu.getInfoClientMenu();
+    private final ClientService clientService = ClientService.getClientService();
+    private final CarService carService = CarService.getCarService();
+    private final OrderService orderService = OrderService.getOrderService();
     private static ClientMenu menu;
     private int operationNumber;
 
@@ -39,7 +38,7 @@ public class ClientMenu {
     public void clientInitializationMenu() {
         boolean exitClientInitializationMenu = false;
         do {
-            operationNumber = operationNumberUtil.operationNumberValid(operationNumber, infoClientMenu.clientInitMenuInfo());
+            operationNumber = numberValidUtil.numberValid(operationNumber, infoClientMenu.clientInitMenuInfo());
             switch (operationNumber) {
                 case 1:
                     clientLoginMenu();
@@ -78,6 +77,7 @@ public class ClientMenu {
             for (Client client : clientService.findAllClients()) {
                 if (clientLogin.equals(client.getLogin())) {
                     clientLoginValid = false;
+                    break;
                 }
             }
             /*
@@ -94,21 +94,7 @@ public class ClientMenu {
                      * Проверка на идентичность паролей
                      * */
                     if (!repeatClientPassword.equals(clientPassword)) {
-                        boolean operationNumberValid = false;
-                        do {
-                            try {
-                                System.out.println("Passwords don't match...\n" +
-                                        "1. Try again enter password \n" +
-                                        "2. Exit to the initialization menu");
-                                operationNumber = scanner.nextInt();
-                                scanner.nextLine();
-                                operationNumberValid = true;
-                            } catch (InputMismatchException e) {
-                                System.out.println("Enter integer value...");
-                                scanner.nextLine();
-                                System.out.println("Exception: " + e);
-                            }
-                        } while (!operationNumberValid);
+                        operationNumber = numberValidUtil.numberValid(operationNumber, infoClientMenu.clientPasswordsDontMatchInfo());
                         switch (operationNumber) {
                             case 1:
                                 break;
@@ -170,22 +156,8 @@ public class ClientMenu {
                     }
                 }
             }
-            if (clientLoginValid == false) {
-                boolean operationNumberValid = false;
-                do {
-                    try {
-                        System.out.println("Login or password entered incorrectly...\n" +
-                                "1. Try again \n" +
-                                "2. Exit to the initialization menu");
-                        operationNumber = scanner.nextInt();
-                        scanner.nextLine();
-                        operationNumberValid = true;
-                    } catch (InputMismatchException e) {
-                        System.out.println("Enter integer value...");
-                        scanner.nextLine();
-                        System.out.println("Exception: " + e);
-                    }
-                } while (!operationNumberValid);
+            if (!clientLoginValid) {
+                operationNumber = numberValidUtil.numberValid(operationNumber, infoClientMenu.clientLoginOrPasswordIsIncorrect());
                 switch (operationNumber) {
                     case 1:
                         break;
@@ -206,18 +178,18 @@ public class ClientMenu {
     private void clientMenu(Client client) {
         boolean exitClientMenu = false;
         do {
-            operationNumber = operationNumberUtil.operationNumberValid(operationNumber, infoClientMenu.clientMenuInfo(client));
+            operationNumber = numberValidUtil.numberValid(operationNumber, infoClientMenu.clientMenuInfo(client));
             switch (operationNumber) {
                 case 1:
                     /*
-                     * Выводит список доступных автомобилей
+                     * Открывается меню выбора атомобиля
                      * */
-                    carService.findAllFreeCars().forEach(System.out::println);
-
                     clientAutoInitMenu(client);
-
                     break;
                 case 2:
+                    /*
+                     * Открывается меню заказов клиента
+                     * */
                     clientOrdersMenu(client);
                     break;
                 case 3:
@@ -228,8 +200,6 @@ public class ClientMenu {
                     System.out.println("There is no such operation. Try again");
                     break;
             }
-
-
         } while (!exitClientMenu);
     }
 
@@ -238,31 +208,22 @@ public class ClientMenu {
      * */
     private void clientAutoInitMenu(Client client) {
         boolean autoInitMenuExit = false;
+        /*
+         * Выводит список доступных автомобилей
+         * */
+        carService.findAllFreeCars().forEach(System.out::println);
         do {
-            operationNumber = operationNumberUtil.operationNumberValid(operationNumber, infoClientMenu.clientCarInitMenuInfo());
+            operationNumber = numberValidUtil.numberValid(operationNumber, infoClientMenu.clientCarInitMenuInfo());
             switch (operationNumber) {
                 case 1:
                     boolean carInitExit = false;
+                    Car selectedCar = null;
                     int carId = 0;
                     int rentalPeriod = 0;
-                    Car selectedCar = null;
-                    Client readyClient = client;
-                    double orderPrice = 0;
+                    double orderPrice;
                     boolean selectedCarValid = false;
                     do {
-                        boolean carIdValid = false;
-                        do {
-                            try {
-                                System.out.println("Ввыедите номер(id) автомобиля...");
-                                carId = scanner.nextInt();
-                                carIdValid = true;
-                            } catch (InputMismatchException e) {
-                                System.out.println("Enter integer value...");
-                                scanner.nextLine();
-                                System.out.println("Exception: " + e);
-                            }
-                        } while (!carIdValid);
-
+                        carId = numberValidUtil.numberValid(carId, "Ввыедите номер(id) автомобиля...");
                         for (Car car : carService.findAllFreeCars()) {
                             if (car.getId() == carId) {
                                 selectedCar = car;
@@ -275,34 +236,28 @@ public class ClientMenu {
                         if (selectedCarValid) {
                             boolean rentalPeriodValid = false;
                             do {
-                                /*
-                                 * Сделать, чтобы срок аренды не был меньше нуля
-                                 * */
-                                try {
-                                    System.out.println("Введите срок аренды автомобиля...");
-                                    rentalPeriod = scanner.nextInt();
+                                rentalPeriod = numberValidUtil.numberValid(rentalPeriod, "Введите срок аренды автомобиля...");
+                                if (rentalPeriod >= 1) {
                                     rentalPeriodValid = true;
-                                } catch (InputMismatchException e) {
-                                    System.out.println("Enter integer value...");
-                                    scanner.nextLine();
-                                    System.out.println("Exception: " + e);
+                                } else {
+                                    System.out.println("Срок аренды должен быть минимум 1 день...");
                                 }
                             } while (!rentalPeriodValid);
-
                             /*
                              * Расчёт цены заказа
                              * */
-
                             orderPrice = rentalPeriod * selectedCar.getPricePerDay();
-
                             /*
                              * Если клиент впервый раз вводит паспортные данные, то выполняется данное условие
                              * */
                             if (client.getPassport() == null) {
-                                readyClient = clientPassportInitMenu(client);
+                                clientPassportInitMenu(client);
                             }
-
-                            clientOrderPaymentMenu(readyClient, selectedCar, orderPrice);
+                            /*
+                             * Открывается меню оплаты заказа, в него передаётся выбранный автомобиль,
+                             * цена за выбранный срок аренды и сам клиент
+                             * */
+                            clientOrderPaymentMenu(client, selectedCar, orderPrice);
                             autoInitMenuExit = true;
                             carInitExit = true;
                         }
@@ -315,23 +270,19 @@ public class ClientMenu {
                     System.out.println("There is no such operation. Try again");
                     break;
             }
-
         } while (!autoInitMenuExit);
     }
 
     /*
      * Меню для указания паспотрных данных клиента
      * */
-    private Client clientPassportInitMenu(Client client) {
+    private void clientPassportInitMenu(Client client) {
         String name;
         String surname;
         String patronymic;
-        int dayOfBirthday;
-        boolean dayOfBirthdayValid = false;
-        int monthOfBirthday;
-        boolean monthOfBirthdayValid = false;
-        int yearOfBirthday;
-        boolean yearOfBirthdayValid = false;
+        int dayOfBirthday = 0;
+        int monthOfBirthday = 0;
+        int yearOfBirthday = 0;
         String address;
         ClientPassport newPassport = new ClientPassport();
         System.out.println("Введите имя...");
@@ -343,50 +294,46 @@ public class ClientMenu {
         System.out.println("Введите отчество...");
         patronymic = scanner.next();
         newPassport.setPatronymic(patronymic);
+
+        boolean dayOfBirthdayValid = false;
         do {
-            try {
-                System.out.println("Введите день рождения...");
-                dayOfBirthday = scanner.nextInt();
+            dayOfBirthday = numberValidUtil.numberValid(dayOfBirthday, "Введите день рождения...");
+            if (dayOfBirthday >= 1 && dayOfBirthday <= 31) {
                 newPassport.setDayBirthday(dayOfBirthday);
                 dayOfBirthdayValid = true;
-            } catch (InputMismatchException e) {
-                System.out.println("Enter integer value...");
-                scanner.nextLine();
-                System.out.println("Exception: " + e);
+            } else {
+                System.out.println("Не павильно введён день рождения[1-31]...");
             }
         } while (!dayOfBirthdayValid);
+
+        boolean monthOfBirthdayValid = false;
         do {
-            try {
-                System.out.println("Введите месяц рождения...");
-                monthOfBirthday = scanner.nextInt();
+            monthOfBirthday = numberValidUtil.numberValid(monthOfBirthday, "Введите месяц рождения...");
+            if (monthOfBirthday >= 1 && monthOfBirthday <= 12) {
                 newPassport.setMonthBirthday(monthOfBirthday);
                 monthOfBirthdayValid = true;
-            } catch (InputMismatchException e) {
-                System.out.println("Enter integer value...");
-                scanner.nextLine();
-                System.out.println("Exception: " + e);
+            } else {
+                System.out.println("Не павильно введён месяц рождения[1-31]...");
             }
+
         } while (!monthOfBirthdayValid);
+
+        boolean yearOfBirthdayValid = false;
         do {
-            try {
-                System.out.println("Введите год рождения...");
-                yearOfBirthday = scanner.nextInt();
+            yearOfBirthday = numberValidUtil.numberValid(yearOfBirthday, "Введите год рождения...");
+            if (yearOfBirthday >= 1000 && yearOfBirthday <= 3000) {
                 newPassport.setYearBirthday(yearOfBirthday);
                 yearOfBirthdayValid = true;
-            } catch (InputMismatchException e) {
-                System.out.println("Enter integer value...");
-                scanner.nextLine();
-                System.out.println("Exception: " + e);
+            } else {
+                System.out.println("Не павильно введён год рождения[1000-3000]...");
             }
         } while (!yearOfBirthdayValid);
+
         System.out.println("Введите свой адрес...");
         address = scanner.next();
         newPassport.setAddress(address);
 
         clientService.addPassportToTheClient(client, newPassport);
-//        client.setPassport(newPassport);
-
-        return client;
     }
 
     /*
@@ -399,7 +346,7 @@ public class ClientMenu {
         newOrder.setCar(selectedCar);
         newOrder.setPrice(orderPrice);
         do {
-            operationNumber = operationNumberUtil.operationNumberValid(operationNumber, infoClientMenu.clientOrderPaymentMenuInfo(selectedCar, orderPrice));
+            operationNumber = numberValidUtil.numberValid(operationNumber, infoClientMenu.clientOrderPaymentMenuInfo(selectedCar, orderPrice));
             switch (operationNumber) {
                 case 1:
                     orderPaymentMenuExit = true;
@@ -416,11 +363,9 @@ public class ClientMenu {
                 default:
                     System.out.println("There is no such operation. Try again");
                     break;
-
             }
         } while (!orderPaymentMenuExit);
     }
-
 
     /*
      * Меню заказов клиента
@@ -434,19 +379,14 @@ public class ClientMenu {
             } else {
                 System.out.println("У вас нет заказов");
             }
-            operationNumber = operationNumberUtil.operationNumberValid(operationNumber, "1. Назад");
-            switch (operationNumber) {
-                case 1:
-                    System.out.println("Back to the client menu...");
-                    exitClientOrdersMenu = true;
-                    break;
-                default:
-                    System.out.println("There is no such operation. Try again");
-                    break;
+            operationNumber = numberValidUtil.numberValid(operationNumber, "1. Назад");
+//            Раньше использовался switch
+            if (operationNumber == 1) {
+                System.out.println("Back to the client menu...");
+                exitClientOrdersMenu = true;
+            } else {
+                System.out.println("There is no such operation. Try again");
             }
-
         } while (!exitClientOrdersMenu);
     }
-
-
 }

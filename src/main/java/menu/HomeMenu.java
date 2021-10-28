@@ -1,16 +1,14 @@
 package menu;
 
 import info.InfoHomeMenu;
-
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import utils.NumberValidUtil;
 
 public class HomeMenu {
-    private InfoHomeMenu infoHomeMenu = InfoHomeMenu.getInfoHomeMenu();
-    private ClientMenu clientMenu = ClientMenu.getMenu();
-    private AdminMenu adminMenu = AdminMenu.getMenu();
+    private final NumberValidUtil numberValidUtil = NumberValidUtil.getOperationNumberUtil();
+    private final InfoHomeMenu infoHomeMenu = InfoHomeMenu.getInfoHomeMenu();
+    private final ClientMenu clientMenu = ClientMenu.getMenu();
+    private final AdminMenu adminMenu = AdminMenu.getMenu();
     private static HomeMenu homeMenu = null;
-    private static Scanner scanner = new Scanner(System.in);
     private static int operationNumber;
 
     public static HomeMenu getHomeMenu() {
@@ -23,19 +21,7 @@ public class HomeMenu {
     public void menu() {
         boolean exitMenu = false;
         do {
-            boolean operationNumberValid = false;
-            do {
-                try {
-                    infoHomeMenu.input();
-                    operationNumber = scanner.nextInt();
-                    operationNumberValid = true;
-                } catch (InputMismatchException e) {
-                    System.out.println("Enter integer value...");
-                    scanner.nextLine();
-                    System.out.println("Exception: " + e);
-                }
-            } while (!operationNumberValid);
-
+            operationNumber = numberValidUtil.numberValid(operationNumber, infoHomeMenu.input());
             switch (operationNumber) {
                 case 1:
                     clientMenu.clientInitializationMenu();

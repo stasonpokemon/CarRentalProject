@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrderService {
-    private OrderDao orderDao = OrderDao.getOrderDao();
+    private final OrderDao orderDao = OrderDao.getOrderDao();
 
     private static OrderService orderService;
 
