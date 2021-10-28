@@ -8,8 +8,6 @@ import services.AdminService;
 import services.CarService;
 import services.OrderService;
 import utils.NumberValidUtil;
-
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -213,8 +211,6 @@ public class AdminMenu {
                     System.out.println("There is no such operation. Try again");
                     break;
             }
-
-
         } while (!exitAdminCarsMenu);
     }
 
