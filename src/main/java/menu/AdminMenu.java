@@ -280,19 +280,19 @@ public class AdminMenu {
                     break;
                 case 4:
                     System.out.println("Список возвратов:");
-                    if (refundService.findAllRefund().size() == 0){
+                    if (refundService.findAllRefund().size() == 0) {
                         System.out.println("Возвратов пока не имеется...");
                     }
                     refundService.findAllRefund().forEach(System.out::println);
                     boolean exit = false;
                     do {
-                        operationNumber = numberValidUtil.intNumberValid(operationNumber,"1. Назад");
-                        if (operationNumber == 1){
+                        operationNumber = numberValidUtil.intNumberValid(operationNumber, "1. Назад");
+                        if (operationNumber == 1) {
                             exit = true;
-                        }else {
+                        } else {
                             System.out.println("There is no such operation. Try again");
                         }
-                    }while (!exit);
+                    } while (!exit);
                     break;
                 case 5:
                     exitAdminOrdersMenu = true;
@@ -350,20 +350,25 @@ public class AdminMenu {
             operationNumber = numberValidUtil.intNumberValid(operationNumber, infoAdminMenu.adminRegisteringRefundMenuInfo());
             switch (operationNumber) {
                 case 1:
-                    orderService.findOrdersApproved().forEach(System.out::println);
-                    String message = "Введите номер(id) заказа:";
-                    int orderId = 0;
-                    boolean orderIdValid = false;
-                    orderId = numberValidUtil.intNumberValid(orderId, message);
-                    for (Order order : orderService.findOrdersApproved()) {
-                        if (orderId == order.getId()) {
-                            orderIdValid = true;
-                            registeringRefund(order);
-                            break;
+                    if (orderService.findOrdersApproved().size() != 0) {
+                        orderService.findOrdersApproved().forEach(System.out::println);
+                        String message = "Введите номер(id) заказа:";
+                        int orderId = 0;
+                        boolean orderIdValid = false;
+                        orderId = numberValidUtil.intNumberValid(orderId, message);
+                        for (Order order : orderService.findOrdersApproved()) {
+                            if (orderId == order.getId()) {
+                                orderIdValid = true;
+                                registeringRefund(order);
+                                break;
+                            }
                         }
-                    }
-                    if (!orderIdValid) {
-                        System.out.println("Нет заказа с данным номером(id)...");
+                        if (!orderIdValid) {
+                            System.out.println("Нет заказа с данным номером(id)...");
+                        }
+                    }else {
+                        System.out.println("Нет активных заказов...");
+                        exitRegisteringRefundMenu = true;
                     }
                     break;
                 case 2:
@@ -391,8 +396,8 @@ public class AdminMenu {
                  * */
                 newRefund = new Refund();
                 /*
-                * Устанавливаем автомобилю статус(свободно)
-                * */
+                 * Устанавливаем автомобилю статус(свободно)
+                 * */
                 carService.setCarStatusToFree(car);
                 /*
                  * Устанавливаем заказу статус(возврат)
@@ -420,17 +425,17 @@ public class AdminMenu {
                  * */
                 orderService.setOrderRefundStatus(order);
                 /*
-                * Устанавливаем счёт за ремон
-                * */
+                 * Устанавливаем счёт за ремон
+                 * */
                 boolean priceValid = false;
                 do {
                     price = numberValidUtil.doubleNumberValid(price, "Укажите счёт за ремонт:");
-                    if (price > 0 ){
+                    if (price > 0) {
                         priceValid = true;
-                    }else {
+                    } else {
                         System.out.println("Цена не может быть меньше нуля...");
                     }
-                }while (!priceValid);
+                } while (!priceValid);
                 newRefund.setOrder(order);
                 newRefund.setDamageStatus("WITH DAMAGE");
                 newRefund.setPrice(price);
