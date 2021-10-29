@@ -42,7 +42,7 @@ public class ClientPassportDao implements DaoInterface<ClientPassport> {
         session.close();
     }
 
-    public List<ClientPassport> findAll() {
+    public List<ClientPassport> readAll() {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
         List<ClientPassport> passports = HibernateSessionFactoryUtil.getSessionFactory().openSession().createQuery("FROM " + ClientPassport.class.getSimpleName()).getResultList();

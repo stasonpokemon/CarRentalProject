@@ -50,7 +50,7 @@ public class CarService {
      * Список всех автомобилей
      * */
     public List<Car> findAllCars() {
-        List<Car> cars = carDao.findAll();
+        List<Car> cars = carDao.readAll();
         return cars;
     }
 
@@ -81,6 +81,22 @@ public class CarService {
      * */
     public void setCarStatusToFree(Car car){
         car.setEmploymentStatus("FREE");
+        carDao.update(car);
+    }
+
+    /*
+     * Смена статуса повреждения на (повреждён)
+     * */
+    public void setCarDamageStatusToWithDamage(Car car){
+        car.setDamageStatus("WITH DAMAGE");
+        carDao.update(car);
+    }
+
+    /*
+     * Смена статуса повреждения на (не повреждён)
+     * */
+    public void setCarDamageStatusToWithoutDamage(Car car){
+        car.setDamageStatus("WITHOUT DAMAGE");
         carDao.update(car);
     }
 

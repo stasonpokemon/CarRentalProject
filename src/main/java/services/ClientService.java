@@ -22,7 +22,7 @@ public class ClientService {
      * Список всех клиентов
      * */
     public List<Client> findAllClients() {
-        List<Client> clients = clientDao.findAll();
+        List<Client> clients = clientDao.readAll();
         return clients;
     }
 

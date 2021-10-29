@@ -9,13 +9,16 @@ public class NumberValidUtil {
     private static NumberValidUtil numberValidUtil;
 
     public static NumberValidUtil getOperationNumberUtil() {
-        if (numberValidUtil == null){
+        if (numberValidUtil == null) {
             numberValidUtil = new NumberValidUtil();
         }
         return numberValidUtil;
     }
 
-    public int intNumberValid(int number, String textInfo){
+    /*
+     * Метод для проверки данных типа int
+     * */
+    public int intNumberValid(int number, String textInfo) {
         boolean numberValid = false;
         do {
             try {
@@ -32,7 +35,10 @@ public class NumberValidUtil {
         return number;
     }
 
-    public double doubleNumberValid(double number, String textInfo){
+    /*
+     * Метод для проверки данных типа double
+     * */
+    public double doubleNumberValid(double number, String textInfo) {
         boolean numberValid = false;
         do {
             try {

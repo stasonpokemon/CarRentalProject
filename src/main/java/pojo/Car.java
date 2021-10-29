@@ -75,12 +75,13 @@ public class Car {
 
     @Override
     public String toString() {
-        return "Car{" +
-                "id=" + id +
-                ", model='" + model + '\'' +
-                ", pricePerDay=" + pricePerDay +
-                ", employmentStatus='" + employmentStatus + '\'' +
-                ", damageStatus='" + damageStatus + '\'' +
-                '}';
+        return String.format("%-15s%-30s%-15s%-25s%-15s", id, model, pricePerDay, employmentStatus, damageStatus);
+//        return "Car{" +
+//                "id=" + id +
+//                ", model='" + model + '\'' +
+//                ", pricePerDay=" + pricePerDay +
+//                ", employmentStatus='" + employmentStatus + '\'' +
+//                ", damageStatus='" + damageStatus + '\'' +
+//                '}';
     }
 }

@@ -42,7 +42,7 @@ public class ClientDao implements DaoInterface<Client> {
         session.close();
     }
 
-    public List<Client> findAll() {
+    public List<Client> readAll() {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
         List<Client> clients = HibernateSessionFactoryUtil.getSessionFactory().openSession().createQuery("FROM " + Client.class.getSimpleName()).getResultList();

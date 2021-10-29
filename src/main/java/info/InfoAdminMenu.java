@@ -1,6 +1,7 @@
 package info;
 
 import pojo.Admin;
+import pojo.Car;
 import pojo.Order;
 
 public class InfoAdminMenu {
@@ -14,27 +15,27 @@ public class InfoAdminMenu {
         return infoAdminMenu;
     }
 
-    public String initializationMenuInfo(){
+    public String initializationMenuInfo() {
         return "Admin initialization...\n" +
                 "1. Login\n" +
                 "2. Exit to the home menu";
     }
 
-    public String incorrectLoginOrPasswordEntry(){
+    public String incorrectLoginOrPasswordEntry() {
         return "Login or password entered incorrectly...\n" +
                 "1. Try again \n" +
                 "2. Exit to the initialization menu";
     }
 
-    public String adminMenuInfo(Admin admin){
-        return "Admin menu("+admin.getLogin()+"):\n" +
+    public String adminMenuInfo(Admin admin) {
+        return "Admin menu(" + admin.getLogin() + "):\n" +
                 "1. Автомобили\n" +
                 "2. Заказы\n" +
                 "3. Клиенты\n" +
                 "4. Выйти";
     }
 
-    public String adminCarsMenuInfo(){
+    public String adminCarsMenuInfo() {
         return "Admin cars menu:\n" +
                 "1. Все автомобили\n" +
                 "2. Свободные автомобили\n" +
@@ -43,27 +44,46 @@ public class InfoAdminMenu {
                 "5. Назад";
     }
 
-    public String adminOrdersMenuInfo(){
+    public String adminOrdersMenuInfo() {
         return "Admin orders menu:\n" +
                 "1. Все заказы\n" +
                 "2. Заявки на заказ\n" +
                 "3. Регистрация возврата\n" +
-                "4. Назад";
+                "4. Все возвраты\n" +
+                "5. Назад";
     }
 
-    public String adminOrdersUnderConsiderationMenuInfo(){
+    public String adminOrdersUnderConsiderationMenuInfo() {
         return "1. Выбор заявки\n" +
                 "2. Назад";
     }
 
-    public String adminOrderStatusMenuInfo(Order selectedOrder){
+    public String adminOrderStatusMenuInfo(Order selectedOrder) {
         return "Заказ " + selectedOrder + "\n" +
                 "1. Одобрить\n" +
                 "2. Отклонить\n" +
                 "3. Назад";
     }
 
-    public String adminClientsMenuInfo(){
-        return "";
+    public String adminClientsMenuInfo() {
+        return "Admin clients menu:\n" +
+                "1. Паспорт клиента\n" +
+                "2. Удалить клиента\n" +
+                "3. Назад";
+    }
+
+    public String adminRegisteringRefundMenuInfo() {
+        return "Admin registering refund menu:\n" +
+                "1. Регистрация возврата\n" +
+                "2. Назад";
+    }
+
+    /*
+     * Метод регистарции заказа
+     * */
+    public String registeringRefund(Car car) {
+        return "Укажите статус состояния автомобиля " + car.getModel() + ":\n" +
+                "1. Без повреждений\n" +
+                "2. Есть повреждения ";
     }
 }

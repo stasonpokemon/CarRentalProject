@@ -79,7 +79,6 @@ public class Client {
                 "id=" + id +
                 ", login='" + login + '\'' +
                 ", password='" + password + '\'' +
-                ", clientPassport=" + passport +
                 '}';
     }
 }

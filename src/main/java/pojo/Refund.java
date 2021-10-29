@@ -63,7 +63,7 @@ public class Refund {
     public String toString() {
         return "Refund{" +
                 "id=" + id +
-                ", order=" + order +
+                ", order=" + order.getId() +
                 ", damageStatus='" + damageStatus + '\'' +
                 ", price=" + price +
                 '}';

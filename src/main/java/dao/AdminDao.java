@@ -42,7 +42,7 @@ public class AdminDao implements DaoInterface<Admin> {
         session.close();
     }
 
-    public List<Admin> findAll() {
+    public List<Admin> readAll() {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
         List<Admin> admins = HibernateSessionFactoryUtil.getSessionFactory().openSession().createQuery("FROM " + Admin.class.getSimpleName()).getResultList();

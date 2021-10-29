@@ -2,56 +2,55 @@ package dao;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import pojo.Order;
+import pojo.Refund;
 import utils.HibernateSessionFactoryUtil;
 
 import java.util.List;
 
-public class OrderDao implements DaoInterface<Order> {
+public class RefundDao implements DaoInterface<Refund>{
+    private static RefundDao refundDao;
 
-    private static OrderDao orderDao;
-
-    public static OrderDao getOrderDao() {
-        if (orderDao == null) {
-            orderDao = new OrderDao();
+    public static RefundDao getRefundDao() {
+        if (refundDao == null) {
+            refundDao = new RefundDao();
         }
-        return orderDao;
+        return refundDao;
     }
 
     @Override
-    public void save(Order order) {
+    public void save(Refund refund) {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        session.save(order);
+        session.save(refund);
         transaction.commit();
         session.close();
     }
 
     @Override
-    public void update(Order order) {
+    public void update(Refund refund) {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        session.update(order);
+        session.update(refund);
         transaction.commit();
         session.close();
     }
 
     @Override
-    public void delete(Order order) {
+    public void delete(Refund refund) {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        session.delete(order);
+        session.delete(refund);
         transaction.commit();
         session.close();
     }
 
     @Override
-    public List<Order> readAll() {
+    public List<Refund> readAll() {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        List<Order> orders = HibernateSessionFactoryUtil.getSessionFactory().openSession().createQuery("FROM " + Order.class.getSimpleName()).getResultList();
+        List<Refund> refunds = HibernateSessionFactoryUtil.getSessionFactory().openSession().createQuery("FROM " + Refund.class.getSimpleName()).getResultList();
         transaction.commit();
         session.close();
-        return orders;
+        return refunds;
     }
 }

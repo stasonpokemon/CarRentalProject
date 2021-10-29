@@ -42,7 +42,7 @@ public class CarDao implements DaoInterface<Car> {
         session.close();
     }
 
-    public List<Car> findAll() {
+    public List<Car> readAll() {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
         List<Car> cars = HibernateSessionFactoryUtil.getSessionFactory().openSession().createQuery("FROM " + Car.class.getSimpleName()).getResultList();

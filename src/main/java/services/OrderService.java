@@ -23,7 +23,7 @@ public class OrderService {
      * Список всех заказов
      * */
     public List<Order> findAllOrders() {
-        List<Order> orders = orderDao.findAll();
+        List<Order> orders = orderDao.readAll();
         return orders;
     }
 
@@ -99,6 +99,14 @@ public class OrderService {
      * */
     public void setOrderRejectStatus(Order order){
         order.setStatus("ОТКЛОНЕНО");
+        orderDao.update(order);
+    }
+
+    /*
+     * Установка заказу статуса(ВОЗВРАТ)
+     * */
+    public void setOrderRefundStatus(Order order){
+        order.setStatus("ВОЗВРАТ");
         orderDao.update(order);
     }
 }

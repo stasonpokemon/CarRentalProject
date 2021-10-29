@@ -25,7 +25,7 @@ public class AdminService {
     * Список всех администраторов
     * */
     public List<Admin> findAllAdmins(){
-        List<Admin> admins = adminDao.findAll();
+        List<Admin> admins = adminDao.readAll();
         return admins;
     }
 

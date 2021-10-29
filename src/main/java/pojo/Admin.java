@@ -6,10 +6,10 @@ import java.util.Objects;
 @Entity
 @Table(name = "admins")
 public class Admin {
-@Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-@Column(name = "admin_login")
+    @Column(name = "admin_login")
     private String login;
     @Column(name = "admin_password")
 

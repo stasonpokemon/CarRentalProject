@@ -1,13 +1,10 @@
 package menu;
 
 import info.InfoAdminMenu;
-import pojo.Admin;
-import pojo.Car;
-import pojo.Order;
-import services.AdminService;
-import services.CarService;
-import services.OrderService;
+import pojo.*;
+import services.*;
 import utils.NumberValidUtil;
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -17,8 +14,10 @@ public class AdminMenu {
     private final NumberValidUtil numberValidUtil = NumberValidUtil.getOperationNumberUtil();
     private final InfoAdminMenu infoAdminMenu = InfoAdminMenu.getInfoAdminMenu();
     private final AdminService adminService = AdminService.getAdminService();
+    private final ClientService clientService = ClientService.getClientService();
     private final CarService carService = CarService.getCarService();
     private final OrderService orderService = OrderService.getOrderService();
+    private final RefundService refundService = RefundService.getRefundService();
     private static AdminMenu menu = null;
     private int operationNumber;
 
@@ -134,6 +133,8 @@ public class AdminMenu {
                 case 1:
                     boolean exitAllCarMenu = false;
                     System.out.println("Список всех автомобилей:");
+                    System.out.printf("%-15s%-30s%-15s%-25s%-15s", "id", "model", "pricePerDay", "employmentStatus", "damageStatus");
+
                     carService.findAllCars().forEach(System.out::println);
                     do {
                         operationNumber = numberValidUtil.intNumberValid(operationNumber, "1. Назад");
@@ -166,13 +167,14 @@ public class AdminMenu {
                     double pricePerDay = 0;
                     System.out.println("Добавление нового автомобиля...\n" +
                             "Введите модель автомобиля:");
-                    model = scanner.next();
+                    scanner.nextLine();
+                    model = scanner.nextLine();
                     boolean priceValid = false;
                     do {
                         pricePerDay = numberValidUtil.doubleNumberValid(pricePerDay, "Введите цену за сутки:");
-                        if (pricePerDay >= 0){
+                        if (pricePerDay >= 0) {
                             priceValid = true;
-                        }else {
+                        } else {
                             System.out.println("Цена не может быть меньше 0...");
                         }
                     } while (!priceValid);
@@ -274,8 +276,25 @@ public class AdminMenu {
                     } while (!exitOrdersUnderConsiderationMenu);
                     break;
                 case 3:
+                    adminRegisteringRefundMenu();
                     break;
                 case 4:
+                    System.out.println("Список возвратов:");
+                    if (refundService.findAllRefund().size() == 0){
+                        System.out.println("Возвратов пока не имеется...");
+                    }
+                    refundService.findAllRefund().forEach(System.out::println);
+                    boolean exit = false;
+                    do {
+                        operationNumber = numberValidUtil.intNumberValid(operationNumber,"1. Назад");
+                        if (operationNumber == 1){
+                            exit = true;
+                        }else {
+                            System.out.println("There is no such operation. Try again");
+                        }
+                    }while (!exit);
+                    break;
+                case 5:
                     exitAdminOrdersMenu = true;
                     System.out.println("Exit to the admin menu...");
                     break;
@@ -284,17 +303,6 @@ public class AdminMenu {
                     break;
             }
         } while (!exitAdminOrdersMenu);
-    }
-
-    /*
-     * Меню администратора для взаимодействя с клиентами
-     * */
-    private void adminClientsMenu() {
-        boolean exitAdminClientsMenu = false;
-        do {
-            operationNumber = numberValidUtil.intNumberValid(operationNumber, infoAdminMenu.adminClientsMenuInfo());
-
-        } while (!exitAdminClientsMenu);
     }
 
     /*
@@ -332,4 +340,158 @@ public class AdminMenu {
             }
         } while (!exitAdminOrderStatusMenu);
     }
+
+    /*
+     * Меню администратора для ренистрации возврата автомобиля
+     * */
+    private void adminRegisteringRefundMenu() {
+        boolean exitRegisteringRefundMenu = false;
+        do {
+            operationNumber = numberValidUtil.intNumberValid(operationNumber, infoAdminMenu.adminRegisteringRefundMenuInfo());
+            switch (operationNumber) {
+                case 1:
+                    orderService.findOrdersApproved().forEach(System.out::println);
+                    String message = "Введите номер(id) заказа:";
+                    int orderId = 0;
+                    boolean orderIdValid = false;
+                    orderId = numberValidUtil.intNumberValid(orderId, message);
+                    for (Order order : orderService.findOrdersApproved()) {
+                        if (orderId == order.getId()) {
+                            orderIdValid = true;
+                            registeringRefund(order);
+                            break;
+                        }
+                    }
+                    if (!orderIdValid) {
+                        System.out.println("Нет заказа с данным номером(id)...");
+                    }
+                    break;
+                case 2:
+                    exitRegisteringRefundMenu = true;
+                    System.out.println("Exit to the admin orders menu...");
+                    break;
+                default:
+                    System.out.println("There is no such operation. Try again");
+                    break;
+            }
+        } while (!exitRegisteringRefundMenu);
+    }
+
+    /*
+     * Метод регистарции заказа
+     * */
+    private void registeringRefund(Order order) {
+        Car car = order.getCar();
+        Refund newRefund;
+        operationNumber = numberValidUtil.intNumberValid(operationNumber, infoAdminMenu.registeringRefund(car));
+        switch (operationNumber) {
+            case 1:
+                /*
+                 * Создаём объект возврата
+                 * */
+                newRefund = new Refund();
+                /*
+                * Устанавливаем автомобилю статус(свободно)
+                * */
+                carService.setCarStatusToFree(car);
+                /*
+                 * Устанавливаем заказу статус(возврат)
+                 * */
+                orderService.setOrderRefundStatus(order);
+
+                newRefund.setOrder(order);
+                newRefund.setDamageStatus("WITHOUT DAMAGE");
+                newRefund.setPrice(0);
+                refundService.addNewRefund(newRefund);
+                System.out.println("Возврат оформлен...");
+                break;
+            case 2:
+                double price = 0;
+                /*
+                 * Создаём объект возврата
+                 * */
+                newRefund = new Refund();
+                /*
+                 * Устанавливаем автомобилю статус повреждения(повреждён)
+                 * */
+                carService.setCarDamageStatusToWithDamage(car);
+                /*
+                 * Устанавливаем заказу статус(возврат)
+                 * */
+                orderService.setOrderRefundStatus(order);
+                /*
+                * Устанавливаем счёт за ремон
+                * */
+                boolean priceValid = false;
+                do {
+                    price = numberValidUtil.doubleNumberValid(price, "Укажите счёт за ремонт:");
+                    if (price > 0 ){
+                        priceValid = true;
+                    }else {
+                        System.out.println("Цена не может быть меньше нуля...");
+                    }
+                }while (!priceValid);
+                newRefund.setOrder(order);
+                newRefund.setDamageStatus("WITH DAMAGE");
+                newRefund.setPrice(price);
+                refundService.addNewRefund(newRefund);
+                System.out.println("Возврат оформлен...");
+                break;
+            default:
+                System.out.println("There is no such operation. Try again");
+                break;
+        }
+    }
+
+    /*
+     * Меню администратора для взаимодействя с клиентами
+     * */
+    private void adminClientsMenu() {
+        boolean exitAdminClientsMenu = false;
+        do {
+//        Список всех клиентов
+            clientService.findAllClients().forEach(System.out::println);
+            operationNumber = numberValidUtil.intNumberValid(operationNumber, infoAdminMenu.adminClientsMenuInfo());
+            switch (operationNumber) {
+                case 1:
+                    Client selectedClient = null;
+                    int clientId = 0;
+                    boolean clientIdValid = false;
+                    String message = "Введите номер(id) клиента:";
+                    clientId = numberValidUtil.intNumberValid(clientId, message);
+                    for (Client client : clientService.findAllClients()) {
+                        if (clientId == client.getId()) {
+                            selectedClient = client;
+                            clientIdValid = true;
+                            break;
+                        }
+                    }
+                    if (clientIdValid) {
+                        ClientPassport selectedClientPassport = selectedClient.getPassport();
+                        if (selectedClientPassport == null) {
+                            System.out.println("Клиент не указывал паспортные данные...");
+                        } else {
+                            System.out.println(selectedClientPassport);
+                        }
+                    } else {
+                        System.out.println("Нет клиента с данным номером(id)...");
+                    }
+                    break;
+                case 2:
+                    /*
+                     * Реализовать метод, чтобы при удалении клиента удалялись его заказы, а у автомобилей из заказов появлялся статус FREE
+                     * */
+                    break;
+                case 3:
+                    exitAdminClientsMenu = true;
+                    System.out.println("Exit to the admin menu...");
+                    break;
+                default:
+                    System.out.println("There is no such operation. Try again");
+                    break;
+            }
+        } while (!exitAdminClientsMenu);
+    }
+
+
 }
