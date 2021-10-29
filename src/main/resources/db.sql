@@ -31,6 +31,12 @@ CREATE TABLE clients
     passport_id     INT,
     FOREIGN KEY (passport_id) REFERENCES passports (id)
 );
+
+INSERT INTO clients
+VALUE (NULL, 'stason420','s200113',NULL );
+INSERT INTO clients
+VALUE (NULL, 'nesty420','n200104',NULL );
+
 CREATE TABLE cars
 (
     id                INT PRIMARY KEY AUTO_INCREMENT,

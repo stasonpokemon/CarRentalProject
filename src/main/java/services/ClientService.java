@@ -4,6 +4,7 @@ import dao.ClientDao;
 import pojo.Client;
 import pojo.ClientPassport;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ClientService {
@@ -51,6 +52,7 @@ public class ClientService {
      * Добавление паспорта клиенту
      * */
     public void addPassportToTheClient(Client client, ClientPassport passport) {
+        client.setOrders(new ArrayList<>());
         client.setPassport(passport);
         clientDao.update(client);
     }

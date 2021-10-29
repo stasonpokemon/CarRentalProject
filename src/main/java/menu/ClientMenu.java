@@ -4,6 +4,7 @@ import pojo.Car;
 import pojo.ClientPassport;
 import pojo.Order;
 import services.CarService;
+import services.ClientPassportService;
 import services.ClientService;
 import info.InfoClientMenu;
 import pojo.Client;
@@ -19,6 +20,7 @@ public class ClientMenu {
     private final NumberValidUtil numberValidUtil = NumberValidUtil.getOperationNumberUtil();
     private final InfoClientMenu infoClientMenu = InfoClientMenu.getInfoClientMenu();
     private final ClientService clientService = ClientService.getClientService();
+    private final ClientPassportService passportService = ClientPassportService.getPassportService();
     private final CarService carService = CarService.getCarService();
     private final OrderService orderService = OrderService.getOrderService();
     private static ClientMenu menu;
@@ -89,7 +91,6 @@ public class ClientMenu {
                     clientPassword = scanner.nextLine();
                     System.out.println("Repeat password...");
                     repeatClientPassword = scanner.nextLine();
-
                     /*
                      * Проверка на идентичность паролей
                      * */
@@ -135,6 +136,7 @@ public class ClientMenu {
      * Меню входа в аккаунт клиента
      * */
     private void clientLoginMenu() {
+        Client authorizedClient = null;
         String clientLogin;
         String clientPassword;
         boolean exitClientLogin = false;
@@ -152,9 +154,13 @@ public class ClientMenu {
                     if (client.getPassword().equals(clientPassword)) {
                         exitClientLogin = true;
                         clientLoginValid = true;
-                        clientMenu(client);
+                        authorizedClient = client;
+                        break;
                     }
                 }
+            }
+            if (clientLoginValid) {
+                clientMenu(authorizedClient);
             }
             if (!clientLoginValid) {
                 operationNumber = numberValidUtil.intNumberValid(operationNumber, infoClientMenu.clientLoginOrPasswordIsIncorrect());
@@ -176,6 +182,7 @@ public class ClientMenu {
      * Меню аккаунта клиента
      * */
     private void clientMenu(Client client) {
+
         boolean exitClientMenu = false;
         do {
             operationNumber = numberValidUtil.intNumberValid(operationNumber, infoClientMenu.clientMenuInfo(client));
@@ -250,16 +257,45 @@ public class ClientMenu {
                             /*
                              * Если клиент впервый раз вводит паспортные данные, то выполняется данное условие
                              * */
-                            if (client.getPassport() == null) {
-                                clientPassportInitMenu(client);
+                            boolean passportValid = false;
+                            boolean exitPassportValid = false;
+                            do {
+                                if (client.getPassport() == null) {
+                                    String message = "1. Ввести паспортные данные\n" +
+                                            "2. Назад";
+                                    operationNumber = numberValidUtil.intNumberValid(operationNumber,message);
+                                    switch (operationNumber){
+                                        case 1:
+                                            ClientPassport passport = clientPassportInitMenu(client);
+                                            clientService.addPassportToTheClient(client, passport);
+                                            System.out.println("Паспортные данные заполнены");
+                                            passportValid = true;
+                                            exitPassportValid = true;
+                                            break;
+                                        case 2:
+                                            exitPassportValid = true;
+                                            break;
+                                        default:
+                                            System.out.println("There is no such operation. Try again");
+                                            break;
+                                    }
+                                } else {
+                                    passportValid = true;
+                                    exitPassportValid = true;
+                                }
+                            }while (!exitPassportValid);
+                            if (passportValid) {
+                                /*
+                                 * Открывается меню оплаты заказа, в него передаётся выбранный автомобиль,
+                                 * цена за выбранный срок аренды и сам клиент
+                                 * */
+                                clientOrderPaymentMenu(client, selectedCar, orderPrice);
+                                autoInitMenuExit = true;
+                                carInitExit = true;
+                            }else {
+                                System.out.println("Вы не указали паспортные данные...");
+                                carInitExit = true;
                             }
-                            /*
-                             * Открывается меню оплаты заказа, в него передаётся выбранный автомобиль,
-                             * цена за выбранный срок аренды и сам клиент
-                             * */
-                            clientOrderPaymentMenu(client, selectedCar, orderPrice);
-                            autoInitMenuExit = true;
-                            carInitExit = true;
                         }
                     } while (!carInitExit);
                     break;
@@ -276,7 +312,7 @@ public class ClientMenu {
     /*
      * Меню для указания паспотрных данных клиента
      * */
-    private void clientPassportInitMenu(Client client) {
+    private ClientPassport clientPassportInitMenu(Client client) {
         String name;
         String surname;
         String patronymic;
@@ -284,22 +320,21 @@ public class ClientMenu {
         int monthOfBirthday = 0;
         int yearOfBirthday = 0;
         String address;
-        ClientPassport newPassport = new ClientPassport();
-        System.out.println("Введите имя...");
+
+
+        System.out.println("Заполните паспортные данные:\n" +
+                "Введите имя...");
         name = scanner.next();
-        newPassport.setName(name);
         System.out.println("Введите фамилию...");
         surname = scanner.next();
-        newPassport.setSurname(surname);
+
         System.out.println("Введите отчество...");
         patronymic = scanner.next();
-        newPassport.setPatronymic(patronymic);
 
         boolean dayOfBirthdayValid = false;
         do {
             dayOfBirthday = numberValidUtil.intNumberValid(dayOfBirthday, "Введите день рождения...");
             if (dayOfBirthday >= 1 && dayOfBirthday <= 31) {
-                newPassport.setDayBirthday(dayOfBirthday);
                 dayOfBirthdayValid = true;
             } else {
                 System.out.println("Не павильно введён день рождения[1-31]...");
@@ -310,7 +345,6 @@ public class ClientMenu {
         do {
             monthOfBirthday = numberValidUtil.intNumberValid(monthOfBirthday, "Введите месяц рождения...");
             if (monthOfBirthday >= 1 && monthOfBirthday <= 12) {
-                newPassport.setMonthBirthday(monthOfBirthday);
                 monthOfBirthdayValid = true;
             } else {
                 System.out.println("Не павильно введён месяц рождения[1-31]...");
@@ -322,18 +356,25 @@ public class ClientMenu {
         do {
             yearOfBirthday = numberValidUtil.intNumberValid(yearOfBirthday, "Введите год рождения...");
             if (yearOfBirthday >= 1000 && yearOfBirthday <= 3000) {
-                newPassport.setYearBirthday(yearOfBirthday);
                 yearOfBirthdayValid = true;
             } else {
                 System.out.println("Не павильно введён год рождения[1000-3000]...");
             }
         } while (!yearOfBirthdayValid);
-
         System.out.println("Введите свой адрес...");
         address = scanner.next();
+        ClientPassport newPassport = new ClientPassport();
+        newPassport.setName(name);
+        newPassport.setSurname(surname);
+        newPassport.setPatronymic(patronymic);
+        newPassport.setDayBirthday(dayOfBirthday);
+        newPassport.setMonthBirthday(monthOfBirthday);
+        newPassport.setYearBirthday(yearOfBirthday);
         newPassport.setAddress(address);
+        passportService.addNewPassport(newPassport);
 
-        clientService.addPassportToTheClient(client, newPassport);
+//        client.setPassport(newPassport);
+        return newPassport;
     }
 
     /*
