@@ -122,7 +122,6 @@ public class ClientPassport {
                 ", monthBirthday=" + monthBirthday +
                 ", yearBirthday=" + yearBirthday +
                 ", address='" + address + '\'' +
-                ", client=" + client.getId() +
                 '}';
     }
 }

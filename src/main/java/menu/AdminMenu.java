@@ -132,10 +132,14 @@ public class AdminMenu {
             switch (operationNumber) {
                 case 1:
                     boolean exitAllCarMenu = false;
-                    System.out.println("Список всех автомобилей:");
-                    System.out.printf("%-15s%-30s%-15s%-25s%-15s", "id", "model", "pricePerDay", "employmentStatus", "damageStatus");
-
+                    System.out.printf("Список всех автомобилей:\n" +
+                            "---------------------------------------------------------------------------------------------------\n" +
+                            "%-15s%-30s%-15s%-25s%-15s\n" +
+                            "---------------------------------------------------------------------------------------------------\n" +
+                            "", "id", "model", "pricePerDay", "employmentStatus", "damageStatus");
                     carService.findAllCars().forEach(System.out::println);
+                    System.out.println("---------------------------------------------------------------------------------------------------");
+
                     do {
                         operationNumber = numberValidUtil.intNumberValid(operationNumber, "1. Назад");
 //                        Вместо if был switch
@@ -149,8 +153,13 @@ public class AdminMenu {
                     break;
                 case 2:
                     boolean exitAllFreeCars = false;
-                    System.out.println("Список свободных автомобилей:");
+                    System.out.printf("Список свободных автомобилей:\n" +
+                            "---------------------------------------------------------------------------------------------------\n" +
+                            "%-15s%-30s%-15s%-25s%-15s\n" +
+                            "---------------------------------------------------------------------------------------------------\n" +
+                            "", "id", "model", "pricePerDay", "employmentStatus", "damageStatus");
                     carService.findAllFreeCars().forEach(System.out::println);
+                    System.out.println("---------------------------------------------------------------------------------------------------");
                     do {
                         operationNumber = numberValidUtil.intNumberValid(operationNumber, "1. Назад");
 //                        Вместо if был switch
@@ -191,8 +200,13 @@ public class AdminMenu {
                 case 4:
                     int carId = 0;
                     boolean carIdValid = false;
-                    System.out.println("Список всех автомобилей:");
+                    System.out.printf("Список всех автомобилей:\n" +
+                            "---------------------------------------------------------------------------------------------------\n" +
+                            "%-15s%-30s%-15s%-25s%-15s\n" +
+                            "---------------------------------------------------------------------------------------------------\n" +
+                            "", "id", "model", "pricePerDay", "employmentStatus", "damageStatus");
                     carService.findAllCars().forEach(System.out::println);
+                    System.out.println("---------------------------------------------------------------------------------------------------");
                     carId = numberValidUtil.intNumberValid(carId, "Введите номер(id) автомобиля, которвый хотите удалить:");
                     for (Car car : carService.findAllCars()) {
                         if (carId == car.getId()) {
@@ -226,8 +240,12 @@ public class AdminMenu {
             switch (operationNumber) {
                 case 1:
                     boolean exitAllOrdersMenu = false;
-                    System.out.println("Список всех заказов:");
+                    System.out.printf("Список всех заказов:\n" +
+                            "-----------------------------------------------------------------------------------------------\n" +
+                            "%-6s%-30s%-15s%-15s%-20s%-15s\n","id", "car", "client", "price", "status","orderDate\n" +
+                            "-----------------------------------------------------------------------------------------------");
                     orderService.findAllOrders().forEach(System.out::println);
+                    System.out.println("-----------------------------------------------------------------------------------------------");
                     do {
                         operationNumber = numberValidUtil.intNumberValid(operationNumber, "1. Назад");
 //                        Вместо if был switch
@@ -241,8 +259,12 @@ public class AdminMenu {
                     break;
                 case 2:
                     boolean exitOrdersUnderConsiderationMenu = false;
-                    System.out.println("Список заявок на заказ:");
+                    System.out.printf("Список заявок на заказ:\n" +
+                            "-----------------------------------------------------------------------------------------------\n" +
+                            "%-6s%-30s%-15s%-15s%-20s%-15s\n","id", "car", "client", "price", "status","orderDate\n" +
+                            "-----------------------------------------------------------------------------------------------");
                     orderService.findOrdersUnderConsideration().forEach(System.out::println);
+                    System.out.println("-----------------------------------------------------------------------------------------------");
                     do {
                         operationNumber = numberValidUtil.intNumberValid(operationNumber, infoAdminMenu.adminOrdersUnderConsiderationMenuInfo());
                         switch (operationNumber) {
@@ -351,7 +373,14 @@ public class AdminMenu {
             switch (operationNumber) {
                 case 1:
                     if (orderService.findOrdersApproved().size() != 0) {
+
+
+                        System.out.printf("Список активных заказов:\n" +
+                                "-----------------------------------------------------------------------------------------------\n" +
+                                "%-6s%-30s%-15s%-15s%-20s%-15s\n","id", "car", "client", "price", "status","orderDate\n" +
+                                "-----------------------------------------------------------------------------------------------");
                         orderService.findOrdersApproved().forEach(System.out::println);
+                        System.out.println("-----------------------------------------------------------------------------------------------");
                         String message = "Введите номер(id) заказа:";
                         int orderId = 0;
                         boolean orderIdValid = false;
@@ -455,7 +484,12 @@ public class AdminMenu {
         boolean exitAdminClientsMenu = false;
         do {
 //        Список всех клиентов
+            System.out.printf("Список всех клиентов:\n" +
+                    "--------------------------------------------\n" +
+                    "%-6s%-30s%-15s\n", "id", "login", "password\n" +
+                    "--------------------------------------------");
             clientService.findAllClients().forEach(System.out::println);
+            System.out.println("--------------------------------------------");
             operationNumber = numberValidUtil.intNumberValid(operationNumber, infoAdminMenu.adminClientsMenuInfo());
             switch (operationNumber) {
                 case 1:
@@ -472,12 +506,21 @@ public class AdminMenu {
                         }
                     }
                     if (clientIdValid) {
-                        ClientPassport selectedClientPassport = selectedClient.getPassport();
-                        if (selectedClientPassport == null) {
-                            System.out.println("Клиент не указывал паспортные данные...");
-                        } else {
-                            System.out.println(selectedClientPassport);
-                        }
+                        boolean exitPassportMenu = false;
+                        do {
+                            ClientPassport selectedClientPassport = selectedClient.getPassport();
+                            if (selectedClientPassport == null) {
+                                System.out.println("Клиент не указывал паспортные данные...");
+                            } else {
+                                System.out.println(selectedClientPassport);
+                            }
+                            operationNumber = numberValidUtil.intNumberValid(operationNumber, "1. Назад");
+                            if (operationNumber == 1){
+                                exitPassportMenu = true;
+                            }else {
+                                System.out.println("There is no such operation. Try again");
+                            }
+                        } while (!exitPassportMenu);
                     } else {
                         System.out.println("Нет клиента с данным номером(id)...");
                     }

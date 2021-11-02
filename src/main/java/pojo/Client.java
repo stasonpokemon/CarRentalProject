@@ -18,6 +18,7 @@ public class Client {
     @JoinColumn(name = "passport_id", referencedColumnName = "id")
     private ClientPassport passport;
     @OneToMany(mappedBy="client")
+//    Инициализируется при создании паспорта...
     private List<Order> orders;
 
     public int getId() {
@@ -75,10 +76,12 @@ public class Client {
 
     @Override
     public String toString() {
-        return "Client{" +
-                "id=" + id +
-                ", login='" + login + '\'' +
-                ", password='" + password + '\'' +
-                '}';
+        return String.format("%-6s%-30s%-15s", id, login, password);
+
+//        return "Client{" +
+//                "id=" + id +
+//                ", login='" + login + '\'' +
+//                ", password='" + password + '\'' +
+//                '}';
     }
 }

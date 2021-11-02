@@ -61,11 +61,12 @@ public class Refund {
 
     @Override
     public String toString() {
-        return "Refund{" +
-                "id=" + id +
-                ", order=" + order.getId() +
-                ", damageStatus='" + damageStatus + '\'' +
-                ", price=" + price +
-                '}';
+        return String.format("%-6s%-6s%-20s%-15s", id, order.getId(), damageStatus, price);
+//        return "Refund{" +
+//                "id=" + id +
+//                ", order=" + order.getId() +
+//                ", damageStatus='" + damageStatus + '\'' +
+//                ", price=" + price +
+//                '}';
     }
 }

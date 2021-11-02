@@ -95,14 +95,16 @@ public class Order {
 
     @Override
     public String toString() {
-        return "Order{" +
-                "id=" + id +
-                ", car=" + car.getId() +
-                ", client=" + client.getId() +
-                ", price=" + price +
-                ", status='" + status + '\'' +
-                ", orderDate=" + orderDate +
-//                ", refund=" + refund.getId() +
-                '}';
+        return String.format("%-6s%-30s%-15s%-15s%-20s%-15s",id, car.getModel(), client.getLogin(), price, status,orderDate);
+
+//        return "Order{" +
+//                "id=" + id +
+//                ", car=" + car.getModel() +
+//                ", client=" + client.getLogin() +
+//                ", price=" + price +
+//                ", status='" + status + '\'' +
+//                ", orderDate=" + orderDate +
+////                ", refund=" + refund.getId() +
+//                '}';
     }
 }

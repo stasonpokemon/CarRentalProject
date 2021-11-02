@@ -218,7 +218,13 @@ public class ClientMenu {
         /*
          * Выводит список доступных автомобилей
          * */
+        System.out.printf("Список свободных автомобилей:\n" +
+                "---------------------------------------------------------------------------------------------------\n" +
+                "%-15s%-30s%-15s%-25s%-15s\n" +
+                "---------------------------------------------------------------------------------------------------\n" +
+                "", "id", "model", "pricePerDay", "employmentStatus", "damageStatus");
         carService.findAllFreeCars().forEach(System.out::println);
+        System.out.println("---------------------------------------------------------------------------------------------------");
         do {
             operationNumber = numberValidUtil.intNumberValid(operationNumber, infoClientMenu.clientCarInitMenuInfo());
             switch (operationNumber) {
@@ -266,9 +272,8 @@ public class ClientMenu {
                                     operationNumber = numberValidUtil.intNumberValid(operationNumber,message);
                                     switch (operationNumber){
                                         case 1:
-                                            ClientPassport passport = clientPassportInitMenu(client);
-                                            clientService.addPassportToTheClient(client, passport);
-                                            System.out.println("Паспортные данные заполнены");
+                                            clientPassportInitMenu(client);
+                                            System.out.println("Паспортные данные заполнены...");
                                             passportValid = true;
                                             exitPassportValid = true;
                                             break;
@@ -291,11 +296,10 @@ public class ClientMenu {
                                  * */
                                 clientOrderPaymentMenu(client, selectedCar, orderPrice);
                                 autoInitMenuExit = true;
-                                carInitExit = true;
                             }else {
                                 System.out.println("Вы не указали паспортные данные...");
-                                carInitExit = true;
                             }
+                            carInitExit = true;
                         }
                     } while (!carInitExit);
                     break;
@@ -312,7 +316,7 @@ public class ClientMenu {
     /*
      * Меню для указания паспотрных данных клиента
      * */
-    private ClientPassport clientPassportInitMenu(Client client) {
+    private void clientPassportInitMenu(Client client) {
         String name;
         String surname;
         String patronymic;
@@ -372,9 +376,9 @@ public class ClientMenu {
         newPassport.setYearBirthday(yearOfBirthday);
         newPassport.setAddress(address);
         passportService.addNewPassport(newPassport);
+        clientService.addPassportToTheClient(client, newPassport);
 
 //        client.setPassport(newPassport);
-        return newPassport;
     }
 
     /*
@@ -415,8 +419,12 @@ public class ClientMenu {
         boolean exitClientOrdersMenu = false;
         do {
             if (orderService.findAllOrdersByClient(client).size() != 0) {
-                System.out.println("Ваши заказы:");
+                System.out.printf("Ваши заказы:\n" +
+                        "-----------------------------------------------------------------------------------------------\n" +
+                        "%-6s%-30s%-15s%-15s%-20s%-15s\n","id", "car", "client", "price", "status","orderDate\n" +
+                        "-----------------------------------------------------------------------------------------------");
                 orderService.findAllOrdersByClient(client).forEach(System.out::println);
+                System.out.println("-----------------------------------------------------------------------------------------------");
             } else {
                 System.out.println("У вас нет заказов");
             }
