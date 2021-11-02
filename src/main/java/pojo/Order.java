@@ -17,7 +17,7 @@ public class Order {
     @JoinColumn(name="client_id", nullable=false)
     private Client client;
     private double price;
-    private String status;
+    private String orderStatus;
     @Column(name = "order_date", columnDefinition = "datetime")
     @Temporal(TemporalType.TIMESTAMP)
     private Date orderDate;
@@ -56,12 +56,12 @@ public class Order {
         this.price = price;
     }
 
-    public String getStatus() {
-        return status;
+    public String getOrderStatus() {
+        return orderStatus;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setOrderStatus(String status) {
+        this.orderStatus = status;
     }
 
     public Date getOrderDate() {
@@ -85,17 +85,17 @@ public class Order {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
-        return id == order.id && Double.compare(order.price, price) == 0 && Objects.equals(car, order.car) && Objects.equals(client, order.client) && Objects.equals(status, order.status) && Objects.equals(orderDate, order.orderDate) && Objects.equals(refund, order.refund);
+        return id == order.id && Double.compare(order.price, price) == 0 && Objects.equals(car, order.car) && Objects.equals(client, order.client) && Objects.equals(orderStatus, order.orderStatus) && Objects.equals(orderDate, order.orderDate) && Objects.equals(refund, order.refund);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, car, client, price, status, orderDate, refund);
+        return Objects.hash(id, car, client, price, orderStatus, orderDate, refund);
     }
 
     @Override
     public String toString() {
-        return String.format("%-6s%-30s%-15s%-15s%-20s%-15s",id, car.getModel(), client.getLogin(), price, status,orderDate);
+        return String.format("%-6s%-30s%-15s%-15s%-20s%-15s",id, car.getModel(), client.getLogin(), price, orderStatus,orderDate);
 
 //        return "Order{" +
 //                "id=" + id +

@@ -3,6 +3,7 @@ package menu;
 import pojo.Car;
 import pojo.ClientPassport;
 import pojo.Order;
+import pojo.constant.OrderStatusConst;
 import services.CarService;
 import services.ClientPassportService;
 import services.ClientService;
@@ -395,7 +396,7 @@ public class ClientMenu {
             switch (operationNumber) {
                 case 1:
                     orderPaymentMenuExit = true;
-                    newOrder.setStatus("НА РАССМОТРЕНИИ");
+                    newOrder.setOrderStatus(OrderStatusConst.UNDER_CONSIDERATION);
                     carService.setCarStatusToOccupied(selectedCar);
                     orderService.addOrder(newOrder);
                     System.out.println("Опдата произошла успешно...");

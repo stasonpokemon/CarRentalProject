@@ -3,6 +3,7 @@ package services;
 import dao.OrderDao;
 import pojo.Client;
 import pojo.Order;
+import pojo.constant.OrderStatusConst;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,7 @@ public class OrderService {
     public  List<Order> findOrdersUnderConsideration(){
         List<Order> ordersUnderConsideration = new ArrayList<>();
             findAllOrders().forEach(order -> {
-                if (order.getStatus().equals("НА РАССМОТРЕНИИ")){
+                if (order.getOrderStatus().equals(OrderStatusConst.UNDER_CONSIDERATION)){
                     ordersUnderConsideration.add(order);
                 }
             });
@@ -59,7 +60,7 @@ public class OrderService {
     public  List<Order> findOrdersApproved(){
         List<Order> ordersApproved = new ArrayList<>();
         findAllOrders().forEach(order -> {
-            if (order.getStatus().equals("ОДОБРЕНО")){
+            if (order.getOrderStatus().equals(OrderStatusConst.APPROVES)){
                 ordersApproved.add(order);
             }
         });
@@ -72,7 +73,7 @@ public class OrderService {
     public  List<Order> findOrdersRejected (){
         List<Order> ordersRejected = new ArrayList<>();
         findAllOrders().forEach(order -> {
-            if (order.getStatus().equals("ОТКЛОЕНО")){
+            if (order.getOrderStatus().equals(OrderStatusConst.REJECT)){
                 ordersRejected.add(order);
             }
         });
@@ -90,7 +91,7 @@ public class OrderService {
     * Установка заказу статуса(ОДОБРЕНО)
     * */
     public void setOrderApprovedStatus(Order order){
-        order.setStatus("ОДОБРЕНО");
+        order.setOrderStatus(OrderStatusConst.APPROVES);
         orderDao.update(order);
     }
 
@@ -98,7 +99,7 @@ public class OrderService {
      * Установка заказу статуса(ОТКЛОНЕНО)
      * */
     public void setOrderRejectStatus(Order order){
-        order.setStatus("ОТКЛОНЕНО");
+        order.setOrderStatus(OrderStatusConst.REJECT);
         orderDao.update(order);
     }
 
@@ -106,7 +107,7 @@ public class OrderService {
      * Установка заказу статуса(ВОЗВРАТ)
      * */
     public void setOrderRefundStatus(Order order){
-        order.setStatus("ВОЗВРАТ");
+        order.setOrderStatus(OrderStatusConst.REFUND);
         orderDao.update(order);
     }
 }

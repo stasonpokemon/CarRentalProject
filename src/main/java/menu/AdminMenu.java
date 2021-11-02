@@ -2,6 +2,8 @@ package menu;
 
 import info.InfoAdminMenu;
 import pojo.*;
+import pojo.constant.DamageStatusConst;
+import pojo.constant.EmploymentStatusConst;
 import services.*;
 import utils.NumberValidUtil;
 
@@ -191,8 +193,8 @@ public class AdminMenu {
                     Car newCar = new Car();
                     newCar.setModel(model);
                     newCar.setPricePerDay(pricePerDay);
-                    newCar.setEmploymentStatus("FREE");
-                    newCar.setDamageStatus("WITHOUT DAMAGE");
+                    newCar.setEmploymentStatus(EmploymentStatusConst.FREE);
+                    newCar.setDamageStatus(DamageStatusConst.WITHOUT_DAMAGE);
                     carService.addNewCar(newCar);
                     System.out.println("Добавлен новый автомобиль: " + newCar);
 

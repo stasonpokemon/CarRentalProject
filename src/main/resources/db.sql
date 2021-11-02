@@ -1,3 +1,4 @@
+DROP DATABASE car_rental;
 CREATE DATABASE car_rental;
 use car_rental;
 

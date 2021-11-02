@@ -2,6 +2,8 @@ package services;
 
 import dao.CarDao;
 import pojo.Car;
+import pojo.constant.DamageStatusConst;
+import pojo.constant.EmploymentStatusConst;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +74,7 @@ public class CarService {
     * */
 
     public void setCarStatusToOccupied(Car car){
-        car.setEmploymentStatus("OCCUPIED");
+        car.setEmploymentStatus(EmploymentStatusConst.OCCUPIED);
         carDao.update(car);
     }
 
@@ -80,7 +82,7 @@ public class CarService {
      * Смена статуса на (свободно)
      * */
     public void setCarStatusToFree(Car car){
-        car.setEmploymentStatus("FREE");
+        car.setEmploymentStatus(EmploymentStatusConst.FREE);
         carDao.update(car);
     }
 
@@ -88,7 +90,7 @@ public class CarService {
      * Смена статуса повреждения на (повреждён)
      * */
     public void setCarDamageStatusToWithDamage(Car car){
-        car.setDamageStatus("WITH DAMAGE");
+        car.setDamageStatus(DamageStatusConst.WITH_DAMAGE);
         carDao.update(car);
     }
 
@@ -96,7 +98,7 @@ public class CarService {
      * Смена статуса повреждения на (не повреждён)
      * */
     public void setCarDamageStatusToWithoutDamage(Car car){
-        car.setDamageStatus("WITHOUT DAMAGE");
+        car.setDamageStatus(DamageStatusConst.WITHOUT_DAMAGE);
         carDao.update(car);
     }
 
