@@ -24,7 +24,7 @@ public class ClientPassport {
     @Column(name = "address")
     private String address;
     @OneToOne(mappedBy = "passport")
-    private Client client;
+    private User user;
 
     public int getId() {
         return id;
@@ -90,12 +90,12 @@ public class ClientPassport {
         this.address = address;
     }
 
-    public Client getClient() {
-        return client;
+    public User getClient() {
+        return user;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setClient(User user) {
+        this.user = user;
     }
 
     @Override
@@ -103,12 +103,12 @@ public class ClientPassport {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ClientPassport that = (ClientPassport) o;
-        return id == that.id && dayBirthday == that.dayBirthday && monthBirthday == that.monthBirthday && yearBirthday == that.yearBirthday && Objects.equals(name, that.name) && Objects.equals(surname, that.surname) && Objects.equals(patronymic, that.patronymic) && Objects.equals(address, that.address) && Objects.equals(client, that.client);
+        return id == that.id && dayBirthday == that.dayBirthday && monthBirthday == that.monthBirthday && yearBirthday == that.yearBirthday && Objects.equals(name, that.name) && Objects.equals(surname, that.surname) && Objects.equals(patronymic, that.patronymic) && Objects.equals(address, that.address) && Objects.equals(user, that.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, surname, patronymic, dayBirthday, monthBirthday, yearBirthday, address, client);
+        return Objects.hash(id, name, surname, patronymic, dayBirthday, monthBirthday, yearBirthday, address, user);
     }
 
     @Override

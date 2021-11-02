@@ -1,7 +1,7 @@
 package services;
 
 import dao.OrderDao;
-import pojo.Client;
+import pojo.User;
 import pojo.Order;
 import pojo.constant.OrderStatusConst;
 
@@ -31,10 +31,10 @@ public class OrderService {
     /*
      * Список заказов определённого клиента
      * */
-    public List<Order> findAllOrdersByClient(Client client) {
+    public List<Order> findAllOrdersByClient(User user) {
         List<Order> ordersByClient = new ArrayList<>();
         findAllOrders().forEach(order -> {
-            if (order.getClient().getId() == client.getId()) {
+            if (order.getClient().getId() == user.getId()) {
                 ordersByClient.add(order);
             }
         });

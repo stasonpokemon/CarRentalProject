@@ -6,9 +6,9 @@ import pojo.Order;
 import pojo.constant.OrderStatusConst;
 import services.CarService;
 import services.ClientPassportService;
-import services.ClientService;
+import services.UserService;
 import info.InfoClientMenu;
-import pojo.Client;
+import pojo.User;
 import services.OrderService;
 import utils.NumberValidUtil;
 
@@ -20,7 +20,7 @@ public class ClientMenu {
     private final Scanner scanner = new Scanner(System.in);
     private final NumberValidUtil numberValidUtil = NumberValidUtil.getOperationNumberUtil();
     private final InfoClientMenu infoClientMenu = InfoClientMenu.getInfoClientMenu();
-    private final ClientService clientService = ClientService.getClientService();
+    private final UserService userService = UserService.getClientService();
     private final ClientPassportService passportService = ClientPassportService.getPassportService();
     private final CarService carService = CarService.getCarService();
     private final OrderService orderService = OrderService.getOrderService();
@@ -35,170 +35,27 @@ public class ClientMenu {
         return menu;
     }
 
-    /*
-     * Меню инициализации клиента
-     * */
-    public void clientInitializationMenu() {
-        boolean exitClientInitializationMenu = false;
-        do {
-            operationNumber = numberValidUtil.intNumberValid(operationNumber, infoClientMenu.clientInitMenuInfo());
-            switch (operationNumber) {
-                case 1:
-                    clientLoginMenu();
-                    break;
-                case 2:
-                    clientRegistrationMenu();
-                    break;
-                case 3:
-                    exitClientInitializationMenu = true;
-                    System.out.println("Exit to the home menu...");
-                    break;
-                default:
-                    System.out.println("There is no such operation. Try again");
-                    break;
-            }
-        } while (!exitClientInitializationMenu);
-    }
-
-    /*
-     * Меню регистрации клиента
-     * */
-    private void clientRegistrationMenu() {
-        Client newClient;
-        String clientLogin;
-        String clientPassword;
-        String repeatClientPassword;
-        boolean exitClientRegistration = false;
-        do {
-            boolean clientPasswordValid = false;
-            boolean clientLoginValid = true;
-            System.out.println("Enter login...");
-            clientLogin = scanner.nextLine();
-            /*
-             * Проверка, есть ли данный логин среди всех клиентов
-             * */
-            for (Client client : clientService.findAllClients()) {
-                if (clientLogin.equals(client.getLogin())) {
-                    clientLoginValid = false;
-                    break;
-                }
-            }
-            /*
-             * Если логин прошёл проверку, то создаём пароль
-             * */
-            if (clientLoginValid) {
-                do {
-                    System.out.println("Enter password...");
-                    clientPassword = scanner.nextLine();
-                    System.out.println("Repeat password...");
-                    repeatClientPassword = scanner.nextLine();
-                    /*
-                     * Проверка на идентичность паролей
-                     * */
-                    if (!repeatClientPassword.equals(clientPassword)) {
-                        operationNumber = numberValidUtil.intNumberValid(operationNumber, infoClientMenu.clientPasswordsDontMatchInfo());
-                        switch (operationNumber) {
-                            case 1:
-                                break;
-                            case 2:
-                                clientPasswordValid = true;
-                                exitClientRegistration = true;
-                                System.out.println("Exit to the initialization menu...");
-                            default:
-                                System.out.println("There is no such operation. Try again");
-                                break;
-                        }
-                    } else {
-                        /*
-                         * Если пароль прошёл проверку, то создаём нового клиента
-                         * */
-                        clientPasswordValid = true;
-                        exitClientRegistration = true;
-                        newClient = new Client();
-                        newClient.setLogin(clientLogin);
-                        newClient.setPassword(clientPassword);
-                        /*
-                         * Добавление нового клиента в бд
-                         * */
-                        clientService.clientRegistration(newClient);
-                        /*
-                         * После регистрации вызываем меню аккаунта клиента
-                         * */
-                        clientMenu(newClient);
-                    }
-                } while (!clientPasswordValid);
-            } else {
-                System.out.println("Пользователь с таким логином существует...");
-            }
-        } while (!exitClientRegistration);
-    }
-
-    /*
-     * Меню входа в аккаунт клиента
-     * */
-    private void clientLoginMenu() {
-        Client authorizedClient = null;
-        String clientLogin;
-        String clientPassword;
-        boolean exitClientLogin = false;
-        boolean clientLoginValid = false;
-        do {
-            System.out.println("Enter login...");
-            clientLogin = scanner.next();
-
-            System.out.println("Enter password...");
-            clientPassword = scanner.next();
-
-            List<Client> allClients = clientService.findAllClients();
-            for (Client client : allClients) {
-                if (client.getLogin().equals(clientLogin)) {
-                    if (client.getPassword().equals(clientPassword)) {
-                        exitClientLogin = true;
-                        clientLoginValid = true;
-                        authorizedClient = client;
-                        break;
-                    }
-                }
-            }
-            if (clientLoginValid) {
-                clientMenu(authorizedClient);
-            }
-            if (!clientLoginValid) {
-                operationNumber = numberValidUtil.intNumberValid(operationNumber, infoClientMenu.clientLoginOrPasswordIsIncorrect());
-                switch (operationNumber) {
-                    case 1:
-                        break;
-                    case 2:
-                        exitClientLogin = true;
-                        System.out.println("Exit to the initialization menu...");
-                    default:
-                        System.out.println("There is no such operation. Try again");
-                        break;
-                }
-            }
-        } while (!exitClientLogin);
-    }
 
     /*
      * Меню аккаунта клиента
      * */
-    private void clientMenu(Client client) {
+    public void clientMenu(User user) {
 
         boolean exitClientMenu = false;
         do {
-            operationNumber = numberValidUtil.intNumberValid(operationNumber, infoClientMenu.clientMenuInfo(client));
+            operationNumber = numberValidUtil.intNumberValid(operationNumber, infoClientMenu.clientMenuInfo(user));
             switch (operationNumber) {
                 case 1:
                     /*
                      * Открывается меню выбора атомобиля
                      * */
-                    clientAutoInitMenu(client);
+                    clientAutoInitMenu(user);
                     break;
                 case 2:
                     /*
                      * Открывается меню заказов клиента
                      * */
-                    clientOrdersMenu(client);
+                    clientOrdersMenu(user);
                     break;
                 case 3:
                     exitClientMenu = true;
@@ -214,7 +71,7 @@ public class ClientMenu {
     /*
      * Меню выбора автомобиля и заполнения заказа
      * */
-    private void clientAutoInitMenu(Client client) {
+    private void clientAutoInitMenu(User user) {
         boolean autoInitMenuExit = false;
         /*
          * Выводит список доступных автомобилей
@@ -267,13 +124,13 @@ public class ClientMenu {
                             boolean passportValid = false;
                             boolean exitPassportValid = false;
                             do {
-                                if (client.getPassport() == null) {
+                                if (user.getPassport() == null) {
                                     String message = "1. Ввести паспортные данные\n" +
                                             "2. Назад";
                                     operationNumber = numberValidUtil.intNumberValid(operationNumber,message);
                                     switch (operationNumber){
                                         case 1:
-                                            clientPassportInitMenu(client);
+                                            clientPassportInitMenu(user);
                                             System.out.println("Паспортные данные заполнены...");
                                             passportValid = true;
                                             exitPassportValid = true;
@@ -295,7 +152,7 @@ public class ClientMenu {
                                  * Открывается меню оплаты заказа, в него передаётся выбранный автомобиль,
                                  * цена за выбранный срок аренды и сам клиент
                                  * */
-                                clientOrderPaymentMenu(client, selectedCar, orderPrice);
+                                clientOrderPaymentMenu(user, selectedCar, orderPrice);
                                 autoInitMenuExit = true;
                             }else {
                                 System.out.println("Вы не указали паспортные данные...");
@@ -317,7 +174,7 @@ public class ClientMenu {
     /*
      * Меню для указания паспотрных данных клиента
      * */
-    private void clientPassportInitMenu(Client client) {
+    private void clientPassportInitMenu(User user) {
         String name;
         String surname;
         String patronymic;
@@ -377,7 +234,7 @@ public class ClientMenu {
         newPassport.setYearBirthday(yearOfBirthday);
         newPassport.setAddress(address);
         passportService.addNewPassport(newPassport);
-        clientService.addPassportToTheClient(client, newPassport);
+        userService.addPassportToTheClient(user, newPassport);
 
 //        client.setPassport(newPassport);
     }
@@ -385,10 +242,10 @@ public class ClientMenu {
     /*
      * Меню опаты заказа
      * */
-    private void clientOrderPaymentMenu(Client readyClient, Car selectedCar, double orderPrice) {
+    private void clientOrderPaymentMenu(User readyUser, Car selectedCar, double orderPrice) {
         boolean orderPaymentMenuExit = false;
         Order newOrder = new Order();
-        newOrder.setClient(readyClient);
+        newOrder.setClient(readyUser);
         newOrder.setCar(selectedCar);
         newOrder.setPrice(orderPrice);
         do {
@@ -416,15 +273,15 @@ public class ClientMenu {
     /*
      * Меню заказов клиента
      * */
-    private void clientOrdersMenu(Client client) {
+    private void clientOrdersMenu(User user) {
         boolean exitClientOrdersMenu = false;
         do {
-            if (orderService.findAllOrdersByClient(client).size() != 0) {
+            if (orderService.findAllOrdersByClient(user).size() != 0) {
                 System.out.printf("Ваши заказы:\n" +
                         "-----------------------------------------------------------------------------------------------\n" +
                         "%-6s%-30s%-15s%-15s%-20s%-15s\n","id", "car", "client", "price", "status","orderDate\n" +
                         "-----------------------------------------------------------------------------------------------");
-                orderService.findAllOrdersByClient(client).forEach(System.out::println);
+                orderService.findAllOrdersByClient(user).forEach(System.out::println);
                 System.out.println("-----------------------------------------------------------------------------------------------");
             } else {
                 System.out.println("У вас нет заказов");

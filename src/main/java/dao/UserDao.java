@@ -2,52 +2,53 @@ package dao;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import pojo.Admin;
+import pojo.User;
 import utils.HibernateSessionFactoryUtil;
 
 import java.util.List;
 
-public class AdminDao implements DaoInterface<Admin> {
+public class UserDao implements DaoInterface<User> {
 
-    private static AdminDao adminDao;
+    private static UserDao userDao;
 
-    public static AdminDao getAdminDao() {
-        if (adminDao == null) {
-            adminDao = new AdminDao();
+    public static UserDao getClientDao() {
+        if (userDao == null) {
+            userDao = new UserDao();
         }
-        return adminDao;
+        return userDao;
     }
 
-    public void save(Admin admin) {
+    public void save(User user) {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        session.save(admin);
+        session.save(user);
         transaction.commit();
         session.close();
     }
 
-    public void update(Admin admin) {
+    public void update(User user) {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        session.update(admin);
+        session.update(user);
         transaction.commit();
         session.close();
     }
 
-    public void delete(Admin admin) {
+    public void delete(User user) {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        session.delete(admin);
+        session.delete(user);
         transaction.commit();
         session.close();
     }
 
-    public List<Admin> readAll() {
+    public List<User> readAll() {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        List<Admin> admins = HibernateSessionFactoryUtil.getSessionFactory().openSession().createQuery("FROM " + Admin.class.getSimpleName()).getResultList();
+        List<User> users = HibernateSessionFactoryUtil.getSessionFactory().openSession().createQuery("FROM " + User.class.getSimpleName()).getResultList();
         transaction.commit();
         session.close();
-        return admins;
+        return users;
     }
+
 }

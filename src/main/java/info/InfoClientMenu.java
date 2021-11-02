@@ -1,7 +1,7 @@
 package info;
 
 import pojo.Car;
-import pojo.Client;
+import pojo.User;
 
 public class InfoClientMenu {
 
@@ -12,14 +12,6 @@ public class InfoClientMenu {
             infoClientMenu = new InfoClientMenu();
         }
         return infoClientMenu;
-    }
-
-
-    public String clientInitMenuInfo() {
-        return "Client initialization...\n" +
-                "1. Login\n" +
-                "2. Registration\n" +
-                "3. Exit to the home menu";
     }
 
     /*
@@ -40,8 +32,8 @@ public class InfoClientMenu {
                 "2. Exit to the initialization menu";
     }
 
-    public String clientMenuInfo(Client client) {
-        return "Client menu(" + client.getLogin() + "):\n" +
+    public String clientMenuInfo(User user) {
+        return "Client menu(" + user.getLogin() + "):\n" +
                 "1. Сделать заказ\n" +
                 "2. Мои заказы\n" +
                 "3. Выйти";

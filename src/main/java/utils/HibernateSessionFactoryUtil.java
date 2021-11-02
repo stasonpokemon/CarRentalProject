@@ -12,9 +12,8 @@ public class HibernateSessionFactoryUtil {
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
             Configuration configuration = new Configuration().configure();
-            configuration.addAnnotatedClass(Client.class);
+            configuration.addAnnotatedClass(User.class);
             configuration.addAnnotatedClass(Car.class);
-            configuration.addAnnotatedClass(Admin.class);
             configuration.addAnnotatedClass(ClientPassport.class);
             configuration.addAnnotatedClass(Order.class);
             configuration.addAnnotatedClass(Refund.class);

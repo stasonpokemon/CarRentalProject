@@ -4,20 +4,22 @@ import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 @Entity
-@Table(name = "clients")
-public class Client {
+@Table(name = "users")
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "client_login")
+    @Column(name = "user_login")
     private String login;
-    @Column(name = "client_password")
+    @Column(name = "user_password")
     private String password;
+    @Column(name = "user_role")
+    private String role;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "passport_id", referencedColumnName = "id")
     private ClientPassport passport;
-    @OneToMany(mappedBy="client")
+    @OneToMany(mappedBy= "user")
 //    Инициализируется при создании паспорта...
     private List<Order> orders;
 
@@ -61,12 +63,20 @@ public class Client {
         this.orders = orders;
     }
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Client client = (Client) o;
-        return id == client.id && Objects.equals(login, client.login) && Objects.equals(password, client.password) && Objects.equals(passport, client.passport);
+        User user = (User) o;
+        return id == user.id && Objects.equals(login, user.login) && Objects.equals(password, user.password) && Objects.equals(passport, user.passport);
     }
 
     @Override

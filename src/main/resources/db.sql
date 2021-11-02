@@ -2,15 +2,6 @@ DROP DATABASE car_rental;
 CREATE DATABASE car_rental;
 use car_rental;
 
-CREATE TABLE admins
-(
-    id             INT PRIMARY KEY AUTO_INCREMENT,
-    admin_login    VARCHAR(50),
-    admin_password VARCHAR(50)
-);
-
-INSERT INTO admins
-VALUE (NULL, 'admin','root');
 
 CREATE TABLE passports
 (
@@ -24,19 +15,22 @@ CREATE TABLE passports
     address        VARCHAR(100)
 );
 
-CREATE TABLE clients
+CREATE TABLE users
 (
     id              INT PRIMARY KEY AUTO_INCREMENT,
-    client_login    VARCHAR(50),
-    client_password VARCHAR(50),
+    user_login    VARCHAR(50),
+    user_password VARCHAR(50),
+    user_role       VARCHAR(50),
     passport_id     INT,
     FOREIGN KEY (passport_id) REFERENCES passports (id)
 );
 
-INSERT INTO clients
-VALUE (NULL, 'stason420','s200113',NULL );
-INSERT INTO clients
-VALUE (NULL, 'nesty420','n200104',NULL );
+INSERT INTO users
+VALUE (NULL, 'stason420','s200113','CLIENT',NULL );
+INSERT INTO users
+VALUE (NULL, 'nesty420','n200104','CLIENT',NULL );
+INSERT INTO users
+VALUE (NULL, 'admin','root','ADMIN',NULL );
 
 CREATE TABLE cars
 (
@@ -50,12 +44,12 @@ CREATE TABLE cars
 CREATE TABLE orders
 (
     id         INT PRIMARY KEY AUTO_INCREMENT,
-    client_id  INT NOT NULL,
+    user_id   INT NOT NULL,
     car_id     INT NOT NULL,
     price      DOUBLE,
     status     VARCHAR(50),
     order_date datetime,
-    FOREIGN KEY (client_id) REFERENCES clients (id),
+    FOREIGN KEY (users_id) REFERENCES users (id),
     FOREIGN KEY (car_id) REFERENCES cars (id)
 );
 

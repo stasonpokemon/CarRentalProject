@@ -1,8 +1,8 @@
 package info;
 
-import pojo.Admin;
 import pojo.Car;
 import pojo.Order;
+import pojo.User;
 
 public class InfoAdminMenu {
 
@@ -15,19 +15,8 @@ public class InfoAdminMenu {
         return infoAdminMenu;
     }
 
-    public String initializationMenuInfo() {
-        return "Admin initialization...\n" +
-                "1. Login\n" +
-                "2. Exit to the home menu";
-    }
 
-    public String incorrectLoginOrPasswordEntry() {
-        return "Login or password entered incorrectly...\n" +
-                "1. Try again \n" +
-                "2. Exit to the initialization menu";
-    }
-
-    public String adminMenuInfo(Admin admin) {
+    public String adminMenuInfo(User admin) {
         return "Admin menu(" + admin.getLogin() + "):\n" +
                 "1. Автомобили\n" +
                 "2. Заказы\n" +

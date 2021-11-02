@@ -7,7 +7,6 @@ import pojo.constant.EmploymentStatusConst;
 import services.*;
 import utils.NumberValidUtil;
 
-import java.util.List;
 import java.util.Scanner;
 
 public class AdminMenu {
@@ -15,8 +14,7 @@ public class AdminMenu {
     private final Scanner scanner = new Scanner(System.in);
     private final NumberValidUtil numberValidUtil = NumberValidUtil.getOperationNumberUtil();
     private final InfoAdminMenu infoAdminMenu = InfoAdminMenu.getInfoAdminMenu();
-    private final AdminService adminService = AdminService.getAdminService();
-    private final ClientService clientService = ClientService.getClientService();
+    private final UserService userService = UserService.getClientService();
     private final CarService carService = CarService.getCarService();
     private final OrderService orderService = OrderService.getOrderService();
     private final RefundService refundService = RefundService.getRefundService();
@@ -32,74 +30,9 @@ public class AdminMenu {
     }
 
     /*
-     * Меню инициализации администратора
-     * */
-    public void adminInitializationMenu() {
-        boolean exitAdminInitializationMenu = false;
-        do {
-            operationNumber = numberValidUtil.intNumberValid(operationNumber, infoAdminMenu.initializationMenuInfo());
-            switch (operationNumber) {
-                case 1:
-                    adminLoginMenu();
-                    break;
-                case 2:
-                    exitAdminInitializationMenu = true;
-                    System.out.println("Exit to the home menu...");
-                    break;
-                default:
-                    System.out.println("There is no such operation. Try again");
-                    break;
-            }
-        } while (!exitAdminInitializationMenu);
-    }
-
-    /*
-     * Меню входа в учётную запись администраотра
-     * */
-    private void adminLoginMenu() {
-        String adminLogin;
-        String adminPassword;
-        boolean exitAdminLogin = false;
-        boolean adminLoginValid = false;
-        do {
-            System.out.println("Enter login...");
-            adminLogin = scanner.next();
-
-            System.out.println("Enter password...");
-            adminPassword = scanner.next();
-
-            List<Admin> allAdmins = adminService.findAllAdmins();
-            for (Admin admin : allAdmins) {
-                if (admin.getLogin().equals(adminLogin)) {
-                    if (admin.getPassword().equals(adminPassword)) {
-                        exitAdminLogin = true;
-                        adminLoginValid = true;
-                        adminMenu(admin);
-                    }
-                }
-            }
-            if (!adminLoginValid) {
-                operationNumber = numberValidUtil.intNumberValid(operationNumber, infoAdminMenu.incorrectLoginOrPasswordEntry());
-                switch (operationNumber) {
-                    case 1:
-                        break;
-                    case 2:
-                        exitAdminLogin = true;
-                        System.out.println("Exit to the initialization menu...");
-                        break;
-                    default:
-                        System.out.println("There is no such operation. Try again");
-                        break;
-                }
-            }
-        } while (!exitAdminLogin);
-
-    }
-
-    /*
      * Меню администратора
      * */
-    private void adminMenu(Admin admin) {
+    public void adminMenu(User admin) {
         boolean exitAdminMenu = false;
         do {
             operationNumber = numberValidUtil.intNumberValid(operationNumber, infoAdminMenu.adminMenuInfo(admin));
@@ -436,7 +369,7 @@ public class AdminMenu {
                 orderService.setOrderRefundStatus(order);
 
                 newRefund.setOrder(order);
-                newRefund.setDamageStatus("WITHOUT DAMAGE");
+                newRefund.setDamageStatus(DamageStatusConst.WITHOUT_DAMAGE);
                 newRefund.setPrice(0);
                 refundService.addNewRefund(newRefund);
                 System.out.println("Возврат оформлен...");
@@ -468,7 +401,7 @@ public class AdminMenu {
                     }
                 } while (!priceValid);
                 newRefund.setOrder(order);
-                newRefund.setDamageStatus("WITH DAMAGE");
+                newRefund.setDamageStatus(DamageStatusConst.WITH_DAMAGE);
                 newRefund.setPrice(price);
                 refundService.addNewRefund(newRefund);
                 System.out.println("Возврат оформлен...");
@@ -490,19 +423,19 @@ public class AdminMenu {
                     "--------------------------------------------\n" +
                     "%-6s%-30s%-15s\n", "id", "login", "password\n" +
                     "--------------------------------------------");
-            clientService.findAllClients().forEach(System.out::println);
+            userService.findAllClients().forEach(System.out::println);
             System.out.println("--------------------------------------------");
             operationNumber = numberValidUtil.intNumberValid(operationNumber, infoAdminMenu.adminClientsMenuInfo());
             switch (operationNumber) {
                 case 1:
-                    Client selectedClient = null;
+                    User selectedUser = null;
                     int clientId = 0;
                     boolean clientIdValid = false;
                     String message = "Введите номер(id) клиента:";
                     clientId = numberValidUtil.intNumberValid(clientId, message);
-                    for (Client client : clientService.findAllClients()) {
-                        if (clientId == client.getId()) {
-                            selectedClient = client;
+                    for (User user : userService.findAllClients()) {
+                        if (clientId == user.getId()) {
+                            selectedUser = user;
                             clientIdValid = true;
                             break;
                         }
@@ -510,7 +443,7 @@ public class AdminMenu {
                     if (clientIdValid) {
                         boolean exitPassportMenu = false;
                         do {
-                            ClientPassport selectedClientPassport = selectedClient.getPassport();
+                            ClientPassport selectedClientPassport = selectedUser.getPassport();
                             if (selectedClientPassport == null) {
                                 System.out.println("Клиент не указывал паспортные данные...");
                             } else {

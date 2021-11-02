@@ -13,9 +13,9 @@ public class InfoHomeMenu {
 
 
     public String input(){
-        return "Who are you?\n" +
-                "1. Client\n" +
-                "2. Admin\n" +
+        return "Rental car...\n" +
+                "1. Login\n" +
+                "2. Registration\n" +
                 "3. Close the program...";
     }
 }
