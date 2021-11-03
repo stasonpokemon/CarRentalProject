@@ -18,8 +18,8 @@ CREATE TABLE passports
 CREATE TABLE users
 (
     id              INT PRIMARY KEY AUTO_INCREMENT,
-    user_login    VARCHAR(50),
-    user_password VARCHAR(50),
+    user_login      VARCHAR(50),
+    user_password   VARCHAR(50),
     user_role       VARCHAR(50),
     passport_id     INT,
     FOREIGN KEY (passport_id) REFERENCES passports (id)

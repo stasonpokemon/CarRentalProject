@@ -7,6 +7,7 @@ import pojo.constant.UserRoleConst;
 import services.UserService;
 import utils.NumberValidUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -154,6 +155,7 @@ public class HomeMenu {
                         newUser.setLogin(clientLogin);
                         newUser.setPassword(clientPassword);
                         newUser.setRole(UserRoleConst.CLIENT_ROLE);
+//                        newUser.setOrders(new ArrayList<>());
                         /*
                          * Добавление нового клиента в бд
                          * */

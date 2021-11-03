@@ -1,8 +1,7 @@
 package dao.mysql;
 
-import dao.CarDao;
-import dao.Dao;
 import pojo.Car;
+import pojo.constant.DamageStatusConst;
 import pojo.constant.EmploymentStatusConst;
 import utils.JDBCConnector;
 
@@ -13,7 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CarDaoImpl implements Dao<Car> {
+public class CarDaoImpl implements CarDaoI{
     private final JDBCConnector jdbcConnector = JDBCConnector.getInstance();
 
     private static CarDaoImpl carDaoImpl;
@@ -82,17 +81,6 @@ public class CarDaoImpl implements Dao<Car> {
         }
         return car;
     }
-
-    @Override
-    public void update(Car car) {
-
-    }
-
-    @Override
-    public void delete(Car car) {
-
-    }
-
     /**
      * Работает, но по отдельности
      */
@@ -117,7 +105,9 @@ public class CarDaoImpl implements Dao<Car> {
             e.printStackTrace();
         } finally {
             try {
-                resultSet.close();
+                if (resultSet != null) {
+                    resultSet.close();
+                }
             } catch (SQLException | NullPointerException e) {
             }
         }
@@ -156,5 +146,97 @@ public class CarDaoImpl implements Dao<Car> {
             }
         }
         return cars;
+    }
+
+    @Override
+    public void update(Car car) {
+
+    }
+
+    /**
+     * Работает, но по отдельности
+     */
+    @Override
+    public void delete(Car car) {
+        String sql = "DELETE FROM cars WHERE id = ?";
+        try(Connection connection = jdbcConnector.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1,car.getId());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*
+     * Смена статуса на (занято)
+     * */
+    /**
+     * Работает, но по отдельности
+     */
+    @Override
+    public void setCarStatusToOccupied(Car car) {
+        String sql = "UPDATE cars SET employment_status = ? WHERE id = ?";
+        try(Connection connection = jdbcConnector.getConnection();PreparedStatement statement = connection.prepareStatement(sql);) {
+            statement.setString(1,EmploymentStatusConst.OCCUPIED);
+            statement.setInt(2,car.getId());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    /*
+     * Смена статуса на (свободно)
+     * */
+    /**
+     * Работает, но по отдельности
+     */
+    @Override
+    public void setCarStatusToFree(Car car) {
+        String sql = "UPDATE cars SET employment_status = ? WHERE id = ?";
+        try(Connection connection = jdbcConnector.getConnection();PreparedStatement statement = connection.prepareStatement(sql);) {
+            statement.setString(1,EmploymentStatusConst.FREE);
+            statement.setInt(2,car.getId());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /*
+     * Смена статуса повреждения на (повреждён)
+     * */
+    /**
+     * Работает, но по отдельности
+     */
+    @Override
+    public void setCarDamageStatusToWithDamage(Car car) {
+        String sql = "UPDATE cars SET damage_status = ? WHERE id = ?";
+        try(Connection connection = jdbcConnector.getConnection();PreparedStatement statement = connection.prepareStatement(sql);) {
+            statement.setString(1, DamageStatusConst.WITH_DAMAGE);
+            statement.setInt(2,car.getId());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /*
+     * Смена статуса повреждения на (не повреждён)
+     * */
+    /**
+     * Работает, но по отдельности
+     */
+    @Override
+    public void setCarDamageStatusToWithoutDamage(Car car) {
+        String sql = "UPDATE cars SET damage_status = ? WHERE id = ?";
+        try(Connection connection = jdbcConnector.getConnection();PreparedStatement statement = connection.prepareStatement(sql);) {
+            statement.setString(1,DamageStatusConst.WITHOUT_DAMAGE);
+            statement.setInt(2,car.getId());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -1,5 +1,6 @@
 package menu;
 
+import dao.mysql.UserDaoImpl;
 import pojo.Car;
 import pojo.ClientPassport;
 import pojo.Order;
@@ -12,7 +13,8 @@ import pojo.User;
 import services.OrderService;
 import utils.NumberValidUtil;
 
-import java.util.List;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ClientMenu {
@@ -233,10 +235,22 @@ public class ClientMenu {
         newPassport.setMonthBirthday(monthOfBirthday);
         newPassport.setYearBirthday(yearOfBirthday);
         newPassport.setAddress(address);
-        passportService.addNewPassport(newPassport);
-        userService.addPassportToTheClient(user, newPassport);
 
-//        client.setPassport(newPassport);
+//        Если мы работаем с собственным пулом соединений, то эта строчка с добавлением паспорта в бд нужна
+//        passportService.addNewPassport(newPassport);
+
+//        Добавляем клиенту паспорт
+        user.setPassport(newPassport);
+//        Без обьявления листа заказов выдаёт ошибку
+        user.setOrders(new ArrayList<>()); // Обязательно
+        userService.update(user);
+
+//        Обновление клиента собственным пулом соединений
+//        try {
+//            UserDaoImpl.getUserDaoImpl().update(user);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
     }
 
     /*

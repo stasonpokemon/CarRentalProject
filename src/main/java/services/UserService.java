@@ -63,9 +63,7 @@ public class UserService {
     /*
      * Добавление паспорта клиенту
      * */
-    public void addPassportToTheClient(User user, ClientPassport passport) {
-        user.setOrders(new ArrayList<>());
-        user.setPassport(passport);
+    public void update(User user) {
         userDao.update(user);
     }
 

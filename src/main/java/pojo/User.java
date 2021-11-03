@@ -1,6 +1,7 @@
 package pojo;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 @Entity
@@ -21,7 +22,7 @@ public class User {
     private ClientPassport passport;
     @OneToMany(mappedBy= "user")
 //    Инициализируется при создании паспорта...
-    private List<Order> orders;
+    private List<Order> orders = new ArrayList<>();
 
     public int getId() {
         return id;
