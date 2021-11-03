@@ -38,13 +38,7 @@ public class CarService {
      * Поиск автомобиля по id
      * */
     public Car findCarById(int carId) {
-        Car carById = null;
-        for (Car car : findAllCars()) {
-
-            if (carId == car.getId()) {
-                carById = car;
-            }
-        }
+        Car carById = carDao.read(carId);
         return carById;
     }
 

@@ -39,11 +39,9 @@ public class UserService {
      * */
     public User findClientById(int clientId) {
         User searchClient = null;
-        List<User> allUsers = findAllClients();
-        for (User user : allUsers) {
-            if (clientId == user.getId() && UserRoleConst.CLIENT_ROLE.equals(user.getRole())) {
-                searchClient = user;
-            }
+        User user = userDao.read(clientId);
+        if (UserRoleConst.CLIENT_ROLE.equals(user.getRole())){
+            searchClient = user;
         }
         return searchClient;
     }

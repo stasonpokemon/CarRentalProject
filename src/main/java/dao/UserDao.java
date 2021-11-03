@@ -7,7 +7,7 @@ import utils.HibernateSessionFactoryUtil;
 
 import java.util.List;
 
-public class UserDao implements DaoInterface<User> {
+public class UserDao implements Dao<User> {
 
     private static UserDao userDao;
 
@@ -24,6 +24,16 @@ public class UserDao implements DaoInterface<User> {
         session.save(user);
         transaction.commit();
         session.close();
+    }
+
+    @Override
+    public User read(int id) {
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        User user = session.get(User.class, id);
+        transaction.commit();
+        session.close();
+        return user;
     }
 
     public void update(User user) {

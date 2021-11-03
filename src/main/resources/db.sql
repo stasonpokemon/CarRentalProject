@@ -44,12 +44,12 @@ CREATE TABLE cars
 CREATE TABLE orders
 (
     id         INT PRIMARY KEY AUTO_INCREMENT,
-    user_id   INT NOT NULL,
+    user_id    INT NOT NULL,
     car_id     INT NOT NULL,
     price      DOUBLE,
     status     VARCHAR(50),
     order_date datetime,
-    FOREIGN KEY (users_id) REFERENCES users (id),
+    FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (car_id) REFERENCES cars (id)
 );
 
@@ -59,6 +59,7 @@ CREATE TABLE refunds
     order_id          INT NOT NULL,
     damage_status     VARCHAR(50),
     price             DOUBLE
+    FOREIGN KEY (order_id) REFERENCES orders (id)
 );
 
 

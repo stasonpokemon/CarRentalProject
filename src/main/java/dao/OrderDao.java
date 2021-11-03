@@ -7,7 +7,7 @@ import utils.HibernateSessionFactoryUtil;
 
 import java.util.List;
 
-public class OrderDao implements DaoInterface<Order> {
+public class OrderDao implements Dao<Order> {
 
     private static OrderDao orderDao;
 
@@ -25,6 +25,16 @@ public class OrderDao implements DaoInterface<Order> {
         session.save(order);
         transaction.commit();
         session.close();
+    }
+
+    @Override
+    public Order read(int id) {
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        Order order = session.get(Order.class, id);
+        transaction.commit();
+        session.close();
+        return order;
     }
 
     @Override

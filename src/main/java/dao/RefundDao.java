@@ -7,7 +7,7 @@ import utils.HibernateSessionFactoryUtil;
 
 import java.util.List;
 
-public class RefundDao implements DaoInterface<Refund>{
+public class RefundDao implements Dao<Refund> {
     private static RefundDao refundDao;
 
     public static RefundDao getRefundDao() {
@@ -24,6 +24,16 @@ public class RefundDao implements DaoInterface<Refund>{
         session.save(refund);
         transaction.commit();
         session.close();
+    }
+
+    @Override
+    public Refund read(int id) {
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        Refund refund = session.get(Refund.class, id);
+        transaction.commit();
+        session.close();
+        return refund;
     }
 
     @Override

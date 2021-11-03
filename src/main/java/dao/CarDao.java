@@ -8,7 +8,7 @@ import utils.HibernateSessionFactoryUtil;
 import java.util.List;
 
 
-public class CarDao implements DaoInterface<Car> {
+public class CarDao implements Dao<Car> {
     private static CarDao carDao;
 
     public static CarDao getCarDao() {
@@ -24,6 +24,16 @@ public class CarDao implements DaoInterface<Car> {
         session.save(car);
         transaction.commit();
         session.close();
+    }
+
+    @Override
+    public Car read(int id) {
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        Car car = session.get(Car.class, id);
+        transaction.commit();
+        session.close();
+        return car;
     }
 
     public void update(Car car) {

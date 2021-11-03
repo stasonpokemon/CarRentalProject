@@ -7,7 +7,7 @@ import utils.HibernateSessionFactoryUtil;
 
 import java.util.List;
 
-public class ClientPassportDao implements DaoInterface<ClientPassport> {
+public class ClientPassportDao implements Dao<ClientPassport> {
 
     private static ClientPassportDao passportDao;
 
@@ -24,6 +24,16 @@ public class ClientPassportDao implements DaoInterface<ClientPassport> {
         session.save(passport);
         transaction.commit();
         session.close();
+    }
+
+    @Override
+    public ClientPassport read(int id) {
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        ClientPassport passport = session.get(ClientPassport.class, id);
+        transaction.commit();
+        session.close();
+        return passport;
     }
 
     public void update(ClientPassport passport) {

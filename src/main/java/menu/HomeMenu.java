@@ -109,7 +109,7 @@ public class HomeMenu {
             boolean clientPasswordValid = false;
             boolean clientLoginValid = true;
             System.out.println("Enter login...");
-            clientLogin = scanner.nextLine();
+            clientLogin = scanner.next();
             /*
              * Проверка, есть ли данный логин среди всех users
              * */
@@ -125,9 +125,9 @@ public class HomeMenu {
             if (clientLoginValid) {
                 do {
                     System.out.println("Enter password...");
-                    clientPassword = scanner.nextLine();
+                    clientPassword = scanner.next();
                     System.out.println("Repeat password...");
-                    repeatClientPassword = scanner.nextLine();
+                    repeatClientPassword = scanner.next();
                     /*
                      * Проверка на идентичность паролей
                      * */
