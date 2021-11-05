@@ -4,6 +4,7 @@ import info.InfoAdminMenu;
 import pojo.*;
 import pojo.constant.DamageStatusConst;
 import pojo.constant.EmploymentStatusConst;
+import pojo.constant.OrderStatusConst;
 import services.*;
 import utils.NumberValidUtil;
 
@@ -177,7 +178,7 @@ public class AdminMenu {
                     boolean exitAllOrdersMenu = false;
                     System.out.printf("Список всех заказов:\n" +
                             "-----------------------------------------------------------------------------------------------\n" +
-                            "%-6s%-30s%-15s%-15s%-20s%-15s\n","id", "car", "client", "price", "status","orderDate\n" +
+                            "%-6s%-30s%-15s%-15s%-20s%-15s\n", "id", "car", "client", "price", "status", "orderDate\n" +
                             "-----------------------------------------------------------------------------------------------");
                     orderService.findAllOrders().forEach(System.out::println);
                     System.out.println("-----------------------------------------------------------------------------------------------");
@@ -196,9 +197,9 @@ public class AdminMenu {
                     boolean exitOrdersUnderConsiderationMenu = false;
                     System.out.printf("Список заявок на заказ:\n" +
                             "-----------------------------------------------------------------------------------------------\n" +
-                            "%-6s%-30s%-15s%-15s%-20s%-15s\n","id", "car", "client", "price", "status","orderDate\n" +
+                            "%-6s%-30s%-15s%-15s%-20s%-15s\n", "id", "car", "client", "price", "status", "orderDate\n" +
                             "-----------------------------------------------------------------------------------------------");
-                    orderService.findOrdersUnderConsideration().forEach(System.out::println);
+                    orderService.findOrdersByStatus(OrderStatusConst.UNDER_CONSIDERATION).forEach(System.out::println);
                     System.out.println("-----------------------------------------------------------------------------------------------");
                     do {
                         operationNumber = numberValidUtil.intNumberValid(operationNumber, infoAdminMenu.adminOrdersUnderConsiderationMenuInfo());
@@ -209,7 +210,7 @@ public class AdminMenu {
                                 int orderId = 0;
                                 boolean orderIdTrue = false;
                                 orderId = numberValidUtil.intNumberValid(orderId, message);
-                                for (Order order : orderService.findOrdersUnderConsideration()) {
+                                for (Order order : orderService.findOrdersByStatus(OrderStatusConst.UNDER_CONSIDERATION)) {
                                     if (order.getId() == orderId) {
                                         selectedOrder = order;
                                         orderIdTrue = true;
@@ -271,7 +272,9 @@ public class AdminMenu {
             operationNumber = numberValidUtil.intNumberValid(operationNumber, infoAdminMenu.adminOrderStatusMenuInfo(selectedOrder));
             switch (operationNumber) {
                 case 1:
-                    orderService.setOrderApprovedStatus(selectedOrder);
+//                     Установка заказу статуса(ОДОБРЕНО)
+                    selectedOrder.setOrderStatus(OrderStatusConst.APPROVES);
+                    orderService.update(selectedOrder);
                     System.out.println("Заказ одобрен...");
                     /*
                      * !!! Сделать, чтобы при оодобрении заявки к заказу добавлялось время
@@ -279,7 +282,9 @@ public class AdminMenu {
                     exitAdminOrderStatusMenu = true;
                     break;
                 case 2:
-                    orderService.setOrderRejectStatus(selectedOrder);
+//                    Установка заказу статуса(ОТКЛОНЕНО)
+                    selectedOrder.setOrderStatus(OrderStatusConst.REJECT);
+                    orderService.update(selectedOrder);
                     System.out.println("Заказ отклонён...");
                     /*
                      * Если заказ отменён, то автомобилю возвращается статус(СВОБОДНА)
@@ -307,20 +312,20 @@ public class AdminMenu {
             operationNumber = numberValidUtil.intNumberValid(operationNumber, infoAdminMenu.adminRegisteringRefundMenuInfo());
             switch (operationNumber) {
                 case 1:
-                    if (orderService.findOrdersApproved().size() != 0) {
+                    if (orderService.findOrdersByStatus(OrderStatusConst.APPROVES).size() != 0) {
 
 
                         System.out.printf("Список активных заказов:\n" +
                                 "-----------------------------------------------------------------------------------------------\n" +
-                                "%-6s%-30s%-15s%-15s%-20s%-15s\n","id", "car", "client", "price", "status","orderDate\n" +
+                                "%-6s%-30s%-15s%-15s%-20s%-15s\n", "id", "car", "client", "price", "status", "orderDate\n" +
                                 "-----------------------------------------------------------------------------------------------");
-                        orderService.findOrdersApproved().forEach(System.out::println);
+                        orderService.findOrdersByStatus(OrderStatusConst.APPROVES).forEach(System.out::println);
                         System.out.println("-----------------------------------------------------------------------------------------------");
                         String message = "Введите номер(id) заказа:";
                         int orderId = 0;
                         boolean orderIdValid = false;
                         orderId = numberValidUtil.intNumberValid(orderId, message);
-                        for (Order order : orderService.findOrdersApproved()) {
+                        for (Order order : orderService.findOrdersByStatus(OrderStatusConst.APPROVES)) {
                             if (orderId == order.getId()) {
                                 orderIdValid = true;
                                 registeringRefund(order);
@@ -330,7 +335,7 @@ public class AdminMenu {
                         if (!orderIdValid) {
                             System.out.println("Нет заказа с данным номером(id)...");
                         }
-                    }else {
+                    } else {
                         System.out.println("Нет активных заказов...");
                         exitRegisteringRefundMenu = true;
                     }
@@ -359,6 +364,9 @@ public class AdminMenu {
                  * Создаём объект возврата
                  * */
                 newRefund = new Refund();
+                newRefund.setOrder(order);
+                newRefund.setDamageStatus(DamageStatusConst.WITHOUT_DAMAGE);
+                newRefund.setPrice(0);
                 /*
                  * Устанавливаем автомобилю статус(свободно)
                  * */
@@ -366,12 +374,13 @@ public class AdminMenu {
                 /*
                  * Устанавливаем заказу статус(возврат)
                  * */
-                orderService.setOrderRefundStatus(order);
-
-                newRefund.setOrder(order);
-                newRefund.setDamageStatus(DamageStatusConst.WITHOUT_DAMAGE);
-                newRefund.setPrice(0);
-                refundService.addNewRefund(newRefund);
+                order.setOrderStatus(OrderStatusConst.REFUND);
+                /*
+                * Добавляем заказу возврат
+                * */
+                order.setRefund(newRefund);
+                orderService.update(order);
+//                refundService.addNewRefund(newRefund);
                 System.out.println("Возврат оформлен...");
                 break;
             case 2:
@@ -387,7 +396,8 @@ public class AdminMenu {
                 /*
                  * Устанавливаем заказу статус(возврат)
                  * */
-                orderService.setOrderRefundStatus(order);
+                order.setOrderStatus(OrderStatusConst.REFUND);
+                orderService.update(order);
                 /*
                  * Устанавливаем счёт за ремон
                  * */
@@ -450,9 +460,9 @@ public class AdminMenu {
                                 System.out.println(selectedClientPassport);
                             }
                             operationNumber = numberValidUtil.intNumberValid(operationNumber, "1. Назад");
-                            if (operationNumber == 1){
+                            if (operationNumber == 1) {
                                 exitPassportMenu = true;
-                            }else {
+                            } else {
                                 System.out.println("There is no such operation. Try again");
                             }
                         } while (!exitPassportMenu);

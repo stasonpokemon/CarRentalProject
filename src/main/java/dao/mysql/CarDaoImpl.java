@@ -33,7 +33,6 @@ public class CarDaoImpl implements CarDaoI{
     @Override
     public void save(Car car) {
         String sql = "INSERT INTO cars (model, price_per_day, employment_status, damage_status) VALUES (?, ?, ?, ?)";
-        //        ResultSet resultSet = null;
         try (Connection connection = jdbcConnector.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, car.getModel());
             statement.setDouble(2, car.getPricePerDay());
@@ -190,7 +189,6 @@ public class CarDaoImpl implements CarDaoI{
     /**
      * Работает, но по отдельности
      */
-    @Override
     public void setCarStatusToFree(Car car) {
         String sql = "UPDATE cars SET employment_status = ? WHERE id = ?";
         try(Connection connection = jdbcConnector.getConnection();PreparedStatement statement = connection.prepareStatement(sql);) {

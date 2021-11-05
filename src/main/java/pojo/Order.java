@@ -17,11 +17,13 @@ public class Order {
     @JoinColumn(name="user_id", nullable=false)
     private User user;
     private double price;
+    @Column(name = "status")
     private String orderStatus;
     @Column(name = "order_date", columnDefinition = "datetime")
     @Temporal(TemporalType.TIMESTAMP)
     private Date orderDate;
-    @OneToOne(mappedBy = "order")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "refund_id", referencedColumnName = "id")
     private Refund refund;
 
     public int getId() {

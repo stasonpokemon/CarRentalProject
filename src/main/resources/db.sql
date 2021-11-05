@@ -49,16 +49,18 @@ CREATE TABLE orders
     price      DOUBLE,
     status     VARCHAR(50),
     order_date datetime,
+    refund_id  INT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (id),
-    FOREIGN KEY (car_id) REFERENCES cars (id)
+    FOREIGN KEY (car_id) REFERENCES cars (id),
+    FOREIGN KEY (refund_id) REFERENCES refunds (id)
 );
 
 CREATE TABLE refunds
 (
     id                INT PRIMARY KEY AUTO_INCREMENT,
-    order_id          INT NOT NULL,
     damage_status     VARCHAR(50),
-    price             DOUBLE
+--     Добавить тип повреждения
+    price             DOUBLE,
     FOREIGN KEY (order_id) REFERENCES orders (id)
 );
 

@@ -1,5 +1,6 @@
 package dao.mysql;
 
+import com.sun.istack.NotNull;
 import pojo.ClientPassport;
 import pojo.User;
 import pojo.constant.UserRoleConst;
@@ -169,7 +170,6 @@ public class UserDaoImpl implements UserDaoI {
         }
         return clients;
     }
-
 
     /**
      * Работает, но по отдельности
