@@ -1,8 +1,7 @@
 package dao.mysql;
 
-import pojo.Car;
-import pojo.Order;
-import pojo.User;
+import pojo.*;
+import pojo.constant.UserRoleConst;
 import utils.JDBCConnector;
 
 import java.sql.*;
@@ -43,46 +42,125 @@ public class OrderDaoImpl implements OrderDaoI {
         }
     }
 
+
+
+    /**
+     * Работает!!!!!!!!!!!!!!, но по отдельности
+     */
     /*
      * Получить заказ по id
      * */
     @Override
     public Order read(int id) {
-        String sql = "SELECT id, user_id, car_id, price, status, order_date FROM orders WHERE id = ?";
+        String sqlOrder = "SELECT id, user_id, car_id, price, status, order_date, refund_id FROM orders WHERE id = ?";
+        String sqlClient = "SELECT id, user_login, user_password, user_role, passport_id FROM users WHERE id = ? AND user_role LIKE ?";
+        String sqlCar = "SELECT id, model, price_per_day, employment_status, damage_status FROM cars WHERE id = ?";
+        String sqlPassport = "SELECT id, name, surname, patronymic, day_birthday ,month_birthday, year_birthday, address FROM passports WHERE id = ?";
+        String sqlRefund = "SELECT id, damage_status, price FROM refunds WHERE id = ?";
+
+        PreparedStatement statementOrder = null;
+        PreparedStatement statementClient = null;
+        PreparedStatement statementCar = null;
+        PreparedStatement statementPassport = null;
+        PreparedStatement statementRefund = null;
+
+        ResultSet resultSetOrder = null;
+        ResultSet resultSetClient = null;
+        ResultSet resultSetCar = null;
+        ResultSet resultSetPassport = null;
+        ResultSet resultSetRefund = null;
+
         Order order = null;
-        ResultSet resultSet = null;
-        try (Connection connection = jdbcConnector.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, id);
-            resultSet = statement.executeQuery();
-            if (resultSet.next()) {
+        User client = null;
+        Car car = null;
+        ClientPassport passport = null;
+        Refund refund = null;
+        try (Connection connection = jdbcConnector.getConnection()) {
+            statementOrder = connection.prepareStatement(sqlOrder);
+            statementClient = connection.prepareStatement(sqlClient);
+            statementCar = connection.prepareStatement(sqlCar);
+            statementPassport = connection.prepareStatement(sqlPassport);
+            statementRefund = connection.prepareStatement(sqlRefund);
+
+
+            statementOrder.setInt(1, id);
+            resultSetOrder = statementOrder.executeQuery();
+            if (resultSetOrder.next()) {
                 order = new Order();
                 order.setId(id);
-                int clientId = resultSet.getInt("user_id");
-//                User client = UserDaoImpl.getUserDaoImpl().read(clientId);
-//                order.setClient(client);
-                if (!resultSet.wasNull()) {
-                    User user = new User();
-                    user.setId(clientId);
-                    order.setClient(user);
+
+                int clientId = resultSetOrder.getInt("user_id");
+                statementClient.setInt(1, clientId);
+                statementClient.setString(2, UserRoleConst.CLIENT_ROLE);
+                resultSetClient = statementClient.executeQuery();
+                if (!resultSetOrder.wasNull()) {
+                    if (resultSetClient.next()) {
+                        client = new User();
+                        client.setId(resultSetClient.getInt("id"));
+                        client.setLogin(resultSetClient.getString("user_login"));
+                        client.setPassword(resultSetClient.getString("user_password"));
+                        client.setRole(resultSetClient.getString("user_role"));
+
+                        int passportId = resultSetClient.getInt("passport_id");
+                        statementPassport.setInt(1, passportId);
+                        resultSetPassport = statementPassport.executeQuery();
+                        if (!resultSetClient.wasNull()){
+                            if (resultSetPassport.next()){
+                                passport = new ClientPassport();
+                                passport.setId(resultSetPassport.getInt("id"));
+                                passport.setName(resultSetPassport.getString("name"));
+                                passport.setSurname(resultSetPassport.getString("surname"));
+                                passport.setPatronymic(resultSetPassport.getString("patronymic"));
+                                passport.setDayBirthday(resultSetPassport.getInt("day_birthday"));
+                                passport.setMonthBirthday(resultSetPassport.getInt("month_birthday"));
+                                passport.setYearBirthday(resultSetPassport.getInt("year_birthday"));
+                                passport.setAddress(resultSetPassport.getString("address"));
+                            }
+                            client.setPassport(passport);
+                        }
+
+                    }
+                    order.setClient(client);
                 }
-                int carId = resultSet.getInt("car_id");
-//                Car car = CarDaoImpl.getCarDaoImpl().read(carId);
-//                order.setCar(car);
-                if (!resultSet.wasNull()) {
-                    Car car = new Car();
-                    car.setId(carId);
+
+                int carId = resultSetOrder.getInt("car_id");
+                statementCar.setInt(1, carId);
+                resultSetCar = statementCar.executeQuery();
+                if (!resultSetOrder.wasNull()) {
+                    if (resultSetCar.next()){
+                        car = new Car();
+                        car.setId(resultSetCar.getInt("id"));
+                        car.setModel(resultSetCar.getString("model"));
+                        car.setPricePerDay(resultSetCar.getDouble("price_per_day"));
+                        car.setEmploymentStatus(resultSetCar.getString("employment_status"));
+                        car.setDamageStatus(resultSetCar.getString("damage_status"));
+                    }
                     order.setCar(car);
                 }
-                order.setPrice(resultSet.getDouble("price"));
-                order.setOrderStatus(resultSet.getString("status"));
-                order.setOrderDate(resultSet.getDate("order_date"));
+
+                order.setPrice(resultSetOrder.getDouble("price"));
+                order.setOrderStatus(resultSetOrder.getString("status"));
+                order.setOrderDate(resultSetOrder.getDate("order_date"));
+
+                int refund_id = resultSetOrder.getInt("refund_id");
+                statementRefund.setInt(1,refund_id);
+                resultSetRefund = statementRefund.executeQuery();
+                if (!resultSetOrder.wasNull()) {
+                    if (resultSetRefund.next()){
+                        refund = new Refund();
+                        refund.setId(resultSetRefund.getInt("id"));
+                        refund.setDamageStatus(resultSetRefund.getString("damage_status"));
+                        refund.setPrice(resultSetRefund.getDouble("price"));
+                    }
+                    order.setRefund(refund);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             try {
-                if (resultSet != null) {
-                    resultSet.close();
+                if (resultSetOrder != null) {
+                    resultSetOrder.close();
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -95,13 +173,13 @@ public class OrderDaoImpl implements OrderDaoI {
     public void update(Order order) {
         String sql = "UPDATE oreders SET user_id = ?, car_id = ?, price = ?, status = ?, order_date = ? WHERE id = ?";
         try (Connection connection = jdbcConnector.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setInt(1, order.getClient().getId());
-                statement.setInt(2, order.getCar().getId());
-                statement.setDouble(3, order.getPrice());
-                statement.setString(4,order.getOrderStatus());
-                statement.setDate(5, (Date) order.getOrderDate());
-                statement.setInt(6,order.getId());
-                statement.executeUpdate();
+            statement.setInt(1, order.getClient().getId());
+            statement.setInt(2, order.getCar().getId());
+            statement.setDouble(3, order.getPrice());
+            statement.setString(4, order.getOrderStatus());
+            statement.setDate(5, (Date) order.getOrderDate());
+            statement.setInt(6, order.getId());
+            statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -127,7 +205,7 @@ public class OrderDaoImpl implements OrderDaoI {
         try (Connection connection = jdbcConnector.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
             resultSet = statement.executeQuery();
             Order order = null;
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 order = new Order();
                 order.setId(resultSet.getInt("id"));
                 int clientId = resultSet.getInt("user_id");
@@ -166,7 +244,7 @@ public class OrderDaoImpl implements OrderDaoI {
             statement.setInt(1, user.getId());
             resultSet = statement.executeQuery();
             Order order = null;
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 order = new Order();
                 order.setId(resultSet.getInt("id"));
                 order.setClient(user);
@@ -198,7 +276,7 @@ public class OrderDaoImpl implements OrderDaoI {
             statement.setString(1, status);
             resultSet = statement.executeQuery();
             Order order = null;
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 order = new Order();
                 order.setId(resultSet.getInt("id"));
                 int clientId = resultSet.getInt("user_id");

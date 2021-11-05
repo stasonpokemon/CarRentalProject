@@ -10,6 +10,7 @@ public class Refund {
     private int id;
     @OneToOne(mappedBy = "refund")
     private Order order;
+    @Column(name = "damage_status")
     private String damageStatus;
     private double price;
 

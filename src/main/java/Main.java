@@ -25,10 +25,10 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) throws SQLException {
 
-        HomeMenu homeMenu = HomeMenu.getHomeMenu();
-        homeMenu.menu();
+//        HomeMenu homeMenu = HomeMenu.getHomeMenu();
+//        homeMenu.menu();
 
 //        System.out.println(UserDaoImpl.getUserDaoImpl().read(1));
-//        System.out.println(OrderDaoImpl.getOrderDao().read(1));
+        System.out.println(OrderDaoImpl.getOrderDao().read(1));
     }
 }
