@@ -87,12 +87,7 @@ public class User {
 
     @Override
     public String toString() {
-        return String.format("%-6s%-30s%-15s%-15s", id, login, password,passport.getName());
+        return String.format("%-6s%-30s%-15s", id, login, password);
 
-//        return "Client{" +
-//                "id=" + id +
-//                ", login='" + login + '\'' +
-//                ", password='" + password + '\'' +
-//                '}';
     }
 }

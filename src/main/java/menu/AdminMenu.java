@@ -385,6 +385,7 @@ public class AdminMenu {
                 break;
             case 2:
                 double price = 0;
+                String typeDamage;
                 /*
                  * Создаём объект возврата
                  * */
@@ -398,6 +399,12 @@ public class AdminMenu {
                  * */
                 order.setOrderStatus(OrderStatusConst.REFUND);
                 orderService.update(order);
+
+                /*
+                * Указываем тип повреждения
+                * */
+                System.out.println("Укажите тип повреждения:");
+                typeDamage = scanner.nextLine();
                 /*
                  * Устанавливаем счёт за ремон
                  * */
@@ -412,6 +419,7 @@ public class AdminMenu {
                 } while (!priceValid);
                 newRefund.setOrder(order);
                 newRefund.setDamageStatus(DamageStatusConst.WITH_DAMAGE);
+                newRefund.setTypeDamage(typeDamage);
                 newRefund.setPrice(price);
                 refundService.addNewRefund(newRefund);
                 System.out.println("Возврат оформлен...");

@@ -59,7 +59,7 @@ CREATE TABLE refunds
 (
     id                INT PRIMARY KEY AUTO_INCREMENT,
     damage_status     VARCHAR(50),
---     Добавить тип повреждения
+    type_damage       VARCHAR(50),
     price             DOUBLE,
     FOREIGN KEY (order_id) REFERENCES orders (id)
 );

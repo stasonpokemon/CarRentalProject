@@ -45,30 +45,53 @@ public class UserDaoImpl implements UserDaoI {
     }
 
     /**
-     * Работает, но по отдельности
+     * Работает!!!!!!!!!!!!, но по отдельности
      */
     /*
      * Поиск клиента по id
      * */
     @Override
     public User read(int id) {
-        String sql = "SELECT id, user_login, user_password, user_role, passport_id FROM users WHERE id = ? AND user_role LIKE ?";
-        ResultSet resultSet = null;
+        String sqlUser = "SELECT id, user_login, user_password, user_role, passport_id FROM users WHERE id = ? AND user_role LIKE ?";
+        String sqlPassport = "SELECT id, name, surname, patronymic, day_birthday ,month_birthday, year_birthday, address FROM passports WHERE id = ?";
+
+        PreparedStatement statementUser = null;
+        PreparedStatement statementPassport = null;
+
+        ResultSet resultSetUser = null;
+        ResultSet resultSetPassport = null;
+
         User user = null;
-        try (Connection connection = jdbcConnector.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, id);
-            statement.setString(2, UserRoleConst.CLIENT_ROLE);
-            resultSet = statement.executeQuery();
-            if (resultSet.next()) {
+        ClientPassport passport = null;
+        try (Connection connection = jdbcConnector.getConnection()) {
+            statementUser = connection.prepareStatement(sqlUser);
+            statementPassport = connection.prepareStatement(sqlPassport);
+
+            statementUser.setInt(1, id);
+            statementUser.setString(2, UserRoleConst.CLIENT_ROLE);
+            resultSetUser = statementUser.executeQuery();
+            if (resultSetUser.next()) {
                 user = new User();
                 user.setId(id);
-                user.setLogin(resultSet.getString("user_login"));
-                user.setPassword(resultSet.getString("user_password"));
-                user.setRole(resultSet.getString("user_role"));
-                int passport_id = resultSet.getInt("passport_id");
-                if (!resultSet.wasNull()) {
-                    ClientPassport passport = new ClientPassport();
-                    passport.setId(passport_id);
+                user.setLogin(resultSetUser.getString("user_login"));
+                user.setPassword(resultSetUser.getString("user_password"));
+                user.setRole(resultSetUser.getString("user_role"));
+
+                int passport_id = resultSetUser.getInt("passport_id");
+                statementPassport.setInt(1, passport_id);
+                resultSetPassport = statementPassport.executeQuery();
+                if (!resultSetUser.wasNull()) {
+                    if (resultSetPassport.next()){
+                        passport = new ClientPassport();
+                        passport.setId(resultSetPassport.getInt("id"));
+                        passport.setName(resultSetPassport.getString("name"));
+                        passport.setSurname(resultSetPassport.getString("surname"));
+                        passport.setPatronymic(resultSetPassport.getString("patronymic"));
+                        passport.setDayBirthday(resultSetPassport.getInt("day_birthday"));
+                        passport.setMonthBirthday(resultSetPassport.getInt("month_birthday"));
+                        passport.setYearBirthday(resultSetPassport.getInt("year_birthday"));
+                        passport.setAddress(resultSetPassport.getString("address"));
+                    }
                     user.setPassport(passport);
                 }
             }
@@ -76,8 +99,8 @@ public class UserDaoImpl implements UserDaoI {
             e.printStackTrace();
         } finally {
             try {
-                if (resultSet != null) {
-                    resultSet.close();
+                if (resultSetUser != null) {
+                    resultSetUser.close();
                 }
             } catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
@@ -87,29 +110,54 @@ public class UserDaoImpl implements UserDaoI {
     }
 
     /**
-     * Работает, но по отдельности
+     * Работает!!!!!!!!!, но по отдельности
      */
     /*
      * Список всех users
      * */
     @Override
     public List<User> readAll() {
-        String sql = "SELECT id, user_login, user_password, user_role, passport_id FROM users";
-        ResultSet resultSet = null;
+        String sqlUser = "SELECT id, user_login, user_password, user_role, passport_id FROM users";
+        String sqlPassport = "SELECT id, name, surname, patronymic, day_birthday ,month_birthday, year_birthday, address FROM passports WHERE id = ?";
+
+
+        PreparedStatement statementUser = null;
+        PreparedStatement statementPassport = null;
+
+        ResultSet resultSetUser = null;
+        ResultSet resultSetPassport = null;
+
+
         List<User> users = new ArrayList<>();
-        try (Connection connection = jdbcConnector.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
-            resultSet = statement.executeQuery();
+        try (Connection connection = jdbcConnector.getConnection()) {
+            statementUser = connection.prepareStatement(sqlUser);
+            statementPassport = connection.prepareStatement(sqlPassport);
+
+            resultSetUser = statementUser.executeQuery();
             User user = null;
-            while (resultSet.next()) {
+            ClientPassport passport = null;
+            while (resultSetUser.next()) {
                 user = new User();
-                user.setId(resultSet.getInt("id"));
-                user.setLogin(resultSet.getString("user_login"));
-                user.setPassword(resultSet.getString("user_password"));
-                user.setRole(resultSet.getString("user_role"));
-                int passport_id = resultSet.getInt("passport_id");
-                if (!resultSet.wasNull()) {
-                    ClientPassport passport = new ClientPassport();
-                    passport.setId(passport_id);
+                user.setId(resultSetUser.getInt("id"));
+                user.setLogin(resultSetUser.getString("user_login"));
+                user.setPassword(resultSetUser.getString("user_password"));
+                user.setRole(resultSetUser.getString("user_role"));
+
+                int passport_id = resultSetUser.getInt("passport_id");
+                statementPassport.setInt(1, passport_id);
+                resultSetPassport = statementPassport.executeQuery();
+                if (!resultSetUser.wasNull()) {
+                    if (resultSetPassport.next()){
+                        passport = new ClientPassport();
+                        passport.setId(resultSetPassport.getInt("id"));
+                        passport.setName(resultSetPassport.getString("name"));
+                        passport.setSurname(resultSetPassport.getString("surname"));
+                        passport.setPatronymic(resultSetPassport.getString("patronymic"));
+                        passport.setDayBirthday(resultSetPassport.getInt("day_birthday"));
+                        passport.setMonthBirthday(resultSetPassport.getInt("month_birthday"));
+                        passport.setYearBirthday(resultSetPassport.getInt("year_birthday"));
+                        passport.setAddress(resultSetPassport.getString("address"));
+                    }
                     user.setPassport(passport);
                 }
                 users.add(user);
@@ -118,8 +166,8 @@ public class UserDaoImpl implements UserDaoI {
             e.printStackTrace();
         } finally {
             try {
-                if (resultSet != null) {
-                    resultSet.close();
+                if (resultSetUser != null) {
+                    resultSetUser.close();
                 }
             } catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
@@ -129,46 +177,71 @@ public class UserDaoImpl implements UserDaoI {
     }
 
     /**
-     * Работает, но по отдельности
+     * Работает!!!!!, но по отдельности
      */
     /*
      * Список всех клиентов
      * */
     @Override
     public List<User> findAllClients() {
-        String sql = "SELECT id, user_login, user_password, user_role, passport_id FROM users WHERE user_role LIKE ?";
-        ResultSet resultSet = null;
-        List<User> clients = new ArrayList<>();
-        try (Connection connection = jdbcConnector.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, UserRoleConst.CLIENT_ROLE);
-            resultSet = statement.executeQuery();
+        String sqlUser = "SELECT id, user_login, user_password, user_role, passport_id FROM users WHERE user_role = ?";
+        String sqlPassport = "SELECT id, name, surname, patronymic, day_birthday ,month_birthday, year_birthday, address FROM passports WHERE id = ?";
+
+
+        PreparedStatement statementUser = null;
+        PreparedStatement statementPassport = null;
+
+        ResultSet resultSetUser = null;
+        ResultSet resultSetPassport = null;
+
+
+        List<User> users = new ArrayList<>();
+        try (Connection connection = jdbcConnector.getConnection()) {
+            statementUser = connection.prepareStatement(sqlUser);
+            statementPassport = connection.prepareStatement(sqlPassport);
+
+            statementUser.setString(1, UserRoleConst.CLIENT_ROLE);
+            resultSetUser = statementUser.executeQuery();
             User user = null;
-            while (resultSet.next()) {
+            ClientPassport passport = null;
+            while (resultSetUser.next()) {
                 user = new User();
-                user.setId(resultSet.getInt("id"));
-                user.setLogin(resultSet.getString("user_login"));
-                user.setPassword(resultSet.getString("user_password"));
-                user.setRole(resultSet.getString("user_role"));
-                int passport_id = resultSet.getInt("passport_id");
-                if (!resultSet.wasNull()) {
-                    ClientPassport passport = new ClientPassport();
-                    passport.setId(passport_id);
+                user.setId(resultSetUser.getInt("id"));
+                user.setLogin(resultSetUser.getString("user_login"));
+                user.setPassword(resultSetUser.getString("user_password"));
+                user.setRole(resultSetUser.getString("user_role"));
+
+                int passport_id = resultSetUser.getInt("passport_id");
+                statementPassport.setInt(1, passport_id);
+                resultSetPassport = statementPassport.executeQuery();
+                if (!resultSetUser.wasNull()) {
+                    if (resultSetPassport.next()){
+                        passport = new ClientPassport();
+                        passport.setId(resultSetPassport.getInt("id"));
+                        passport.setName(resultSetPassport.getString("name"));
+                        passport.setSurname(resultSetPassport.getString("surname"));
+                        passport.setPatronymic(resultSetPassport.getString("patronymic"));
+                        passport.setDayBirthday(resultSetPassport.getInt("day_birthday"));
+                        passport.setMonthBirthday(resultSetPassport.getInt("month_birthday"));
+                        passport.setYearBirthday(resultSetPassport.getInt("year_birthday"));
+                        passport.setAddress(resultSetPassport.getString("address"));
+                    }
                     user.setPassport(passport);
                 }
-                clients.add(user);
+                users.add(user);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             try {
-                if (resultSet != null) {
-                    resultSet.close();
+                if (resultSetUser != null) {
+                    resultSetUser.close();
                 }
             } catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
             }
         }
-        return clients;
+        return users;
     }
 
     /**

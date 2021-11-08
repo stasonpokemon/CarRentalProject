@@ -2,6 +2,7 @@ package pojo;
 
 import javax.persistence.*;
 import java.util.Objects;
+
 @Entity
 @Table(name = "refunds")
 public class Refund {
@@ -12,6 +13,8 @@ public class Refund {
     private Order order;
     @Column(name = "damage_status")
     private String damageStatus;
+    @Column(name = "type_damage")
+    private String typeDamage;
     private double price;
 
     public int getId() {
@@ -46,27 +49,29 @@ public class Refund {
         this.price = price;
     }
 
+    public String getTypeDamage() {
+        return typeDamage;
+    }
+
+    public void setTypeDamage(String typeDamage) {
+        this.typeDamage = typeDamage;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Refund refund = (Refund) o;
-        return id == refund.id && Double.compare(refund.price, price) == 0 && Objects.equals(order, refund.order) && Objects.equals(damageStatus, refund.damageStatus);
+        return id == refund.id && Double.compare(refund.price, price) == 0 && Objects.equals(order, refund.order) && Objects.equals(damageStatus, refund.damageStatus) && Objects.equals(typeDamage, refund.typeDamage);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, order, damageStatus, price);
+        return Objects.hash(id, order, damageStatus, typeDamage, price);
     }
 
     @Override
     public String toString() {
-        return String.format("%-6s%-6s%-20s%-15s", id, order.getId(), damageStatus, price);
-//        return "Refund{" +
-//                "id=" + id +
-//                ", order=" + order.getId() +
-//                ", damageStatus='" + damageStatus + '\'' +
-//                ", price=" + price +
-//                '}';
+        return String.format("%-6s%-20s%-20s%-15s", id, damageStatus, typeDamage, price);
     }
 }

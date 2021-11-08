@@ -43,13 +43,9 @@ public class OrderDaoImpl implements OrderDaoI {
     }
 
 
-
     /**
      * Работает!!!!!!!!!!!!!!, но по отдельности
      */
-    /*
-     * Получить заказ по id
-     * */
     @Override
     public Order read(int id) {
         String sqlOrder = "SELECT id, user_id, car_id, price, status, order_date, refund_id FROM orders WHERE id = ?";
@@ -82,7 +78,6 @@ public class OrderDaoImpl implements OrderDaoI {
             statementPassport = connection.prepareStatement(sqlPassport);
             statementRefund = connection.prepareStatement(sqlRefund);
 
-
             statementOrder.setInt(1, id);
             resultSetOrder = statementOrder.executeQuery();
             if (resultSetOrder.next()) {
@@ -104,8 +99,8 @@ public class OrderDaoImpl implements OrderDaoI {
                         int passportId = resultSetClient.getInt("passport_id");
                         statementPassport.setInt(1, passportId);
                         resultSetPassport = statementPassport.executeQuery();
-                        if (!resultSetClient.wasNull()){
-                            if (resultSetPassport.next()){
+                        if (!resultSetClient.wasNull()) {
+                            if (resultSetPassport.next()) {
                                 passport = new ClientPassport();
                                 passport.setId(resultSetPassport.getInt("id"));
                                 passport.setName(resultSetPassport.getString("name"));
@@ -127,7 +122,7 @@ public class OrderDaoImpl implements OrderDaoI {
                 statementCar.setInt(1, carId);
                 resultSetCar = statementCar.executeQuery();
                 if (!resultSetOrder.wasNull()) {
-                    if (resultSetCar.next()){
+                    if (resultSetCar.next()) {
                         car = new Car();
                         car.setId(resultSetCar.getInt("id"));
                         car.setModel(resultSetCar.getString("model"));
@@ -143,10 +138,10 @@ public class OrderDaoImpl implements OrderDaoI {
                 order.setOrderDate(resultSetOrder.getDate("order_date"));
 
                 int refund_id = resultSetOrder.getInt("refund_id");
-                statementRefund.setInt(1,refund_id);
+                statementRefund.setInt(1, refund_id);
                 resultSetRefund = statementRefund.executeQuery();
                 if (!resultSetOrder.wasNull()) {
-                    if (resultSetRefund.next()){
+                    if (resultSetRefund.next()) {
                         refund = new Refund();
                         refund.setId(resultSetRefund.getInt("id"));
                         refund.setDamageStatus(resultSetRefund.getString("damage_status"));
@@ -194,114 +189,355 @@ public class OrderDaoImpl implements OrderDaoI {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
+    /**
+     * Работает!!!!!!!!!!!!!!, но по отдельности
+     */
     @Override
     public List<Order> readAll() {
-        String sql = "SELECT id, user_id, car_id, price, status, order_date FROM orders";
+        String sqlOrder = "SELECT id, user_id, car_id, price, status, order_date, refund_id FROM orders";
+        String sqlClient = "SELECT id, user_login, user_password, user_role, passport_id FROM users WHERE id = ? AND user_role LIKE ?";
+        String sqlCar = "SELECT id, model, price_per_day, employment_status, damage_status FROM cars WHERE id = ?";
+        String sqlPassport = "SELECT id, name, surname, patronymic, day_birthday ,month_birthday, year_birthday, address FROM passports WHERE id = ?";
+        String sqlRefund = "SELECT id, damage_status, price FROM refunds WHERE id = ?";
         List<Order> orders = new ArrayList<>();
-        ResultSet resultSet = null;
-        try (Connection connection = jdbcConnector.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
-            resultSet = statement.executeQuery();
-            Order order = null;
-            while (resultSet.next()) {
+
+        PreparedStatement statementOrder = null;
+        PreparedStatement statementClient = null;
+        PreparedStatement statementCar = null;
+        PreparedStatement statementPassport = null;
+        PreparedStatement statementRefund = null;
+
+        ResultSet resultSetOrder = null;
+        ResultSet resultSetClient = null;
+        ResultSet resultSetCar = null;
+        ResultSet resultSetPassport = null;
+        ResultSet resultSetRefund = null;
+
+        Order order = null;
+        User client = null;
+        Car car = null;
+        ClientPassport passport = null;
+        Refund refund = null;
+
+
+        try (Connection connection = jdbcConnector.getConnection()) {
+            statementOrder = connection.prepareStatement(sqlOrder);
+            statementClient = connection.prepareStatement(sqlClient);
+            statementCar = connection.prepareStatement(sqlCar);
+            statementPassport = connection.prepareStatement(sqlPassport);
+            statementRefund = connection.prepareStatement(sqlRefund);
+
+
+            resultSetOrder = statementOrder.executeQuery();
+            while (resultSetOrder.next()) {
                 order = new Order();
-                order.setId(resultSet.getInt("id"));
-                int clientId = resultSet.getInt("user_id");
-//                User client = UserD   aoImpl.getUserDaoImpl().read(clientId);
-//                order.setClient(client);
-                if (!resultSet.wasNull()) {
-                    User user = new User();
-                    user.setId(clientId);
-                    order.setClient(user);
+                order.setId(resultSetOrder.getInt("id"));
+
+                int clientId = resultSetOrder.getInt("user_id");
+                statementClient.setInt(1, clientId);
+                statementClient.setString(2, UserRoleConst.CLIENT_ROLE);
+                resultSetClient = statementClient.executeQuery();
+                if (!resultSetOrder.wasNull()) {
+                    if (resultSetClient.next()) {
+                        client = new User();
+                        client.setId(resultSetClient.getInt("id"));
+                        client.setLogin(resultSetClient.getString("user_login"));
+                        client.setPassword(resultSetClient.getString("user_password"));
+                        client.setRole(resultSetClient.getString("user_role"));
+
+                        int passportId = resultSetClient.getInt("passport_id");
+                        statementPassport.setInt(1, passportId);
+                        resultSetPassport = statementPassport.executeQuery();
+                        if (!resultSetClient.wasNull()) {
+                            if (resultSetPassport.next()) {
+                                passport = new ClientPassport();
+                                passport.setId(resultSetPassport.getInt("id"));
+                                passport.setName(resultSetPassport.getString("name"));
+                                passport.setSurname(resultSetPassport.getString("surname"));
+                                passport.setPatronymic(resultSetPassport.getString("patronymic"));
+                                passport.setDayBirthday(resultSetPassport.getInt("day_birthday"));
+                                passport.setMonthBirthday(resultSetPassport.getInt("month_birthday"));
+                                passport.setYearBirthday(resultSetPassport.getInt("year_birthday"));
+                                passport.setAddress(resultSetPassport.getString("address"));
+                            }
+                            client.setPassport(passport);
+                        }
+
+                    }
+                    order.setClient(client);
                 }
-                int carId = resultSet.getInt("car_id");
-//                Car car = CarDaoImpl.getCarDaoImpl().read(carId);
-//                order.setCar(car);
-                if (!resultSet.wasNull()) {
-                    Car car = new Car();
-                    car.setId(carId);
+
+                int carId = resultSetOrder.getInt("car_id");
+                statementCar.setInt(1, carId);
+                resultSetCar = statementCar.executeQuery();
+                if (!resultSetOrder.wasNull()) {
+                    if (resultSetCar.next()) {
+                        car = new Car();
+                        car.setId(resultSetCar.getInt("id"));
+                        car.setModel(resultSetCar.getString("model"));
+                        car.setPricePerDay(resultSetCar.getDouble("price_per_day"));
+                        car.setEmploymentStatus(resultSetCar.getString("employment_status"));
+                        car.setDamageStatus(resultSetCar.getString("damage_status"));
+                    }
                     order.setCar(car);
                 }
-                order.setPrice(resultSet.getDouble("price"));
-                order.setOrderStatus(resultSet.getString("status"));
-                order.setOrderDate(resultSet.getDate("order_date"));
+
+                order.setPrice(resultSetOrder.getDouble("price"));
+                order.setOrderStatus(resultSetOrder.getString("status"));
+                order.setOrderDate(resultSetOrder.getDate("order_date"));
+
+                int refund_id = resultSetOrder.getInt("refund_id");
+                statementRefund.setInt(1, refund_id);
+                resultSetRefund = statementRefund.executeQuery();
+                if (!resultSetOrder.wasNull()) {
+                    if (resultSetRefund.next()) {
+                        refund = new Refund();
+                        refund.setId(resultSetRefund.getInt("id"));
+                        refund.setDamageStatus(resultSetRefund.getString("damage_status"));
+                        refund.setPrice(resultSetRefund.getDouble("price"));
+                    }
+                    order.setRefund(refund);
+                }
                 orders.add(order);
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return orders;
     }
 
+    /**
+     * Работает!!!!!!!!!!!!!!, но по отдельности
+     */
     @Override
     public List<Order> findAllOrdersByClient(User user) {
-        String sql = "SELECT id, user_id, car_id, price, status, order_date FROM orders WHERE  = ?";
+        String sqlOrder = "SELECT id, user_id, car_id, price, status, order_date, refund_id FROM orders WHERE user_id = ?";
+        String sqlClient = "SELECT id, user_login, user_password, user_role, passport_id FROM users WHERE id = ? AND user_role LIKE ?";
+        String sqlCar = "SELECT id, model, price_per_day, employment_status, damage_status FROM cars WHERE id = ?";
+        String sqlPassport = "SELECT id, name, surname, patronymic, day_birthday ,month_birthday, year_birthday, address FROM passports WHERE id = ?";
+        String sqlRefund = "SELECT id, damage_status, price FROM refunds WHERE id = ?";
         List<Order> orders = new ArrayList<>();
-        ResultSet resultSet = null;
-        try (Connection connection = jdbcConnector.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, user.getId());
-            resultSet = statement.executeQuery();
-            Order order = null;
-            while (resultSet.next()) {
+
+        PreparedStatement statementOrder = null;
+        PreparedStatement statementClient = null;
+        PreparedStatement statementCar = null;
+        PreparedStatement statementPassport = null;
+        PreparedStatement statementRefund = null;
+
+        ResultSet resultSetOrder = null;
+        ResultSet resultSetClient = null;
+        ResultSet resultSetCar = null;
+        ResultSet resultSetPassport = null;
+        ResultSet resultSetRefund = null;
+
+        Order order = null;
+        User client = null;
+        Car car = null;
+        ClientPassport passport = null;
+        Refund refund = null;
+
+
+        try (Connection connection = jdbcConnector.getConnection()) {
+            statementOrder = connection.prepareStatement(sqlOrder);
+            statementClient = connection.prepareStatement(sqlClient);
+            statementCar = connection.prepareStatement(sqlCar);
+            statementPassport = connection.prepareStatement(sqlPassport);
+            statementRefund = connection.prepareStatement(sqlRefund);
+
+            statementOrder.setInt(1, user.getId());
+            resultSetOrder = statementOrder.executeQuery();
+            while (resultSetOrder.next()) {
                 order = new Order();
-                order.setId(resultSet.getInt("id"));
-                order.setClient(user);
-                int carId = resultSet.getInt("car_id");
-//                Car car = CarDaoImpl.getCarDaoImpl().read(carId);
-//                order.setCar(car);
-                if (!resultSet.wasNull()) {
-                    Car car = new Car();
-                    car.setId(carId);
+                order.setId(resultSetOrder.getInt("id"));
+
+                int clientId = resultSetOrder.getInt("user_id");
+                statementClient.setInt(1, clientId);
+                statementClient.setString(2, UserRoleConst.CLIENT_ROLE);
+                resultSetClient = statementClient.executeQuery();
+                if (!resultSetOrder.wasNull()) {
+                    if (resultSetClient.next()) {
+                        client = new User();
+                        client.setId(resultSetClient.getInt("id"));
+                        client.setLogin(resultSetClient.getString("user_login"));
+                        client.setPassword(resultSetClient.getString("user_password"));
+                        client.setRole(resultSetClient.getString("user_role"));
+
+                        int passportId = resultSetClient.getInt("passport_id");
+                        statementPassport.setInt(1, passportId);
+                        resultSetPassport = statementPassport.executeQuery();
+                        if (!resultSetClient.wasNull()) {
+                            if (resultSetPassport.next()) {
+                                passport = new ClientPassport();
+                                passport.setId(resultSetPassport.getInt("id"));
+                                passport.setName(resultSetPassport.getString("name"));
+                                passport.setSurname(resultSetPassport.getString("surname"));
+                                passport.setPatronymic(resultSetPassport.getString("patronymic"));
+                                passport.setDayBirthday(resultSetPassport.getInt("day_birthday"));
+                                passport.setMonthBirthday(resultSetPassport.getInt("month_birthday"));
+                                passport.setYearBirthday(resultSetPassport.getInt("year_birthday"));
+                                passport.setAddress(resultSetPassport.getString("address"));
+                            }
+                            client.setPassport(passport);
+                        }
+
+                    }
+                    order.setClient(client);
+                }
+
+                int carId = resultSetOrder.getInt("car_id");
+                statementCar.setInt(1, carId);
+                resultSetCar = statementCar.executeQuery();
+                if (!resultSetOrder.wasNull()) {
+                    if (resultSetCar.next()) {
+                        car = new Car();
+                        car.setId(resultSetCar.getInt("id"));
+                        car.setModel(resultSetCar.getString("model"));
+                        car.setPricePerDay(resultSetCar.getDouble("price_per_day"));
+                        car.setEmploymentStatus(resultSetCar.getString("employment_status"));
+                        car.setDamageStatus(resultSetCar.getString("damage_status"));
+                    }
                     order.setCar(car);
                 }
-                order.setPrice(resultSet.getDouble("price"));
-                order.setOrderStatus(resultSet.getString("status"));
-                order.setOrderDate(resultSet.getDate("order_date"));
+
+                order.setPrice(resultSetOrder.getDouble("price"));
+                order.setOrderStatus(resultSetOrder.getString("status"));
+                order.setOrderDate(resultSetOrder.getDate("order_date"));
+
+                int refund_id = resultSetOrder.getInt("refund_id");
+                statementRefund.setInt(1, refund_id);
+                resultSetRefund = statementRefund.executeQuery();
+                if (!resultSetOrder.wasNull()) {
+                    if (resultSetRefund.next()) {
+                        refund = new Refund();
+                        refund.setId(resultSetRefund.getInt("id"));
+                        refund.setDamageStatus(resultSetRefund.getString("damage_status"));
+                        refund.setPrice(resultSetRefund.getDouble("price"));
+                    }
+                    order.setRefund(refund);
+                }
                 orders.add(order);
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return orders;
     }
 
+    /**
+     * Работает!!!!!!!!!!!!!!, но по отдельности
+     */
     @Override
     public List<Order> findOrdersByStatus(String status) {
-        String sql = "SELECT id, user_id, car_id, price, status, order_date FROM orders WHERE status = ?";
+        String sqlOrder = "SELECT id, user_id, car_id, price, status, order_date, refund_id FROM orders WHERE status = ?";
+        String sqlClient = "SELECT id, user_login, user_password, user_role, passport_id FROM users WHERE id = ? AND user_role LIKE ?";
+        String sqlCar = "SELECT id, model, price_per_day, employment_status, damage_status FROM cars WHERE id = ?";
+        String sqlPassport = "SELECT id, name, surname, patronymic, day_birthday ,month_birthday, year_birthday, address FROM passports WHERE id = ?";
+        String sqlRefund = "SELECT id, damage_status, price FROM refunds WHERE id = ?";
         List<Order> orders = new ArrayList<>();
-        ResultSet resultSet = null;
-        try (Connection connection = jdbcConnector.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, status);
-            resultSet = statement.executeQuery();
-            Order order = null;
-            while (resultSet.next()) {
+
+        PreparedStatement statementOrder = null;
+        PreparedStatement statementClient = null;
+        PreparedStatement statementCar = null;
+        PreparedStatement statementPassport = null;
+        PreparedStatement statementRefund = null;
+
+        ResultSet resultSetOrder = null;
+        ResultSet resultSetClient = null;
+        ResultSet resultSetCar = null;
+        ResultSet resultSetPassport = null;
+        ResultSet resultSetRefund = null;
+
+        Order order = null;
+        User client = null;
+        Car car = null;
+        ClientPassport passport = null;
+        Refund refund = null;
+
+
+        try (Connection connection = jdbcConnector.getConnection()) {
+            statementOrder = connection.prepareStatement(sqlOrder);
+            statementClient = connection.prepareStatement(sqlClient);
+            statementCar = connection.prepareStatement(sqlCar);
+            statementPassport = connection.prepareStatement(sqlPassport);
+            statementRefund = connection.prepareStatement(sqlRefund);
+
+            statementOrder.setString(1, status);
+            resultSetOrder = statementOrder.executeQuery();
+            while (resultSetOrder.next()) {
                 order = new Order();
-                order.setId(resultSet.getInt("id"));
-                int clientId = resultSet.getInt("user_id");
-//                User client = UserDaoImpl.getUserDaoImpl().read(clientId);
-//                order.setClient(client);
-                if (!resultSet.wasNull()) {
-                    User user = new User();
-                    user.setId(clientId);
-                    order.setClient(user);
+                order.setId(resultSetOrder.getInt("id"));
+
+                int clientId = resultSetOrder.getInt("user_id");
+                statementClient.setInt(1, clientId);
+                statementClient.setString(2, UserRoleConst.CLIENT_ROLE);
+                resultSetClient = statementClient.executeQuery();
+                if (!resultSetOrder.wasNull()) {
+                    if (resultSetClient.next()) {
+                        client = new User();
+                        client.setId(resultSetClient.getInt("id"));
+                        client.setLogin(resultSetClient.getString("user_login"));
+                        client.setPassword(resultSetClient.getString("user_password"));
+                        client.setRole(resultSetClient.getString("user_role"));
+
+                        int passportId = resultSetClient.getInt("passport_id");
+                        statementPassport.setInt(1, passportId);
+                        resultSetPassport = statementPassport.executeQuery();
+                        if (!resultSetClient.wasNull()) {
+                            if (resultSetPassport.next()) {
+                                passport = new ClientPassport();
+                                passport.setId(resultSetPassport.getInt("id"));
+                                passport.setName(resultSetPassport.getString("name"));
+                                passport.setSurname(resultSetPassport.getString("surname"));
+                                passport.setPatronymic(resultSetPassport.getString("patronymic"));
+                                passport.setDayBirthday(resultSetPassport.getInt("day_birthday"));
+                                passport.setMonthBirthday(resultSetPassport.getInt("month_birthday"));
+                                passport.setYearBirthday(resultSetPassport.getInt("year_birthday"));
+                                passport.setAddress(resultSetPassport.getString("address"));
+                            }
+                            client.setPassport(passport);
+                        }
+
+                    }
+                    order.setClient(client);
                 }
-                int carId = resultSet.getInt("car_id");
-//                Car car = CarDaoImpl.getCarDaoImpl().read(carId);
-//                order.setCar(car);
-                if (!resultSet.wasNull()) {
-                    Car car = new Car();
-                    car.setId(carId);
+
+                int carId = resultSetOrder.getInt("car_id");
+                statementCar.setInt(1, carId);
+                resultSetCar = statementCar.executeQuery();
+                if (!resultSetOrder.wasNull()) {
+                    if (resultSetCar.next()) {
+                        car = new Car();
+                        car.setId(resultSetCar.getInt("id"));
+                        car.setModel(resultSetCar.getString("model"));
+                        car.setPricePerDay(resultSetCar.getDouble("price_per_day"));
+                        car.setEmploymentStatus(resultSetCar.getString("employment_status"));
+                        car.setDamageStatus(resultSetCar.getString("damage_status"));
+                    }
                     order.setCar(car);
                 }
-                order.setPrice(resultSet.getDouble("price"));
-                order.setOrderStatus(resultSet.getString("status"));
-                order.setOrderDate(resultSet.getDate("order_date"));
+
+                order.setPrice(resultSetOrder.getDouble("price"));
+                order.setOrderStatus(resultSetOrder.getString("status"));
+                order.setOrderDate(resultSetOrder.getDate("order_date"));
+
+                int refund_id = resultSetOrder.getInt("refund_id");
+                statementRefund.setInt(1, refund_id);
+                resultSetRefund = statementRefund.executeQuery();
+                if (!resultSetOrder.wasNull()) {
+                    if (resultSetRefund.next()) {
+                        refund = new Refund();
+                        refund.setId(resultSetRefund.getInt("id"));
+                        refund.setDamageStatus(resultSetRefund.getString("damage_status"));
+                        refund.setPrice(resultSetRefund.getDouble("price"));
+                    }
+                    order.setRefund(refund);
+                }
                 orders.add(order);
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return orders;
     }
