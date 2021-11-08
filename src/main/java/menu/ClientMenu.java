@@ -14,7 +14,9 @@ import services.OrderService;
 import utils.NumberValidUtil;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.Scanner;
 
 public class ClientMenu {
@@ -231,9 +233,7 @@ public class ClientMenu {
         newPassport.setName(name);
         newPassport.setSurname(surname);
         newPassport.setPatronymic(patronymic);
-        newPassport.setDayBirthday(dayOfBirthday);
-        newPassport.setMonthBirthday(monthOfBirthday);
-        newPassport.setYearBirthday(yearOfBirthday);
+        newPassport.setBirthday(new Timestamp(new GregorianCalendar(yearOfBirthday, monthOfBirthday - 1, dayOfBirthday).getTimeInMillis()));
         newPassport.setAddress(address);
 
 //        Если мы работаем с собственным пулом соединений, то эта строчка с добавлением паспорта в бд нужна

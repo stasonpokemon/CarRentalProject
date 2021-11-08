@@ -53,7 +53,7 @@ public class UserDaoImpl implements UserDaoI {
     @Override
     public User read(int id) {
         String sqlUser = "SELECT id, user_login, user_password, user_role, passport_id FROM users WHERE id = ? AND user_role LIKE ?";
-        String sqlPassport = "SELECT id, name, surname, patronymic, day_birthday ,month_birthday, year_birthday, address FROM passports WHERE id = ?";
+        String sqlPassport = "SELECT id, name, surname, patronymic, birthday, address FROM passports WHERE id = ?";
 
         PreparedStatement statementUser = null;
         PreparedStatement statementPassport = null;
@@ -87,9 +87,7 @@ public class UserDaoImpl implements UserDaoI {
                         passport.setName(resultSetPassport.getString("name"));
                         passport.setSurname(resultSetPassport.getString("surname"));
                         passport.setPatronymic(resultSetPassport.getString("patronymic"));
-                        passport.setDayBirthday(resultSetPassport.getInt("day_birthday"));
-                        passport.setMonthBirthday(resultSetPassport.getInt("month_birthday"));
-                        passport.setYearBirthday(resultSetPassport.getInt("year_birthday"));
+                        passport.setBirthday(resultSetPassport.getTimestamp("birthday"));
                         passport.setAddress(resultSetPassport.getString("address"));
                     }
                     user.setPassport(passport);
@@ -118,7 +116,7 @@ public class UserDaoImpl implements UserDaoI {
     @Override
     public List<User> readAll() {
         String sqlUser = "SELECT id, user_login, user_password, user_role, passport_id FROM users";
-        String sqlPassport = "SELECT id, name, surname, patronymic, day_birthday ,month_birthday, year_birthday, address FROM passports WHERE id = ?";
+        String sqlPassport = "SELECT id, name, surname, patronymic, birthday, address FROM passports WHERE id = ?";
 
 
         PreparedStatement statementUser = null;
@@ -153,9 +151,7 @@ public class UserDaoImpl implements UserDaoI {
                         passport.setName(resultSetPassport.getString("name"));
                         passport.setSurname(resultSetPassport.getString("surname"));
                         passport.setPatronymic(resultSetPassport.getString("patronymic"));
-                        passport.setDayBirthday(resultSetPassport.getInt("day_birthday"));
-                        passport.setMonthBirthday(resultSetPassport.getInt("month_birthday"));
-                        passport.setYearBirthday(resultSetPassport.getInt("year_birthday"));
+                        passport.setBirthday(resultSetPassport.getTimestamp("birthday"));
                         passport.setAddress(resultSetPassport.getString("address"));
                     }
                     user.setPassport(passport);
@@ -185,7 +181,7 @@ public class UserDaoImpl implements UserDaoI {
     @Override
     public List<User> findAllClients() {
         String sqlUser = "SELECT id, user_login, user_password, user_role, passport_id FROM users WHERE user_role = ?";
-        String sqlPassport = "SELECT id, name, surname, patronymic, day_birthday ,month_birthday, year_birthday, address FROM passports WHERE id = ?";
+        String sqlPassport = "SELECT id, name, surname, patronymic, birthday, address FROM passports WHERE id = ?";
 
 
         PreparedStatement statementUser = null;
@@ -221,9 +217,7 @@ public class UserDaoImpl implements UserDaoI {
                         passport.setName(resultSetPassport.getString("name"));
                         passport.setSurname(resultSetPassport.getString("surname"));
                         passport.setPatronymic(resultSetPassport.getString("patronymic"));
-                        passport.setDayBirthday(resultSetPassport.getInt("day_birthday"));
-                        passport.setMonthBirthday(resultSetPassport.getInt("month_birthday"));
-                        passport.setYearBirthday(resultSetPassport.getInt("year_birthday"));
+                        passport.setBirthday(resultSetPassport.getTimestamp("birthday"));
                         passport.setAddress(resultSetPassport.getString("address"));
                     }
                     user.setPassport(passport);

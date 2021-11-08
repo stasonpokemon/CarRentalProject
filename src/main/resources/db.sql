@@ -9,9 +9,7 @@ CREATE TABLE passports
     name           VARCHAR(50),
     surname        VARCHAR(50),
     patronymic     VARCHAR(50),
-    day_birthday   INT,
-    month_birthday INT,
-    year_birthday  INT,
+    birthday       datetime,
     address        VARCHAR(100)
 );
 

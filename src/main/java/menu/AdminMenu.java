@@ -8,6 +8,8 @@ import pojo.constant.OrderStatusConst;
 import services.*;
 import utils.NumberValidUtil;
 
+import java.sql.Timestamp;
+import java.util.GregorianCalendar;
 import java.util.Scanner;
 
 public class AdminMenu {
@@ -274,6 +276,9 @@ public class AdminMenu {
                 case 1:
 //                     Установка заказу статуса(ОДОБРЕНО)
                     selectedOrder.setOrderStatus(OrderStatusConst.APPROVES);
+//                    Установка времени заказа
+                    selectedOrder.setOrderDate(new Timestamp(new GregorianCalendar().getTimeInMillis()));
+
                     orderService.update(selectedOrder);
                     System.out.println("Заказ одобрен...");
                     /*
@@ -284,6 +289,8 @@ public class AdminMenu {
                 case 2:
 //                    Установка заказу статуса(ОТКЛОНЕНО)
                     selectedOrder.setOrderStatus(OrderStatusConst.REJECT);
+//                    Установка времени заказа
+                    selectedOrder.setOrderDate(new Timestamp(new GregorianCalendar().getTimeInMillis()));
                     orderService.update(selectedOrder);
                     System.out.println("Заказ отклонён...");
                     /*
@@ -352,7 +359,7 @@ public class AdminMenu {
     }
 
     /*
-     * Метод регистарции заказа
+     * Метод регистарции возврата заказа
      * */
     private void registeringRefund(Order order) {
         Car car = order.getCar();
@@ -376,8 +383,8 @@ public class AdminMenu {
                  * */
                 order.setOrderStatus(OrderStatusConst.REFUND);
                 /*
-                * Добавляем заказу возврат
-                * */
+                 * Добавляем заказу возврат
+                 * */
                 order.setRefund(newRefund);
                 orderService.update(order);
 //                refundService.addNewRefund(newRefund);
@@ -401,8 +408,8 @@ public class AdminMenu {
                 orderService.update(order);
 
                 /*
-                * Указываем тип повреждения
-                * */
+                 * Указываем тип повреждения
+                 * */
                 System.out.println("Укажите тип повреждения:");
                 typeDamage = scanner.nextLine();
                 /*
@@ -465,7 +472,14 @@ public class AdminMenu {
                             if (selectedClientPassport == null) {
                                 System.out.println("Клиент не указывал паспортные данные...");
                             } else {
-                                System.out.println(selectedClientPassport);
+//                                Паспорт клиента
+                                System.out.printf("Паспорт клиента(" + selectedUser.getLogin() + "):\n " +
+                                "-----------------------------------------------------------------------------------------------\n" +
+                                        "%-6s%-20s%-20s%-20s%-20s%-20s", "id", "name", "surname", "patronymic", "birthday", "address\n" +
+                                        "------------------------------------------------------------------------------------------------\n" +
+                                        selectedClientPassport + "\n" +
+                                        "------------------------------------------------------------------------------------------------\n");
+//                                System.out.println(selectedClientPassport);
                             }
                             operationNumber = numberValidUtil.intNumberValid(operationNumber, "1. Назад");
                             if (operationNumber == 1) {

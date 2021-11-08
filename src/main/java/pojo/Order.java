@@ -97,6 +97,10 @@ public class Order {
 
     @Override
     public String toString() {
+        if (orderDate == null){
+            return String.format("%-6s%-30s%-15s%-15s%-20s",id, car.getModel(), user.getLogin(), price, orderStatus);
+
+        }
         return String.format("%-6s%-30s%-15s%-15s%-20s%-15s",id, car.getModel(), user.getLogin(), price, orderStatus,orderDate);
 
     }

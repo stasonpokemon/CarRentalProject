@@ -51,7 +51,7 @@ public class OrderDaoImpl implements OrderDaoI {
         String sqlOrder = "SELECT id, user_id, car_id, price, status, order_date, refund_id FROM orders WHERE id = ?";
         String sqlClient = "SELECT id, user_login, user_password, user_role, passport_id FROM users WHERE id = ? AND user_role LIKE ?";
         String sqlCar = "SELECT id, model, price_per_day, employment_status, damage_status FROM cars WHERE id = ?";
-        String sqlPassport = "SELECT id, name, surname, patronymic, day_birthday ,month_birthday, year_birthday, address FROM passports WHERE id = ?";
+        String sqlPassport = "SELECT id, name, surname, patronymic,birthday, address FROM passports WHERE id = ?";
         String sqlRefund = "SELECT id, damage_status, price FROM refunds WHERE id = ?";
 
         PreparedStatement statementOrder = null;
@@ -106,9 +106,7 @@ public class OrderDaoImpl implements OrderDaoI {
                                 passport.setName(resultSetPassport.getString("name"));
                                 passport.setSurname(resultSetPassport.getString("surname"));
                                 passport.setPatronymic(resultSetPassport.getString("patronymic"));
-                                passport.setDayBirthday(resultSetPassport.getInt("day_birthday"));
-                                passport.setMonthBirthday(resultSetPassport.getInt("month_birthday"));
-                                passport.setYearBirthday(resultSetPassport.getInt("year_birthday"));
+                                passport.setBirthday(resultSetPassport.getTimestamp("birthday"));
                                 passport.setAddress(resultSetPassport.getString("address"));
                             }
                             client.setPassport(passport);
@@ -199,7 +197,7 @@ public class OrderDaoImpl implements OrderDaoI {
         String sqlOrder = "SELECT id, user_id, car_id, price, status, order_date, refund_id FROM orders";
         String sqlClient = "SELECT id, user_login, user_password, user_role, passport_id FROM users WHERE id = ? AND user_role LIKE ?";
         String sqlCar = "SELECT id, model, price_per_day, employment_status, damage_status FROM cars WHERE id = ?";
-        String sqlPassport = "SELECT id, name, surname, patronymic, day_birthday ,month_birthday, year_birthday, address FROM passports WHERE id = ?";
+        String sqlPassport = "SELECT id, name, surname, patronymic, birthday, address FROM passports WHERE id = ?";
         String sqlRefund = "SELECT id, damage_status, price FROM refunds WHERE id = ?";
         List<Order> orders = new ArrayList<>();
 
@@ -257,9 +255,7 @@ public class OrderDaoImpl implements OrderDaoI {
                                 passport.setName(resultSetPassport.getString("name"));
                                 passport.setSurname(resultSetPassport.getString("surname"));
                                 passport.setPatronymic(resultSetPassport.getString("patronymic"));
-                                passport.setDayBirthday(resultSetPassport.getInt("day_birthday"));
-                                passport.setMonthBirthday(resultSetPassport.getInt("month_birthday"));
-                                passport.setYearBirthday(resultSetPassport.getInt("year_birthday"));
+                                passport.setBirthday(resultSetPassport.getTimestamp("birthday"));
                                 passport.setAddress(resultSetPassport.getString("address"));
                             }
                             client.setPassport(passport);
@@ -316,7 +312,7 @@ public class OrderDaoImpl implements OrderDaoI {
         String sqlOrder = "SELECT id, user_id, car_id, price, status, order_date, refund_id FROM orders WHERE user_id = ?";
         String sqlClient = "SELECT id, user_login, user_password, user_role, passport_id FROM users WHERE id = ? AND user_role LIKE ?";
         String sqlCar = "SELECT id, model, price_per_day, employment_status, damage_status FROM cars WHERE id = ?";
-        String sqlPassport = "SELECT id, name, surname, patronymic, day_birthday ,month_birthday, year_birthday, address FROM passports WHERE id = ?";
+        String sqlPassport = "SELECT id, name, surname, patronymic, birthday, address FROM passports WHERE id = ?";
         String sqlRefund = "SELECT id, damage_status, price FROM refunds WHERE id = ?";
         List<Order> orders = new ArrayList<>();
 
@@ -374,9 +370,7 @@ public class OrderDaoImpl implements OrderDaoI {
                                 passport.setName(resultSetPassport.getString("name"));
                                 passport.setSurname(resultSetPassport.getString("surname"));
                                 passport.setPatronymic(resultSetPassport.getString("patronymic"));
-                                passport.setDayBirthday(resultSetPassport.getInt("day_birthday"));
-                                passport.setMonthBirthday(resultSetPassport.getInt("month_birthday"));
-                                passport.setYearBirthday(resultSetPassport.getInt("year_birthday"));
+                                passport.setBirthday(resultSetPassport.getTimestamp("birthday"));
                                 passport.setAddress(resultSetPassport.getString("address"));
                             }
                             client.setPassport(passport);
@@ -433,7 +427,7 @@ public class OrderDaoImpl implements OrderDaoI {
         String sqlOrder = "SELECT id, user_id, car_id, price, status, order_date, refund_id FROM orders WHERE status = ?";
         String sqlClient = "SELECT id, user_login, user_password, user_role, passport_id FROM users WHERE id = ? AND user_role LIKE ?";
         String sqlCar = "SELECT id, model, price_per_day, employment_status, damage_status FROM cars WHERE id = ?";
-        String sqlPassport = "SELECT id, name, surname, patronymic, day_birthday ,month_birthday, year_birthday, address FROM passports WHERE id = ?";
+        String sqlPassport = "SELECT id, name, surname, patronymic, birthday, address FROM passports WHERE id = ?";
         String sqlRefund = "SELECT id, damage_status, price FROM refunds WHERE id = ?";
         List<Order> orders = new ArrayList<>();
 
@@ -491,9 +485,7 @@ public class OrderDaoImpl implements OrderDaoI {
                                 passport.setName(resultSetPassport.getString("name"));
                                 passport.setSurname(resultSetPassport.getString("surname"));
                                 passport.setPatronymic(resultSetPassport.getString("patronymic"));
-                                passport.setDayBirthday(resultSetPassport.getInt("day_birthday"));
-                                passport.setMonthBirthday(resultSetPassport.getInt("month_birthday"));
-                                passport.setYearBirthday(resultSetPassport.getInt("year_birthday"));
+                                passport.setBirthday(resultSetPassport.getTimestamp("birthday"));
                                 passport.setAddress(resultSetPassport.getString("address"));
                             }
                             client.setPassport(passport);
