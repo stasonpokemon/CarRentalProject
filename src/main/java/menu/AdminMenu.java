@@ -179,11 +179,11 @@ public class AdminMenu {
                 case 1:
                     boolean exitAllOrdersMenu = false;
                     System.out.printf("Список всех заказов:\n" +
-                            "-----------------------------------------------------------------------------------------------\n" +
-                            "%-6s%-30s%-15s%-15s%-20s%-15s\n", "id", "car", "client", "price", "status", "orderDate\n" +
-                            "-----------------------------------------------------------------------------------------------");
+                            "---------------------------------------------------------------------------------------------------------------------\n" +
+                            "%-6s%-30s%-15s%-15s%-20s%-15s%-6s\n","id", "car", "client", "price", "status","orderDate","rentalPeriod\n" +
+                            "---------------------------------------------------------------------------------------------------------------------");
                     orderService.findAllOrders().forEach(System.out::println);
-                    System.out.println("-----------------------------------------------------------------------------------------------");
+                    System.out.println("---------------------------------------------------------------------------------------------------------------------");
                     do {
                         operationNumber = numberValidUtil.intNumberValid(operationNumber, "1. Назад");
 //                        Вместо if был switch
@@ -198,11 +198,11 @@ public class AdminMenu {
                 case 2:
                     boolean exitOrdersUnderConsiderationMenu = false;
                     System.out.printf("Список заявок на заказ:\n" +
-                            "-----------------------------------------------------------------------------------------------\n" +
-                            "%-6s%-30s%-15s%-15s%-20s%-15s\n", "id", "car", "client", "price", "status", "orderDate\n" +
-                            "-----------------------------------------------------------------------------------------------");
+                            "---------------------------------------------------------------------------------------------------------------------\n" +
+                            "%-6s%-30s%-15s%-15s%-20s%-15s%-6s\n","id", "car", "client", "price", "status","orderDate","rentalPeriod\n" +
+                            "---------------------------------------------------------------------------------------------------------------------");
                     orderService.findOrdersByStatus(OrderStatusConst.UNDER_CONSIDERATION).forEach(System.out::println);
-                    System.out.println("-----------------------------------------------------------------------------------------------");
+                    System.out.println("---------------------------------------------------------------------------------------------------------------------");
                     do {
                         operationNumber = numberValidUtil.intNumberValid(operationNumber, infoAdminMenu.adminOrdersUnderConsiderationMenuInfo());
                         switch (operationNumber) {
@@ -271,7 +271,14 @@ public class AdminMenu {
     private void adminOrderStatusMenu(Order selectedOrder) {
         boolean exitAdminOrderStatusMenu = false;
         do {
-            operationNumber = numberValidUtil.intNumberValid(operationNumber, infoAdminMenu.adminOrderStatusMenuInfo(selectedOrder));
+
+            System.out.printf("Заказ №"+ selectedOrder.getId()+":\n" +
+                    "---------------------------------------------------------------------------------------------------------------------\n" +
+                    "%-6s%-30s%-15s%-15s%-20s%-15s%-6s\n","id", "car", "client", "price", "status","orderDate","rentalPeriod\n" +
+                    "---------------------------------------------------------------------------------------------------------------------\n" +
+                    selectedOrder+"\n" +
+                    "---------------------------------------------------------------------------------------------------------------------");
+            operationNumber = numberValidUtil.intNumberValid(operationNumber, infoAdminMenu.adminOrderStatusMenuInfo());
             switch (operationNumber) {
                 case 1:
 //                     Установка заказу статуса(ОДОБРЕНО)

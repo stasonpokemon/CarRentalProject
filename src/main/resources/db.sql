@@ -47,6 +47,7 @@ CREATE TABLE orders
     price      DOUBLE,
     status     VARCHAR(50),
     order_date datetime,
+    rental_Period INT NOT NULL,
     refund_id  INT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (car_id) REFERENCES cars (id),

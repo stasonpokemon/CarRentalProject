@@ -47,9 +47,8 @@ public class InfoAdminMenu {
                 "2. Назад";
     }
 
-    public String adminOrderStatusMenuInfo(Order selectedOrder) {
-        return "Заказ " + selectedOrder + "\n" +
-                "1. Одобрить\n" +
+    public String adminOrderStatusMenuInfo() {
+        return "1. Одобрить\n" +
                 "2. Отклонить\n" +
                 "3. Назад";
     }

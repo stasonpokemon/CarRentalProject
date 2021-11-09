@@ -1,6 +1,7 @@
 package pojo;
 
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 
@@ -22,6 +23,8 @@ public class Order {
     @Column(name = "order_date", columnDefinition = "datetime")
     @Temporal(TemporalType.TIMESTAMP)
     private Date orderDate;
+    @Column(name = "rental_Period")
+    private int rentalPeriod;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "refund_id", referencedColumnName = "id")
     private Refund refund;
@@ -82,26 +85,37 @@ public class Order {
         this.refund = refund;
     }
 
+    public int getRentalPeriod() {
+        return rentalPeriod;
+    }
+
+    public void setRentalPeriod(int rentalPeriod) {
+        this.rentalPeriod = rentalPeriod;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
-        return id == order.id && Double.compare(order.price, price) == 0 && Objects.equals(car, order.car) && Objects.equals(user, order.user) && Objects.equals(orderStatus, order.orderStatus) && Objects.equals(orderDate, order.orderDate) && Objects.equals(refund, order.refund);
+        return id == order.id && Double.compare(order.price, price) == 0 && rentalPeriod == order.rentalPeriod && Objects.equals(car, order.car) && Objects.equals(user, order.user) && Objects.equals(orderStatus, order.orderStatus) && Objects.equals(orderDate, order.orderDate) && Objects.equals(refund, order.refund);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, car, user, price, orderStatus, orderDate, refund);
+        return Objects.hash(id, car, user, price, orderStatus, orderDate, rentalPeriod, refund);
     }
 
     @Override
     public String toString() {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+
         if (orderDate == null){
-            return String.format("%-6s%-30s%-15s%-15s%-20s",id, car.getModel(), user.getLogin(), price, orderStatus);
+            return String.format("%-6s%-30s%-15s%-15s%-20s%-15s%-6s",id, car.getModel(), user.getLogin(), price, orderStatus,"-",rentalPeriod);
 
         }
-        return String.format("%-6s%-30s%-15s%-15s%-20s%-15s",id, car.getModel(), user.getLogin(), price, orderStatus,orderDate);
+        return String.format("%-6s%-30s%-15s%-15s%-20s%-15s%-6s",id, car.getModel(), user.getLogin(), price, orderStatus,format.format(orderDate),rentalPeriod);
 
     }
 }

@@ -29,13 +29,14 @@ public class OrderDaoImpl implements OrderDaoI {
      */
     @Override
     public void save(Order order) {
-        String sql = "INSERT INTO orders (user_id, car_id, price, status, order_date) VALUES(?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO orders (user_id, car_id, price, status, order_date, rental_Period ) VALUES(?, ?, ?, ?, ?, ?)";
         try (Connection connection = jdbcConnector.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, order.getClient().getId());
             statement.setInt(2, order.getCar().getId());
             statement.setDouble(3, order.getPrice());
             statement.setString(4, order.getOrderStatus());
             statement.setDate(5, (Date) order.getOrderDate());
+            statement.setInt(6, order.getRentalPeriod());
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -48,7 +49,7 @@ public class OrderDaoImpl implements OrderDaoI {
      */
     @Override
     public Order read(int id) {
-        String sqlOrder = "SELECT id, user_id, car_id, price, status, order_date, refund_id FROM orders WHERE id = ?";
+        String sqlOrder = "SELECT id, user_id, car_id, price, status, order_date, rental_Period,  refund_id FROM orders WHERE id = ?";
         String sqlClient = "SELECT id, user_login, user_password, user_role, passport_id FROM users WHERE id = ? AND user_role LIKE ?";
         String sqlCar = "SELECT id, model, price_per_day, employment_status, damage_status FROM cars WHERE id = ?";
         String sqlPassport = "SELECT id, name, surname, patronymic,birthday, address FROM passports WHERE id = ?";
@@ -134,6 +135,7 @@ public class OrderDaoImpl implements OrderDaoI {
                 order.setPrice(resultSetOrder.getDouble("price"));
                 order.setOrderStatus(resultSetOrder.getString("status"));
                 order.setOrderDate(resultSetOrder.getDate("order_date"));
+                order.setRentalPeriod(resultSetOrder.getInt("rental_Period"));
 
                 int refund_id = resultSetOrder.getInt("refund_id");
                 statementRefund.setInt(1, refund_id);
@@ -164,14 +166,16 @@ public class OrderDaoImpl implements OrderDaoI {
 
     @Override
     public void update(Order order) {
-        String sql = "UPDATE oreders SET user_id = ?, car_id = ?, price = ?, status = ?, order_date = ? WHERE id = ?";
+        String sql = "UPDATE oreders SET user_id = ?, car_id = ?, price = ?, status = ?, order_date = ?, rental_Period = ?, refund_id = ?  WHERE id = ?";
         try (Connection connection = jdbcConnector.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, order.getClient().getId());
             statement.setInt(2, order.getCar().getId());
             statement.setDouble(3, order.getPrice());
             statement.setString(4, order.getOrderStatus());
             statement.setDate(5, (Date) order.getOrderDate());
-            statement.setInt(6, order.getId());
+            statement.setInt(6, order.getRentalPeriod());
+            statement.setInt(7, order.getRefund().getId());
+            statement.setInt(8, order.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -194,7 +198,7 @@ public class OrderDaoImpl implements OrderDaoI {
      */
     @Override
     public List<Order> readAll() {
-        String sqlOrder = "SELECT id, user_id, car_id, price, status, order_date, refund_id FROM orders";
+        String sqlOrder = "SELECT id, user_id, car_id, price, status, order_date, rental_Period, refund_id FROM orders";
         String sqlClient = "SELECT id, user_login, user_password, user_role, passport_id FROM users WHERE id = ? AND user_role LIKE ?";
         String sqlCar = "SELECT id, model, price_per_day, employment_status, damage_status FROM cars WHERE id = ?";
         String sqlPassport = "SELECT id, name, surname, patronymic, birthday, address FROM passports WHERE id = ?";
@@ -283,6 +287,7 @@ public class OrderDaoImpl implements OrderDaoI {
                 order.setPrice(resultSetOrder.getDouble("price"));
                 order.setOrderStatus(resultSetOrder.getString("status"));
                 order.setOrderDate(resultSetOrder.getDate("order_date"));
+                order.setRentalPeriod(resultSetOrder.getInt("rental_Period"));
 
                 int refund_id = resultSetOrder.getInt("refund_id");
                 statementRefund.setInt(1, refund_id);
@@ -309,7 +314,7 @@ public class OrderDaoImpl implements OrderDaoI {
      */
     @Override
     public List<Order> findAllOrdersByClient(User user) {
-        String sqlOrder = "SELECT id, user_id, car_id, price, status, order_date, refund_id FROM orders WHERE user_id = ?";
+        String sqlOrder = "SELECT id, user_id, car_id, price, status, order_date, rental_Period, refund_id FROM orders WHERE user_id = ?";
         String sqlClient = "SELECT id, user_login, user_password, user_role, passport_id FROM users WHERE id = ? AND user_role LIKE ?";
         String sqlCar = "SELECT id, model, price_per_day, employment_status, damage_status FROM cars WHERE id = ?";
         String sqlPassport = "SELECT id, name, surname, patronymic, birthday, address FROM passports WHERE id = ?";
@@ -398,6 +403,7 @@ public class OrderDaoImpl implements OrderDaoI {
                 order.setPrice(resultSetOrder.getDouble("price"));
                 order.setOrderStatus(resultSetOrder.getString("status"));
                 order.setOrderDate(resultSetOrder.getDate("order_date"));
+                order.setRentalPeriod(resultSetOrder.getInt("rental_Period"));
 
                 int refund_id = resultSetOrder.getInt("refund_id");
                 statementRefund.setInt(1, refund_id);
@@ -424,7 +430,7 @@ public class OrderDaoImpl implements OrderDaoI {
      */
     @Override
     public List<Order> findOrdersByStatus(String status) {
-        String sqlOrder = "SELECT id, user_id, car_id, price, status, order_date, refund_id FROM orders WHERE status = ?";
+        String sqlOrder = "SELECT id, user_id, car_id, price, status, order_date, rental_Period, refund_id FROM orders WHERE status = ?";
         String sqlClient = "SELECT id, user_login, user_password, user_role, passport_id FROM users WHERE id = ? AND user_role LIKE ?";
         String sqlCar = "SELECT id, model, price_per_day, employment_status, damage_status FROM cars WHERE id = ?";
         String sqlPassport = "SELECT id, name, surname, patronymic, birthday, address FROM passports WHERE id = ?";
@@ -513,6 +519,7 @@ public class OrderDaoImpl implements OrderDaoI {
                 order.setPrice(resultSetOrder.getDouble("price"));
                 order.setOrderStatus(resultSetOrder.getString("status"));
                 order.setOrderDate(resultSetOrder.getDate("order_date"));
+                order.setRentalPeriod(resultSetOrder.getInt("rental_Period"));
 
                 int refund_id = resultSetOrder.getInt("refund_id");
                 statementRefund.setInt(1, refund_id);
@@ -526,6 +533,7 @@ public class OrderDaoImpl implements OrderDaoI {
                     }
                     order.setRefund(refund);
                 }
+
                 orders.add(order);
             }
         } catch (SQLException e) {

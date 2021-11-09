@@ -154,9 +154,9 @@ public class ClientMenu {
                             if (passportValid) {
                                 /*
                                  * Открывается меню оплаты заказа, в него передаётся выбранный автомобиль,
-                                 * цена за выбранный срок аренды и сам клиент
+                                 * цена за выбранный срок аренды, срок аренды и сам клиент
                                  * */
-                                clientOrderPaymentMenu(user, selectedCar, orderPrice);
+                                clientOrderPaymentMenu(user, selectedCar, orderPrice, rentalPeriod);
                                 autoInitMenuExit = true;
                             }else {
                                 System.out.println("Вы не указали паспортные данные...");
@@ -256,12 +256,13 @@ public class ClientMenu {
     /*
      * Меню опаты заказа
      * */
-    private void clientOrderPaymentMenu(User readyUser, Car selectedCar, double orderPrice) {
+    private void clientOrderPaymentMenu(User readyUser, Car selectedCar, double orderPrice, int rentalPeriod) {
         boolean orderPaymentMenuExit = false;
         Order newOrder = new Order();
         newOrder.setClient(readyUser);
         newOrder.setCar(selectedCar);
         newOrder.setPrice(orderPrice);
+        newOrder.setRentalPeriod(rentalPeriod);
         do {
             operationNumber = numberValidUtil.intNumberValid(operationNumber, infoClientMenu.clientOrderPaymentMenuInfo(selectedCar, orderPrice));
             switch (operationNumber) {
@@ -292,11 +293,11 @@ public class ClientMenu {
         do {
             if (orderService.findAllOrdersByClient(user).size() != 0) {
                 System.out.printf("Ваши заказы:\n" +
-                        "-----------------------------------------------------------------------------------------------\n" +
-                        "%-6s%-30s%-15s%-15s%-20s%-15s\n","id", "car", "client", "price", "status","orderDate\n" +
-                        "-----------------------------------------------------------------------------------------------");
+                        "-----------------------------------------------------------------------------------------------------------------\n" +
+                        "%-6s%-30s%-15s%-15s%-20s%-15s%-6s\n","id", "car", "client", "price", "status","orderDate","rentalPeriod\n" +
+                        "-----------------------------------------------------------------------------------------------------------------");
                 orderService.findAllOrdersByClient(user).forEach(System.out::println);
-                System.out.println("-----------------------------------------------------------------------------------------------");
+                System.out.println("-----------------------------------------------------------------------------------------------------------------");
             } else {
                 System.out.println("У вас нет заказов");
             }
