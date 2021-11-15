@@ -1,29 +1,16 @@
 package pojo;
 
-import javax.persistence.*;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
 
-@Entity
-@Table(name = "passports")
 public class ClientPassport {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "name")
     private String name;
-    @Column(name = "surname")
     private String surname;
-    @Column(name = "patronymic")
     private String patronymic;
-    @Column(name = "birthday", columnDefinition = "datetime")
-    @Temporal(TemporalType.TIMESTAMP)
     private Date birthday;
-    @Column(name = "address")
     private String address;
-    @OneToOne(mappedBy = "passport")
     private User user;
 
     public int getId() {

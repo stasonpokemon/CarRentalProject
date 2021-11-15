@@ -1,26 +1,15 @@
 package pojo;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-@Entity
-@Table(name = "users")
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "user_login")
     private String login;
-    @Column(name = "user_password")
     private String password;
-    @Column(name = "user_role")
     private String role;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "passport_id", referencedColumnName = "id")
     private ClientPassport passport;
-    @OneToMany(mappedBy= "user")
 //    Инициализируется при создании паспорта...
     private List<Order> orders = new ArrayList<>();
 
@@ -88,6 +77,5 @@ public class User {
     @Override
     public String toString() {
         return String.format("%-6s%-30s%-15s", id, login, password);
-
     }
 }

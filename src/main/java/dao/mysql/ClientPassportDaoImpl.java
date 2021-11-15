@@ -2,15 +2,13 @@ package dao.mysql;
 
 import dao.Dao;
 import pojo.ClientPassport;
-import utils.JDBCConnector;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClientPassportDaoImpl implements Dao<ClientPassport> {
+public class ClientPassportDaoImpl extends BaseDaoImpl implements ClientPassportDaoI {
 
-    private final JDBCConnector jdbcConnector = JDBCConnector.getInstance();
     private static ClientPassportDaoImpl clientPassportDaoImpl;
 
     public ClientPassportDaoImpl() throws SQLException {
@@ -25,13 +23,16 @@ public class ClientPassportDaoImpl implements Dao<ClientPassport> {
 
     @Override
     public void save(ClientPassport passport) {
-        String sql = "INSERT  INTO passports (name,surname,patronymic,birthday,address) VALUES(?,?,?,?,?)";
-        try (Connection connection = jdbcConnector.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, passport.getName());
-            statement.setString(2, passport.getSurname());
-            statement.setString(3, passport.getPatronymic());
-            statement.setTimestamp(4, (Timestamp) passport.getBirthday());
-            statement.setString(5, passport.getAddress());
+        String sql = "INSERT  INTO passports (id, name,surname,patronymic,birthday,address) VALUES(?,?,?,?,?,?)";
+        PreparedStatement statement = null;
+        try {
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, passport.getId());
+            statement.setString(2, passport.getName());
+            statement.setString(3, passport.getSurname());
+            statement.setString(4, passport.getPatronymic());
+            statement.setTimestamp(5, (Timestamp) passport.getBirthday());
+            statement.setString(6, passport.getAddress());
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -43,7 +44,9 @@ public class ClientPassportDaoImpl implements Dao<ClientPassport> {
         String sql = "SELECT id,name,surname,patronymic,birthday,address FROM passports WHERE id = ?";
         ClientPassport passport = null;
         ResultSet resultSet = null;
-        try (Connection connection = jdbcConnector.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+        PreparedStatement statement = null;
+        try {
+            statement = connection.prepareStatement(sql);
             statement.setInt(1, id);
             resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -72,7 +75,9 @@ public class ClientPassportDaoImpl implements Dao<ClientPassport> {
     @Override
     public void update(ClientPassport passport) {
         String sql = "UPDATE passports SET name = ?,surname = ?,patronymic = ?, birthday = ?,address = ? WHERE id = ?";
-        try (Connection connection = jdbcConnector.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+        PreparedStatement statement = null;
+        try {
+            statement = connection.prepareStatement(sql);
             statement.setString(1, passport.getName());
             statement.setString(2, passport.getSurname());
             statement.setString(3, passport.getPatronymic());
@@ -88,7 +93,9 @@ public class ClientPassportDaoImpl implements Dao<ClientPassport> {
     @Override
     public void delete(ClientPassport passport) {
         String sql = "DELETE FROM passports WHERE id = ?";
-        try (Connection connection = jdbcConnector.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+        PreparedStatement statement = null;
+        try {
+            statement = connection.prepareStatement(sql);
             statement.setInt(1, passport.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -101,7 +108,9 @@ public class ClientPassportDaoImpl implements Dao<ClientPassport> {
         String sql = "SELECT id,name,surname,patronymic,birthday,address FROM passports";
         List<ClientPassport> passports = new ArrayList<>();
         ResultSet resultSet = null;
-        try (Connection connection = jdbcConnector.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+        PreparedStatement statement = null;
+        try {
+            statement = connection.prepareStatement(sql);
             resultSet = statement.executeQuery();
             ClientPassport passport = null;
             while (resultSet.next()) {
@@ -127,4 +136,25 @@ public class ClientPassportDaoImpl implements Dao<ClientPassport> {
         }
         return passports;
     }
+
+    @Override
+    public int getMaxClientPassportId() {
+        String sql = "SELECT MAX(id) FROM passports";
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        int id = 0;
+        try {
+            statement = connection.prepareStatement(sql);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()){
+                id = resultSet.getInt("MAX(id)");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return id;
+    }
+
+
 }

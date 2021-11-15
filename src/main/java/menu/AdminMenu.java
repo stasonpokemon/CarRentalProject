@@ -285,7 +285,8 @@ public class AdminMenu {
                     selectedOrder.setOrderStatus(OrderStatusConst.APPROVES);
 //                    Установка времени заказа
                     selectedOrder.setOrderDate(new Timestamp(new GregorianCalendar().getTimeInMillis()));
-
+//                    У заказа пока нет возврата
+//                    selectedOrder.setRefund(null);
                     orderService.update(selectedOrder);
                     System.out.println("Заказ одобрен...");
                     /*
@@ -298,13 +299,17 @@ public class AdminMenu {
                     selectedOrder.setOrderStatus(OrderStatusConst.REJECT);
 //                    Установка времени заказа
                     selectedOrder.setOrderDate(new Timestamp(new GregorianCalendar().getTimeInMillis()));
+//                    Уотклонённого заказа нет возврата
+//                    selectedOrder.setRefund(null);
                     orderService.update(selectedOrder);
                     System.out.println("Заказ отклонён...");
                     /*
                      * Если заказ отменён, то автомобилю возвращается статус(СВОБОДНА)
                      * */
                     Car orderCar = selectedOrder.getCar();
-                    carService.setCarStatusToFree(orderCar);
+//                    Смена статуса автомобиля на (свободно)
+                    orderCar.setEmploymentStatus(EmploymentStatusConst.FREE);
+                    carService.update(orderCar);
                     exitAdminOrderStatusMenu = true;
                     break;
                 case 3:
@@ -374,54 +379,37 @@ public class AdminMenu {
         operationNumber = numberValidUtil.intNumberValid(operationNumber, infoAdminMenu.registeringRefund(car));
         switch (operationNumber) {
             case 1:
-                /*
-                 * Создаём объект возврата
-                 * */
+//                Создаём объект возврата
                 newRefund = new Refund();
-                newRefund.setOrder(order);
                 newRefund.setDamageStatus(DamageStatusConst.WITHOUT_DAMAGE);
                 newRefund.setPrice(0);
-                /*
-                 * Устанавливаем автомобилю статус(свободно)
-                 * */
-                carService.setCarStatusToFree(car);
-                /*
-                 * Устанавливаем заказу статус(возврат)
-                 * */
+                refundService.addNewRefund(newRefund);
+
+//                Устанавливаем заказу статус(возврат)
                 order.setOrderStatus(OrderStatusConst.REFUND);
-                /*
-                 * Добавляем заказу возврат
-                 * */
+//                Добавляем заказу возврат
                 order.setRefund(newRefund);
-                orderService.update(order);
-//                refundService.addNewRefund(newRefund);
+                orderService.updateWithRefund(order);
+
+//                Добавляем возврату заказ
+                newRefund.setOrder(order);
+                refundService.update(newRefund);
+
+//              Устанавливаем автомобилю статус(свободно)
+                car.setEmploymentStatus(EmploymentStatusConst.FREE);
+                carService.update(car);
+
                 System.out.println("Возврат оформлен...");
                 break;
             case 2:
                 double price = 0;
                 String typeDamage;
-                /*
-                 * Создаём объект возврата
-                 * */
+//                Создаём объект возврата
                 newRefund = new Refund();
-                /*
-                 * Устанавливаем автомобилю статус повреждения(повреждён)
-                 * */
-                carService.setCarDamageStatusToWithDamage(car);
-                /*
-                 * Устанавливаем заказу статус(возврат)
-                 * */
-                order.setOrderStatus(OrderStatusConst.REFUND);
-                orderService.update(order);
-
-                /*
-                 * Указываем тип повреждения
-                 * */
+//                Указываем тип повреждения
                 System.out.println("Укажите тип повреждения:");
                 typeDamage = scanner.nextLine();
-                /*
-                 * Устанавливаем счёт за ремон
-                 * */
+//                Устанавливаем счёт за ремон
                 boolean priceValid = false;
                 do {
                     price = numberValidUtil.doubleNumberValid(price, "Укажите счёт за ремонт:");
@@ -431,11 +419,26 @@ public class AdminMenu {
                         System.out.println("Цена не может быть меньше нуля...");
                     }
                 } while (!priceValid);
-                newRefund.setOrder(order);
                 newRefund.setDamageStatus(DamageStatusConst.WITH_DAMAGE);
                 newRefund.setTypeDamage(typeDamage);
                 newRefund.setPrice(price);
+//                Сохраняем возврат в бд
                 refundService.addNewRefund(newRefund);
+
+//               Устанавливаем заказу статус(возврат)
+                order.setOrderStatus(OrderStatusConst.REFUND);
+//                Добавляем заказу возврат
+                order.setRefund(newRefund);
+                orderService.updateWithRefund(order);
+
+//                Добавляем возврату заказ
+                newRefund.setOrder(order);
+                refundService.update(newRefund);
+
+//                Устанавливаем автомобилю статус повреждения(повреждён)
+                car.setDamageStatus(DamageStatusConst.WITH_DAMAGE);
+                carService.update(car);
+
                 System.out.println("Возврат оформлен...");
                 break;
             default:

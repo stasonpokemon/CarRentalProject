@@ -12,5 +12,11 @@ public interface UserDaoI extends Dao<User> {
      * */
     List<User> findAllClients();
 
+    /*
+    * Получить максимальный id users
+    * */
+
+    int getMaxUserId();
+
 
 }

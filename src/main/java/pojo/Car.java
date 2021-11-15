@@ -1,23 +1,14 @@
 package pojo;
 
-import javax.persistence.*;
 import java.util.Objects;
 
-@Entity
-@Table(name = "cars")
+
 public class Car {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String model;
-    @Column(name = "price_per_day")
     private double pricePerDay;
-    @Column(name = "employment_status")
     private String employmentStatus;
-    @Column(name = "damage_status")
     private String damageStatus;
-//    @OneToMany(mappedBy="car")
-//    private List<Order> orders;
 
     public int getId() {
         return id;
@@ -75,12 +66,5 @@ public class Car {
     @Override
     public String toString() {
         return String.format("%-15s%-30s%-15s%-25s%-15s", id, model, pricePerDay, employmentStatus, damageStatus);
-//        return "Car{" +
-//                "id=" + id +
-//                ", model='" + model + '\'' +
-//                ", pricePerDay=" + pricePerDay +
-//                ", employmentStatus='" + employmentStatus + '\'' +
-//                ", damageStatus='" + damageStatus + '\'' +
-//                '}';
     }
 }

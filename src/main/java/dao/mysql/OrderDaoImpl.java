@@ -2,21 +2,19 @@ package dao.mysql;
 
 import pojo.*;
 import pojo.constant.UserRoleConst;
-import utils.JDBCConnector;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderDaoImpl implements OrderDaoI {
+public class OrderDaoImpl extends BaseDaoImpl implements OrderDaoI {
 
-    private final JDBCConnector jdbcConnector = JDBCConnector.getInstance();
     private static OrderDaoImpl orderDaoImpl;
 
     public OrderDaoImpl() throws SQLException {
     }
 
-    public static OrderDaoImpl getOrderDao() throws SQLException {
+    public static OrderDaoImpl getOrderDaoImpl() throws SQLException {
         if (orderDaoImpl == null) {
             orderDaoImpl = new OrderDaoImpl();
         }
@@ -29,20 +27,23 @@ public class OrderDaoImpl implements OrderDaoI {
      */
     @Override
     public void save(Order order) {
-        String sql = "INSERT INTO orders (user_id, car_id, price, status, order_date, rental_Period ) VALUES(?, ?, ?, ?, ?, ?)";
-        try (Connection connection = jdbcConnector.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, order.getClient().getId());
-            statement.setInt(2, order.getCar().getId());
-            statement.setDouble(3, order.getPrice());
-            statement.setString(4, order.getOrderStatus());
-            statement.setDate(5, (Date) order.getOrderDate());
-            statement.setInt(6, order.getRentalPeriod());
+        String sql = "INSERT INTO orders (id, user_id, car_id, price, status, order_date, rental_Period/*, refund_id*/) VALUES(?, ?, ?, ?, ?, ?, ?/*, ?*/)";
+        PreparedStatement statement = null;
+        try {
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, order.getId());
+            statement.setInt(2, order.getClient().getId());
+            statement.setInt(3, order.getCar().getId());
+            statement.setDouble(4, order.getPrice());
+            statement.setString(5, order.getOrderStatus());
+            statement.setTimestamp(6, order.getOrderDate());
+            statement.setInt(7, order.getRentalPeriod());
+//            statement.setInt(8, order.getRefund().getId());
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
 
     /**
      * Работает!!!!!!!!!!!!!!, но по отдельности
@@ -72,7 +73,7 @@ public class OrderDaoImpl implements OrderDaoI {
         Car car = null;
         ClientPassport passport = null;
         Refund refund = null;
-        try (Connection connection = jdbcConnector.getConnection()) {
+        try {
             statementOrder = connection.prepareStatement(sqlOrder);
             statementClient = connection.prepareStatement(sqlClient);
             statementCar = connection.prepareStatement(sqlCar);
@@ -134,7 +135,7 @@ public class OrderDaoImpl implements OrderDaoI {
 
                 order.setPrice(resultSetOrder.getDouble("price"));
                 order.setOrderStatus(resultSetOrder.getString("status"));
-                order.setOrderDate(resultSetOrder.getDate("order_date"));
+                order.setOrderDate(resultSetOrder.getTimestamp("order_date"));
                 order.setRentalPeriod(resultSetOrder.getInt("rental_Period"));
 
                 int refund_id = resultSetOrder.getInt("refund_id");
@@ -164,15 +165,44 @@ public class OrderDaoImpl implements OrderDaoI {
         return order;
     }
 
+
+    /*
+     * Обновление без указания возврата
+     * */
     @Override
     public void update(Order order) {
-        String sql = "UPDATE oreders SET user_id = ?, car_id = ?, price = ?, status = ?, order_date = ?, rental_Period = ?, refund_id = ?  WHERE id = ?";
-        try (Connection connection = jdbcConnector.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+        String sql = "UPDATE orders SET user_id = ?, car_id = ?, price = ?, status = ?, order_date = ?, rental_Period = ?/*, refund_id = ?*/  WHERE id = ?";
+        PreparedStatement statement = null;
+        try {
+            statement = connection.prepareStatement(sql);
             statement.setInt(1, order.getClient().getId());
             statement.setInt(2, order.getCar().getId());
             statement.setDouble(3, order.getPrice());
             statement.setString(4, order.getOrderStatus());
-            statement.setDate(5, (Date) order.getOrderDate());
+            statement.setTimestamp(5, order.getOrderDate());
+            statement.setInt(6, order.getRentalPeriod());
+//            statement.setInt(7, order.getRefund().getId());
+            statement.setInt(7, order.getId());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*
+     * Обновление с указанием возврата
+     * */
+    @Override
+    public void updateWithRefund(Order order) {
+        String sql = "UPDATE orders SET user_id = ?, car_id = ?, price = ?, status = ?, order_date = ?, rental_Period = ?, refund_id = ?  WHERE id = ?";
+        PreparedStatement statement = null;
+        try {
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, order.getClient().getId());
+            statement.setInt(2, order.getCar().getId());
+            statement.setDouble(3, order.getPrice());
+            statement.setString(4, order.getOrderStatus());
+            statement.setTimestamp(5, order.getOrderDate());
             statement.setInt(6, order.getRentalPeriod());
             statement.setInt(7, order.getRefund().getId());
             statement.setInt(8, order.getId());
@@ -185,7 +215,9 @@ public class OrderDaoImpl implements OrderDaoI {
     @Override
     public void delete(Order order) {
         String sql = "DELETE FROM orders WHERE id = ?";
-        try (Connection connection = jdbcConnector.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+        PreparedStatement statement = null;
+        try {
+            statement = connection.prepareStatement(sql);
             statement.setInt(1, order.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -224,7 +256,7 @@ public class OrderDaoImpl implements OrderDaoI {
         Refund refund = null;
 
 
-        try (Connection connection = jdbcConnector.getConnection()) {
+        try {
             statementOrder = connection.prepareStatement(sqlOrder);
             statementClient = connection.prepareStatement(sqlClient);
             statementCar = connection.prepareStatement(sqlCar);
@@ -286,7 +318,7 @@ public class OrderDaoImpl implements OrderDaoI {
 
                 order.setPrice(resultSetOrder.getDouble("price"));
                 order.setOrderStatus(resultSetOrder.getString("status"));
-                order.setOrderDate(resultSetOrder.getDate("order_date"));
+                order.setOrderDate(resultSetOrder.getTimestamp("order_date"));
                 order.setRentalPeriod(resultSetOrder.getInt("rental_Period"));
 
                 int refund_id = resultSetOrder.getInt("refund_id");
@@ -340,7 +372,7 @@ public class OrderDaoImpl implements OrderDaoI {
         Refund refund = null;
 
 
-        try (Connection connection = jdbcConnector.getConnection()) {
+        try {
             statementOrder = connection.prepareStatement(sqlOrder);
             statementClient = connection.prepareStatement(sqlClient);
             statementCar = connection.prepareStatement(sqlCar);
@@ -402,7 +434,7 @@ public class OrderDaoImpl implements OrderDaoI {
 
                 order.setPrice(resultSetOrder.getDouble("price"));
                 order.setOrderStatus(resultSetOrder.getString("status"));
-                order.setOrderDate(resultSetOrder.getDate("order_date"));
+                order.setOrderDate(resultSetOrder.getTimestamp("order_date"));
                 order.setRentalPeriod(resultSetOrder.getInt("rental_Period"));
 
                 int refund_id = resultSetOrder.getInt("refund_id");
@@ -456,7 +488,7 @@ public class OrderDaoImpl implements OrderDaoI {
         Refund refund = null;
 
 
-        try (Connection connection = jdbcConnector.getConnection()) {
+        try {
             statementOrder = connection.prepareStatement(sqlOrder);
             statementClient = connection.prepareStatement(sqlClient);
             statementCar = connection.prepareStatement(sqlCar);
@@ -518,7 +550,7 @@ public class OrderDaoImpl implements OrderDaoI {
 
                 order.setPrice(resultSetOrder.getDouble("price"));
                 order.setOrderStatus(resultSetOrder.getString("status"));
-                order.setOrderDate(resultSetOrder.getDate("order_date"));
+                order.setOrderDate(resultSetOrder.getTimestamp("order_date"));
                 order.setRentalPeriod(resultSetOrder.getInt("rental_Period"));
 
                 int refund_id = resultSetOrder.getInt("refund_id");
@@ -540,6 +572,25 @@ public class OrderDaoImpl implements OrderDaoI {
             e.printStackTrace();
         }
         return orders;
+    }
+
+    @Override
+    public int getMaxOrderId() {
+        String sql = "SELECT MAX(id) FROM orders";
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        int id = 0;
+        try {
+            statement = connection.prepareStatement(sql);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                id = resultSet.getInt("MAX(id)");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return id;
     }
 
 }

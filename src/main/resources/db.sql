@@ -5,7 +5,7 @@ use car_rental;
 
 CREATE TABLE passports
 (
-    id             INT PRIMARY KEY AUTO_INCREMENT,
+    id             INT PRIMARY KEY,
     name           VARCHAR(50),
     surname        VARCHAR(50),
     patronymic     VARCHAR(50),
@@ -15,7 +15,7 @@ CREATE TABLE passports
 
 CREATE TABLE users
 (
-    id              INT PRIMARY KEY AUTO_INCREMENT,
+    id              INT PRIMARY KEY,
     user_login      VARCHAR(50),
     user_password   VARCHAR(50),
     user_role       VARCHAR(50),
@@ -24,64 +24,66 @@ CREATE TABLE users
 );
 
 INSERT INTO users
-VALUE (NULL, 'stason420','s200113','CLIENT',NULL );
+VALUE (1, 'admin','root','ADMIN',NULL );
 INSERT INTO users
-VALUE (NULL, 'nesty420','n200104','CLIENT',NULL );
+VALUE (2, 'stason420','s200113','CLIENT',NULL );
 INSERT INTO users
-VALUE (NULL, 'admin','root','ADMIN',NULL );
+VALUE (3, 'nesty420','n200104','CLIENT',NULL );
+
 
 CREATE TABLE cars
 (
-    id                INT PRIMARY KEY AUTO_INCREMENT,
+    id                INT PRIMARY KEY,
     model             VARCHAR(50),
     price_per_day     DOUBLE,
     employment_status VARCHAR(50),
     damage_status     VARCHAR(50)
 );
 
+CREATE TABLE refunds
+(
+    id                INT PRIMARY KEY,
+    damage_status     VARCHAR(50),
+    type_damage       VARCHAR(50),
+    price             DOUBLE
+);
+
 CREATE TABLE orders
 (
-    id         INT PRIMARY KEY AUTO_INCREMENT,
+    id         INT PRIMARY KEY,
     user_id    INT NOT NULL,
     car_id     INT NOT NULL,
     price      DOUBLE,
     status     VARCHAR(50),
     order_date datetime,
     rental_Period INT NOT NULL,
-    refund_id  INT NOT NULL,
+    refund_id  INT,
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (car_id) REFERENCES cars (id),
     FOREIGN KEY (refund_id) REFERENCES refunds (id)
 );
 
-CREATE TABLE refunds
-(
-    id                INT PRIMARY KEY AUTO_INCREMENT,
-    damage_status     VARCHAR(50),
-    type_damage       VARCHAR(50),
-    price             DOUBLE,
-    FOREIGN KEY (order_id) REFERENCES orders (id)
-);
+
 
 
 
 INSERT INTO cars
-VALUES (NULL, 'MERCEDES s63 AMG', 210, 'FREE', 'WITHOUT DAMAGE');
+VALUES (1, 'MERCEDES s63 AMG', 210, 'FREE', 'WITHOUT DAMAGE');
 
 INSERT INTO cars
-VALUES (NULL, 'Tesla model x', 140, 'FREE', 'WITHOUT DAMAGE');
+VALUES (2, 'Tesla model x', 140, 'FREE', 'WITHOUT DAMAGE');
 
 INSERT INTO cars
-VALUES (NULL, 'MERCEDES g63 AMG', 200, 'FREE', 'WITHOUT DAMAGE');
+VALUES (3, 'MERCEDES g63 AMG', 200, 'FREE', 'WITHOUT DAMAGE');
 
 INSERT INTO cars
-VALUES (NULL, 'Nissan GTR',200,'FREE','WITHOUT DAMAGE');
+VALUES (4, 'Nissan GTR',200,'FREE','WITHOUT DAMAGE');
 
 INSERT INTO cars
-VALUES (NULL, 'Porsche 911',280,'FREE','WITHOUT DAMAGE');
+VALUES (5, 'Porsche 911',280,'FREE','WITHOUT DAMAGE');
 
 INSERT INTO cars
-VALUES (NULL, 'Porsche 911 Turbo S',320,'FREE','WITHOUT DAMAGE');
+VALUES (6, 'Porsche 911 Turbo S',320,'FREE','WITHOUT DAMAGE');
 
 INSERT INTO cars
-VALUES (NULL, 'Porsche Cayenne',220,'FREE','WITHOUT DAMAGE');
+VALUES (7, 'Porsche Cayenne',220,'FREE','WITHOUT DAMAGE');

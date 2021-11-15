@@ -1,32 +1,17 @@
 package pojo;
 
-import javax.persistence.*;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Objects;
 
-@Entity
-@Table(name = "orders")
 public class Order {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @ManyToOne
-    @JoinColumn(name = "car_id", nullable=false)
     private Car car;
-    @ManyToOne
-    @JoinColumn(name="user_id", nullable=false)
     private User user;
     private double price;
-    @Column(name = "status")
     private String orderStatus;
-    @Column(name = "order_date", columnDefinition = "datetime")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date orderDate;
-    @Column(name = "rental_Period")
+    private Timestamp orderDate;
     private int rentalPeriod;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "refund_id", referencedColumnName = "id")
     private Refund refund;
 
     public int getId() {
@@ -69,11 +54,11 @@ public class Order {
         this.orderStatus = status;
     }
 
-    public Date getOrderDate() {
+    public Timestamp getOrderDate() {
         return orderDate;
     }
 
-    public void setOrderDate(Date orderDate) {
+    public void setOrderDate(Timestamp orderDate) {
         this.orderDate = orderDate;
     }
 
@@ -109,11 +94,8 @@ public class Order {
     @Override
     public String toString() {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-
-
         if (orderDate == null){
             return String.format("%-6s%-30s%-15s%-15s%-20s%-15s%-6s",id, car.getModel(), user.getLogin(), price, orderStatus,"-",rentalPeriod);
-
         }
         return String.format("%-6s%-30s%-15s%-15s%-20s%-15s%-6s",id, car.getModel(), user.getLogin(), price, orderStatus,format.format(orderDate),rentalPeriod);
 

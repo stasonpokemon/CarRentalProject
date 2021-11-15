@@ -1,27 +1,19 @@
 package pojo;
 
-import javax.persistence.*;
 import java.util.Objects;
 
-@Entity
-@Table(name = "refunds")
 public class Refund {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    @OneToOne(mappedBy = "refund")
+    private Integer id;
     private Order order;
-    @Column(name = "damage_status")
     private String damageStatus;
-    @Column(name = "type_damage")
     private String typeDamage;
     private double price;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

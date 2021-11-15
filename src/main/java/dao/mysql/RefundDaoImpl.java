@@ -2,17 +2,14 @@ package dao.mysql;
 
 import dao.Dao;
 import pojo.Refund;
-import utils.JDBCConnector;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RefundDaoImpl implements Dao<Refund> {
-    private final JDBCConnector jdbcConnector = JDBCConnector.getInstance();
+public class RefundDaoImpl extends BaseDaoImpl implements RefundDaoI{
 
     public RefundDaoImpl() throws SQLException {
     }
@@ -30,11 +27,11 @@ public class RefundDaoImpl implements Dao<Refund> {
     public void save(Refund refund) {
         String sql = "INSERT INTO refunds (id, damage_status, type_damage, price)  VALUES(?, ?, ?, ?)";
         PreparedStatement statement;
-        try (Connection connection = jdbcConnector.getConnection();) {
+        try {
             statement = connection.prepareStatement(sql);
             statement.setInt(1, refund.getId());
             statement.setString(2, refund.getDamageStatus());
-            statement.setString(3,refund.getTypeDamage());
+            statement.setString(3, refund.getTypeDamage());
             statement.setDouble(4, refund.getPrice());
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -48,7 +45,7 @@ public class RefundDaoImpl implements Dao<Refund> {
         PreparedStatement statement;
         ResultSet resultSet;
         Refund refund = null;
-        try (Connection connection = jdbcConnector.getConnection()) {
+        try {
             statement = connection.prepareStatement(sql);
             statement.setInt(1, id);
             resultSet = statement.executeQuery();
@@ -69,7 +66,7 @@ public class RefundDaoImpl implements Dao<Refund> {
     public void update(Refund refund) {
         String sql = "UPDATE refunds SET damage_status = ?, type_damage = ?, price = ?  WHERE id = ?";
         PreparedStatement statement;
-        try (Connection connection = jdbcConnector.getConnection()) {
+        try {
             statement = connection.prepareStatement(sql);
             statement.setString(1, refund.getDamageStatus());
             statement.setString(2, refund.getTypeDamage());
@@ -85,7 +82,7 @@ public class RefundDaoImpl implements Dao<Refund> {
     public void delete(Refund refund) {
         String sql = "DELETE FROM refunds WHERE id = ?";
         PreparedStatement statement;
-        try (Connection connection = jdbcConnector.getConnection()) {
+        try {
             statement = connection.prepareStatement(sql);
             statement.setInt(1, refund.getId());
             statement.executeUpdate();
@@ -101,7 +98,7 @@ public class RefundDaoImpl implements Dao<Refund> {
         ResultSet resultSet;
         List<Refund> refunds = new ArrayList<>();
         Refund refund;
-        try (Connection connection = jdbcConnector.getConnection()) {
+        try {
             statement = connection.prepareStatement(sql);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -116,5 +113,24 @@ public class RefundDaoImpl implements Dao<Refund> {
             e.printStackTrace();
         }
         return refunds;
+    }
+
+    @Override
+    public int getMaxRefundId() {
+        String sql = "SELECT MAX(id) FROM refunds";
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        int id = 0;
+        try {
+            statement = connection.prepareStatement(sql);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                id = resultSet.getInt("MAX(id)");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return id;
     }
 }

@@ -1,20 +1,27 @@
 package services;
 
-import dao.OrderDao;
+import dao.mysql.OrderDaoImpl;
 import pojo.User;
 import pojo.Order;
 
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.List;
 
 public class OrderService {
-    private final OrderDao orderDao = OrderDao.getOrderDao();
+    private final OrderDaoImpl orderDaoImpl = OrderDaoImpl.getOrderDaoImpl();
 
     private static OrderService orderService;
 
+    public OrderService() throws SQLException {
+    }
+
     public static OrderService getOrderService() {
         if (orderService == null) {
-            orderService = new OrderService();
+            try {
+                orderService = new OrderService();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return orderService;
     }
@@ -23,46 +30,43 @@ public class OrderService {
      * Список всех заказов
      * */
     public List<Order> findAllOrders() {
-        List<Order> orders = orderDao.readAll();
-        return orders;
+        return orderDaoImpl.readAll();
     }
 
     /*
      * Список заказов определённого клиента
      * */
     public List<Order> findAllOrdersByClient(User user) {
-        List<Order> ordersByClient = new ArrayList<>();
-        findAllOrders().forEach(order -> {
-            if (order.getClient().getId() == user.getId()) {
-                ordersByClient.add(order);
-            }
-        });
-        return ordersByClient;
+        return orderDaoImpl.findAllOrdersByClient(user);
     }
 
 
     /*
      * Список заказов с определённым статусом
      * */
-    public  List<Order> findOrdersByStatus (String status){
-        List<Order> ordersRejected = new ArrayList<>();
-        findAllOrders().forEach(order -> {
-            if (order.getOrderStatus().equals(status)){
-                ordersRejected.add(order);
-            }
-        });
-        return ordersRejected;
+    public List<Order> findOrdersByStatus(String status) {
+        return orderDaoImpl.findOrdersByStatus(status);
     }
 
     /*
      * Создание нового заказа
      * */
     public void addOrder(Order order) {
-        orderDao.save(order);
+        int maxOrderId = orderDaoImpl.getMaxOrderId();
+        if (maxOrderId != 0){
+            order.setId(maxOrderId + 1);
+        }else {
+            order.setId(1);
+        }
+        orderDaoImpl.save(order);
     }
 
     public void update(Order order) {
-        orderDao.update(order);
+        orderDaoImpl.update(order);
+    }
+
+    public void updateWithRefund(Order order) {
+        orderDaoImpl.updateWithRefund(order);
     }
 
 }

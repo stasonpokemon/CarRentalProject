@@ -1,15 +1,13 @@
 package menu;
 
 import dao.mysql.UserDaoImpl;
-import pojo.Car;
-import pojo.ClientPassport;
-import pojo.Order;
+import pojo.*;
+import pojo.constant.EmploymentStatusConst;
 import pojo.constant.OrderStatusConst;
 import services.CarService;
 import services.ClientPassportService;
 import services.UserService;
 import info.InfoClientMenu;
-import pojo.User;
 import services.OrderService;
 import utils.NumberValidUtil;
 
@@ -237,20 +235,13 @@ public class ClientMenu {
         newPassport.setAddress(address);
 
 //        Если мы работаем с собственным пулом соединений, то эта строчка с добавлением паспорта в бд нужна
-//        passportService.addNewPassport(newPassport);
+        passportService.addNewPassport(newPassport);
 
 //        Добавляем клиенту паспорт
         user.setPassport(newPassport);
 //        Без обьявления листа заказов выдаёт ошибку
         user.setOrders(new ArrayList<>()); // Обязательно
         userService.update(user);
-
-//        Обновление клиента собственным пулом соединений
-//        try {
-//            UserDaoImpl.getUserDaoImpl().update(user);
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
     }
 
     /*
@@ -268,8 +259,15 @@ public class ClientMenu {
             switch (operationNumber) {
                 case 1:
                     orderPaymentMenuExit = true;
+
+
+                    Refund refund = new Refund();
+                    refund.setId(1);
+                    newOrder.setRefund(refund);
                     newOrder.setOrderStatus(OrderStatusConst.UNDER_CONSIDERATION);
-                    carService.setCarStatusToOccupied(selectedCar);
+//                    Смена статуса автомобиля на (занято)
+                    selectedCar.setEmploymentStatus(EmploymentStatusConst.OCCUPIED);
+                    carService.update(selectedCar);
                     orderService.addOrder(newOrder);
                     System.out.println("Опдата произошла успешно...");
                     break;
