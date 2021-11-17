@@ -86,6 +86,6 @@ public class ClientPassport {
     @Override
     public String toString() {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        return String.format("%-6s%-20s%-20s%-20s%-20s%-20s", id, name, surname, patronymic, format.format(birthday), address);
+        return String.format("%-20s%-20s%-20s%-20s%-20s",name, surname, patronymic, format.format(birthday), address);
     }
 }

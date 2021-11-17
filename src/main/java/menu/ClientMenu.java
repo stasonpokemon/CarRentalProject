@@ -1,6 +1,5 @@
 package menu;
 
-import dao.mysql.UserDaoImpl;
 import pojo.*;
 import pojo.constant.EmploymentStatusConst;
 import pojo.constant.OrderStatusConst;
@@ -11,7 +10,6 @@ import info.InfoClientMenu;
 import services.OrderService;
 import utils.NumberValidUtil;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;

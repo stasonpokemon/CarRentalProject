@@ -7,7 +7,6 @@ import pojo.constant.UserRoleConst;
 import services.UserService;
 import utils.NumberValidUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 

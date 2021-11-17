@@ -234,7 +234,7 @@ public class OrderDaoImpl extends BaseDaoImpl implements OrderDaoI {
         String sqlClient = "SELECT id, user_login, user_password, user_role, passport_id FROM users WHERE id = ? AND user_role LIKE ?";
         String sqlCar = "SELECT id, model, price_per_day, employment_status, damage_status FROM cars WHERE id = ?";
         String sqlPassport = "SELECT id, name, surname, patronymic, birthday, address FROM passports WHERE id = ?";
-        String sqlRefund = "SELECT id, damage_status, price FROM refunds WHERE id = ?";
+        String sqlRefund = "SELECT id, damage_status, type_damage, price FROM refunds WHERE id = ?";
         List<Order> orders = new ArrayList<>();
 
         PreparedStatement statementOrder = null;
@@ -329,6 +329,7 @@ public class OrderDaoImpl extends BaseDaoImpl implements OrderDaoI {
                         refund = new Refund();
                         refund.setId(resultSetRefund.getInt("id"));
                         refund.setDamageStatus(resultSetRefund.getString("damage_status"));
+                        refund.setTypeDamage(resultSetRefund.getString("type_damage"));
                         refund.setPrice(resultSetRefund.getDouble("price"));
                     }
                     order.setRefund(refund);

@@ -1,6 +1,5 @@
 package utils;
 
-import com.mysql.jdbc.Driver;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -23,7 +22,7 @@ public class JDBCConnector {
         return instance;
     }
     // Объект, в котором будет храниться соединение с БД
-    private Connection connection;
+    private final Connection connection;
 
     private JDBCConnector() throws SQLException {
         // Регистрируем драйвер, с которым будем работать

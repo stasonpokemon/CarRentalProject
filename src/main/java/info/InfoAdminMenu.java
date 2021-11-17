@@ -50,7 +50,8 @@ public class InfoAdminMenu {
     public String adminOrderStatusMenuInfo() {
         return "1. Одобрить\n" +
                 "2. Отклонить\n" +
-                "3. Назад";
+                "3. Паспортные даные клиента\n"+
+                "4. Назад";
     }
 
     public String adminClientsMenuInfo() {

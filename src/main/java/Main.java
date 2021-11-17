@@ -1,3 +1,5 @@
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import dao.mysql.*;
 import menu.HomeMenu;
 import pojo.Car;
@@ -9,6 +11,8 @@ import pojo.constant.OrderStatusConst;
 import pojo.constant.UserRoleConst;
 import services.UserService;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -28,9 +32,16 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) throws SQLException {
 
-        HomeMenu homeMenu = HomeMenu.getHomeMenu();
-        homeMenu.menu();
+//        HomeMenu homeMenu = HomeMenu.getHomeMenu();
+//        homeMenu.menu();
 
+        List<Order> orders = OrderDaoImpl.getOrderDaoImpl().readAll();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        try (FileWriter writer = new FileWriter("test.json")) {
+            gson.toJson(orders,writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
 //        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

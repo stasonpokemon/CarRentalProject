@@ -1,0 +1,129 @@
+[
+  {
+    "id": 1,
+    "car": {
+      "id": 1,
+      "model": "MERCEDES s63 AMG",
+      "pricePerDay": 210.0,
+      "employmentStatus": "FREE",
+      "damageStatus": "WITHOUT DAMAGE"
+    },
+    "user": {
+      "id": 2,
+      "login": "stason420",
+      "password": "s200113",
+      "role": "CLIENT",
+      "passport": {
+        "id": 1,
+        "name": "Stnislav",
+        "surname": "Trebnikov",
+        "patronymic": "Andreevich",
+        "birthday": "Jul 13, 2001 12:00:00 AM",
+        "address": "Vitebsk"
+      },
+      "orders": []
+    },
+    "price": 2940.0,
+    "orderStatus": "REJECT",
+    "orderDate": "Nov 15, 2021 2:51:10 PM",
+    "rentalPeriod": 14
+  },
+  {
+    "id": 2,
+    "car": {
+      "id": 1,
+      "model": "MERCEDES s63 AMG",
+      "pricePerDay": 210.0,
+      "employmentStatus": "FREE",
+      "damageStatus": "WITHOUT DAMAGE"
+    },
+    "user": {
+      "id": 2,
+      "login": "stason420",
+      "password": "s200113",
+      "role": "CLIENT",
+      "passport": {
+        "id": 1,
+        "name": "Stnislav",
+        "surname": "Trebnikov",
+        "patronymic": "Andreevich",
+        "birthday": "Jul 13, 2001 12:00:00 AM",
+        "address": "Vitebsk"
+      },
+      "orders": []
+    },
+    "price": 1470.0,
+    "orderStatus": "REFUND",
+    "orderDate": "Nov 15, 2021 2:53:54 PM",
+    "rentalPeriod": 7,
+    "refund": {
+      "id": 1,
+      "damageStatus": "WITHOUT_DAMAGE",
+      "price": 0.0
+    }
+  },
+  {
+    "id": 3,
+    "car": {
+      "id": 5,
+      "model": "Porsche 911",
+      "pricePerDay": 280.0,
+      "employmentStatus": "OCCUPIED",
+      "damageStatus": "WITHOUT DAMAGE"
+    },
+    "user": {
+      "id": 2,
+      "login": "stason420",
+      "password": "s200113",
+      "role": "CLIENT",
+      "passport": {
+        "id": 1,
+        "name": "Stnislav",
+        "surname": "Trebnikov",
+        "patronymic": "Andreevich",
+        "birthday": "Jul 13, 2001 12:00:00 AM",
+        "address": "Vitebsk"
+      },
+      "orders": []
+    },
+    "price": 1960.0,
+    "orderStatus": "APPROVES",
+    "orderDate": "Nov 15, 2021 3:19:56 PM",
+    "rentalPeriod": 7
+  },
+  {
+    "id": 4,
+    "car": {
+      "id": 6,
+      "model": "Porsche 911 Turbo S",
+      "pricePerDay": 320.0,
+      "employmentStatus": "OCCUPIED",
+      "damageStatus": "WITH_DAMAGE"
+    },
+    "user": {
+      "id": 3,
+      "login": "nesty420",
+      "password": "n200104",
+      "role": "CLIENT",
+      "passport": {
+        "id": 2,
+        "name": "Anastasia",
+        "surname": "Demeshenko",
+        "patronymic": "Yrievna",
+        "birthday": "May 4, 2001 12:00:00 AM",
+        "address": "Vitebsk"
+      },
+      "orders": []
+    },
+    "price": 3840.0,
+    "orderStatus": "REFUND",
+    "orderDate": "Nov 16, 2021 11:06:10 PM",
+    "rentalPeriod": 12,
+    "refund": {
+      "id": 2,
+      "damageStatus": "WITH_DAMAGE",
+      "typeDamage": "2 right windows ",
+      "price": 320.0
+    }
+  }
+]

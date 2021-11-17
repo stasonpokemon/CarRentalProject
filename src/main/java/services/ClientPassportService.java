@@ -32,4 +32,8 @@ public class ClientPassportService {
         }
         clientPassportDaoImpl.save(passport);
     }
+
+    public ClientPassport read(ClientPassport passport){
+        return clientPassportDaoImpl.read(passport.getId());
+    }
 }

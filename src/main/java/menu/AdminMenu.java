@@ -180,7 +180,7 @@ public class AdminMenu {
                     boolean exitAllOrdersMenu = false;
                     System.out.printf("Список всех заказов:\n" +
                             "---------------------------------------------------------------------------------------------------------------------\n" +
-                            "%-6s%-30s%-15s%-15s%-20s%-15s%-6s\n","id", "car", "client", "price", "status","orderDate","rentalPeriod\n" +
+                            "%-6s%-30s%-15s%-15s%-20s%-15s%-6s\n", "id", "car", "client", "price", "status", "orderDate", "rentalPeriod\n" +
                             "---------------------------------------------------------------------------------------------------------------------");
                     orderService.findAllOrders().forEach(System.out::println);
                     System.out.println("---------------------------------------------------------------------------------------------------------------------");
@@ -199,7 +199,7 @@ public class AdminMenu {
                     boolean exitOrdersUnderConsiderationMenu = false;
                     System.out.printf("Список заявок на заказ:\n" +
                             "---------------------------------------------------------------------------------------------------------------------\n" +
-                            "%-6s%-30s%-15s%-15s%-20s%-15s%-6s\n","id", "car", "client", "price", "status","orderDate","rentalPeriod\n" +
+                            "%-6s%-30s%-15s%-15s%-20s%-15s%-6s\n", "id", "car", "client", "price", "status", "orderDate", "rentalPeriod\n" +
                             "---------------------------------------------------------------------------------------------------------------------");
                     orderService.findOrdersByStatus(OrderStatusConst.UNDER_CONSIDERATION).forEach(System.out::println);
                     System.out.println("---------------------------------------------------------------------------------------------------------------------");
@@ -272,11 +272,11 @@ public class AdminMenu {
         boolean exitAdminOrderStatusMenu = false;
         do {
 
-            System.out.printf("Заказ №"+ selectedOrder.getId()+":\n" +
+            System.out.printf("Заказ №" + selectedOrder.getId() + ":\n" +
                     "---------------------------------------------------------------------------------------------------------------------\n" +
-                    "%-6s%-30s%-15s%-15s%-20s%-15s%-6s\n","id", "car", "client", "price", "status","orderDate","rentalPeriod\n" +
+                    "%-6s%-30s%-15s%-15s%-20s%-15s%-6s\n", "id", "car", "client", "price", "status", "orderDate", "rentalPeriod\n" +
                     "---------------------------------------------------------------------------------------------------------------------\n" +
-                    selectedOrder+"\n" +
+                    selectedOrder + "\n" +
                     "---------------------------------------------------------------------------------------------------------------------");
             operationNumber = numberValidUtil.intNumberValid(operationNumber, infoAdminMenu.adminOrderStatusMenuInfo());
             switch (operationNumber) {
@@ -313,6 +313,23 @@ public class AdminMenu {
                     exitAdminOrderStatusMenu = true;
                     break;
                 case 3:
+                    boolean passportExit = false;
+                    do {
+                        System.out.printf("-----------------------------------------------------------------------------------------\n" +
+                                "%-20s%-20s%-20s%-20s%-20s\n", "name","surname", "patronymic", "birthday", "address\n" +
+                                "-----------------------------------------------------------------------------------------\n" +
+                                ClientPassportService.getPassportService().read(selectedOrder.getClient().getPassport()) + "\n" +
+                                "-----------------------------------------------------------------------------------------");
+                        operationNumber = numberValidUtil.intNumberValid(operationNumber, "1. Назад");
+                        if (operationNumber == 1) {
+                            System.out.println("Назад...");
+                            passportExit = true;
+                        } else {
+                            System.out.println("There is no such operation. Try again");
+                        }
+                    } while (!passportExit);
+                    break;
+                case 4:
                     exitAdminOrderStatusMenu = true;
                     break;
                 default:
@@ -484,7 +501,7 @@ public class AdminMenu {
                             } else {
 //                                Паспорт клиента
                                 System.out.printf("Паспорт клиента(" + selectedUser.getLogin() + "):\n " +
-                                "-----------------------------------------------------------------------------------------------\n" +
+                                        "-----------------------------------------------------------------------------------------------\n" +
                                         "%-6s%-20s%-20s%-20s%-20s%-20s", "id", "name", "surname", "patronymic", "birthday", "address\n" +
                                         "------------------------------------------------------------------------------------------------\n" +
                                         selectedClientPassport + "\n" +
